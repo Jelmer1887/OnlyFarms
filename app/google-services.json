@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "102234284849",
+    "project_id": "onlyfarms-c32eb",
+    "storage_bucket": "onlyfarms-c32eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102234284849:android:26f7eaf3750e252eafc610",
+        "android_client_info": {
+          "package_name": "nl.tue.onlyfarms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102234284849-3v9iea2jrt01eje73evhhk7pm8f205ib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "nl.tue.onlyfarms",
+            "certificate_hash": "75fed45dbb8558720d0f5a0fb2233e9d98683000"
+          }
+        },
+        {
+          "client_id": "102234284849-m18o0f7b83m8h4bn8gfuetjpg007ev2l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIH6_IObuR5mBxjfVDRKuGRpddxtwAKBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102234284849-m18o0f7b83m8h4bn8gfuetjpg007ev2l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
