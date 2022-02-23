@@ -1,4 +1,4 @@
-package nl.tue.onlyfarms;
+package nl.tue.onlyfarms.view;
 
 import android.os.Bundle;
 
@@ -13,6 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityMainBinding;
 
 import android.view.Menu;
