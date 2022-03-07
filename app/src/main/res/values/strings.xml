@@ -12,4 +12,16 @@
     <string name="map_description">View map</string>
     <string name="offers_near_you">Offers Near You</string>
     <string name="search">Search</string>
+
+    <string name="Welcome_to_only_farms">Welcome to Only Farms</string>
+    <string name="I_want_to_buy">I want to buy</string>
+    <string name="I_want_to_sell">I want to sell</string>
+    <string name="firstName">First name</string>
+    <string name="lastName">Last name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="signIn">Sign in</string>
+    <string name="No_account">Don't have an account?</string>
+    <string name="create_account">Create account</string>
+
 </resources>
