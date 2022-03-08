@@ -10,29 +10,33 @@ public class RegisterViewModel {
         return TextUtils.isEmpty(val);
     }
 
-    public static void checkEmail(EditText email){
+    public static boolean checkEmail(EditText email){
         String eMailValue = email.getText().toString().trim();
 
         // User did not enter a value
         if (checkEmpty(eMailValue)){
             email.setError("A value must be entered");
+            return false;
         }
+
+        return true;
     }
 
-    public static void checkPassword(EditText password){
+    public static boolean checkPassword(EditText password){
         String value = password.getText().toString().trim();
 
         // User did not enter a value
         if (checkEmpty(value)){
             password.setError("Password must be entered");
-            return;
+            return false;
         }
 
         // User password is too short
         if (value.length() < 4){
             password.setError("Password must be at least 4 characters long");
+            return false;
         }
 
-
+        return true;
     }
 }

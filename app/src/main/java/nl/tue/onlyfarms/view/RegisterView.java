@@ -49,8 +49,10 @@ public class RegisterView extends AppCompatActivity {
             public void onClick(View view) {
 
                 // --- check the data filled in by the user
-                RegisterViewModel.checkEmail(eMailElement);
-                RegisterViewModel.checkPassword(passwordElement);
+                if (!RegisterViewModel.checkEmail(eMailElement) ||
+                        !RegisterViewModel.checkPassword(passwordElement)){
+                    return;
+                }
 
                 String email = eMailElement.getText().toString().trim();
                 String password = passwordElement.getText().toString().trim();
