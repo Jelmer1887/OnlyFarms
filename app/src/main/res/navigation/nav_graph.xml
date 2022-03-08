@@ -42,4 +42,9 @@
             android:id="@+id/action_loginView_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <activity
+        android:id="@+id/registerView"
+        android:name="nl.tue.onlyfarms.view.RegisterView"
+        android:label="activity_register"
+        tools:layout="@layout/activity_register" />
 </navigation>
