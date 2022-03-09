@@ -5,6 +5,11 @@ import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.User;
+
 public class RegisterViewModel {
 
     private static boolean checkEmpty(String val){
@@ -60,5 +65,10 @@ public class RegisterViewModel {
         }
 
         return true;
+    }
+
+    public static void createUser(String uid, String userName, String firstName, String lastName, String emailAddress, User.Status status) {
+        User user = new User(uid, userName, firstName, lastName, emailAddress, status);
+        FirebaseUserService.updateUser(user);
     }
 }

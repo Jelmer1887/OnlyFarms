@@ -1,17 +1,33 @@
 package nl.tue.onlyfarms.model;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
+@IgnoreExtraProperties
 public class User {
+    public enum Status {
+        VENDOR,
+        CLIENT
+    }
+
     private String uid;
     private String userName;
     private String firstName;
     private String lastName;
     private String emailAddress;
-    private String password;
     // to be set to 'vendor' or 'client'
-    private String status;
+    private Status status;
 
     // for now I just make empty constructors
     public User() {}
+
+    public User(String uid, String userName, String firstName, String lastName, String emailAddress, Status status) {
+        this.uid = uid;
+        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+        this.status = status;
+    }
 
     public String getUid() {
         return uid;
@@ -53,19 +69,11 @@ public class User {
         this.emailAddress = emailAddress;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

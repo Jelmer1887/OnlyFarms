@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,14 +19,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityRegisterBinding;
+import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.viewmodel.RegisterViewModel;
 
 public class RegisterView extends AppCompatActivity {
     EditText firstNameElement, lastNameElement, eMailElement, passwordElement;
     Button confirmButtonElement;
     RadioButton accountTypeClientElement, accountTypeVendorElement;
+    RadioGroup accountTypeGroup;
     ProgressBar spinnerElement;
     FirebaseAuth firebaseAuth;
 
@@ -53,10 +58,23 @@ public class RegisterView extends AppCompatActivity {
         lastNameElement = findViewById(R.id.register_lastName);
         accountTypeClientElement = findViewById(R.id.register_accountType_client);
         accountTypeVendorElement = findViewById(R.id.register_accountType_vendor);
+        accountTypeGroup = findViewById(R.id.register_accountType);
         eMailElement = findViewById(R.id.register_email);
         passwordElement = findViewById(R.id.register_password);
         confirmButtonElement = findViewById(R.id.register_submit);
         spinnerElement = findViewById(R.id.register_spinner);
+        AtomicReference<User.Status> status = new AtomicReference<>(User.Status.CLIENT);
+
+        accountTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch(checkedId) {
+                case R.id.register_accountType_client:
+                    status.set(User.Status.CLIENT);
+                    break;
+                case R.id.register_accountType_vendor:
+                    status.set(User.Status.VENDOR);
+                    break;
+            }
+        });
 
         confirmButtonElement.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +100,8 @@ public class RegisterView extends AppCompatActivity {
                         if (task.isSuccessful()){
                             spinnerElement.setVisibility(View.INVISIBLE);
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
+                            // Make user with the data
+                            RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
                             startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             finish();
                         } else {
