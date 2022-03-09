@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginView">
+    app:startDestination="@id/FirstFragment">
 
     <fragment
         android:id="@+id/FirstFragment"
@@ -42,9 +42,4 @@
             android:id="@+id/action_loginView_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
-    <activity
-        android:id="@+id/registerView"
-        android:name="nl.tue.onlyfarms.view.RegisterView"
-        android:label="activity_register"
-        tools:layout="@layout/activity_register" />
 </navigation>
