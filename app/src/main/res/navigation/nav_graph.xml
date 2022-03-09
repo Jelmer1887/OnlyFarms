@@ -14,9 +14,6 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
-        <action
-            android:id="@+id/action_FirstFragment_to_homeView"
-            app:destination="@id/homeView" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -28,11 +25,6 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/homeView"
-        android:name="nl.tue.onlyfarms.view.HomeView"
-        android:label="Overview"
-        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/loginView"
         android:name="nl.tue.onlyfarms.view.LoginView"
