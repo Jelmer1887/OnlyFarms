@@ -53,10 +53,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), Login.class);
+                Intent intent = new Intent(getActivity(), LoginView.class);
                 startActivity(intent);
                 getActivity().finish(); // may produce NullPointerException... could this be done differently?
-
             }
         });
     }
