@@ -71,4 +71,8 @@ public class LoginView extends AppCompatActivity {
             }
         });
     }
+
+    public void toRegister(View view) {
+        startActivity(new Intent(getApplicationContext(), RegisterView.class));
+    }
 }
