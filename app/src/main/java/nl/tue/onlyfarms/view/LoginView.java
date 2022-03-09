@@ -62,7 +62,7 @@ public class LoginView extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     Toast.makeText(LoginView.this, "Logged in!", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    startActivity(new Intent(getApplicationContext(), Home.class));
                     finish();
                 } else {
                     Toast.makeText(LoginView.this, "Oops! " + task.getException().getMessage().toString(), Toast.LENGTH_LONG).show();

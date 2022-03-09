@@ -49,7 +49,7 @@ public class RegisterView extends AppCompatActivity {
         // check if user is already logged in
         if (firebaseAuth.getCurrentUser() != null){
             Toast.makeText(RegisterView.this, "Already logged in", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), Home.class));
             finish();
         }
 
@@ -102,7 +102,7 @@ public class RegisterView extends AppCompatActivity {
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
                             RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), Home.class));
                             finish();
                         } else {
                             spinnerElement.setVisibility(View.INVISIBLE);
