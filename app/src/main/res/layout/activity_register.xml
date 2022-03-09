@@ -26,12 +26,12 @@
         android:text="@string/Welcome_to_only_farms"
         android:textAlignment="center"
         android:textSize="32sp"
-        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintBottom_toTopOf="@+id/register_accountType"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.431" />
+        app:layout_constraintVertical_bias="0.539" />
 
     <EditText
         android:id="@+id/register_firstName"
