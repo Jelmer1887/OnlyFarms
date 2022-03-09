@@ -19,6 +19,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.databinding.ActivityRegisterBinding;
 import nl.tue.onlyfarms.viewmodel.RegisterViewModel;
 
 public class RegisterView extends AppCompatActivity {
@@ -28,9 +29,12 @@ public class RegisterView extends AppCompatActivity {
     ProgressBar spinnerElement;
     FirebaseAuth firebaseAuth;
 
+    private ActivityRegisterBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = ActivityRegisterBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_register);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
