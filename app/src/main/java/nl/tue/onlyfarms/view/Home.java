@@ -5,8 +5,12 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityHomeBinding;
@@ -18,6 +22,8 @@ public class Home extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SearchView searchView;
 
+    private Button logoutButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,11 +32,22 @@ public class Home extends AppCompatActivity {
 
         searchView = binding.search;
         recyclerView = binding.nearRecyclerView;
+        logoutButton = binding.logoutTemp;
+
 
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 searchView.setIconified(false);
+            }
+        });
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), LoginView.class));
+                FirebaseAuth.getInstance().signOut();
+                finish();
             }
         });
 
