@@ -30,4 +30,8 @@
     <string name="Rating">Rating:</string>
     <string name="Tags">Tags: </string>
 
+    <string name="product_name">Product name</string>
+    <string name="Price">Price:</string>
+    <string name="Quantity">Quantity:</string>
+
 </resources>
