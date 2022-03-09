@@ -24,4 +24,10 @@
     <string name="No_account">Don\'t have an account?</string>
     <string name="create_account">Create account</string>
 
+    <string name="store_name">Store name (distance)</string>
+    <string name="address">Address:</string>
+    <string name="Opening_hours">Opening hours:</string>
+    <string name="Rating">Rating:</string>
+    <string name="Tags">Tags: </string>
+
 </resources>
