@@ -37,13 +37,12 @@
 
     <EditText
         android:id="@+id/register_firstName"
-        android:autofillHints="name"
+        android:autofillHints=".AUTOFILL_HINT_PERSON_NAME_GIVEN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="@string/firstName"
-        android:importantForAutofill="no"
         android:inputType="textPersonName"
         android:minHeight="50dp"
         app:layout_constraintBottom_toTopOf="@+id/register_lastName"
@@ -58,7 +57,7 @@
         android:layout_marginBottom="20dp"
         android:ems="10"
         android:hint="@string/lastName"
-        android:autofillHints="name"
+        android:autofillHints=".AUTOFILL_HINT_PERSON_NAME_FAMILY"
         android:inputType="textPersonName"
         android:minHeight="50dp"
         app:layout_constraintBottom_toTopOf="@+id/register_email"
