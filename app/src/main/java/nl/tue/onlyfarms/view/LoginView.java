@@ -40,6 +40,13 @@ public class LoginView extends AppCompatActivity {
         // get firebase authentication instance
         firebaseAuth = FirebaseAuth.getInstance();
 
+        // check if user is already logged in
+        if (firebaseAuth.getCurrentUser() != null){
+            Toast.makeText(LoginView.this, "Already logged in", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(getApplicationContext(), Home.class));
+            finish();
+        }
+
         // retrieve elements from UI
         emailElement = findViewById(R.id.login_email);
         passwordElement = findViewById(R.id.login_password);
