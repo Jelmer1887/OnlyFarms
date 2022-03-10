@@ -20,17 +20,20 @@
 
     <TextView
         android:id="@+id/register_title"
-        android:layout_width="370dp"
-        android:layout_height="55dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:text="@string/Welcome_to_only_farms"
         android:textAlignment="center"
-        android:textSize="32sp"
+        android:textSize="30sp"
         app:layout_constraintBottom_toTopOf="@+id/register_accountType"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.539" />
+        app:layout_constraintVertical_bias="0.5" />
 
     <EditText
         android:id="@+id/register_firstName"
