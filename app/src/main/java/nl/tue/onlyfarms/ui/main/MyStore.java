@@ -13,10 +13,10 @@ public class MyStore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_store_activity);
-        if (savedInstanceState == null) {
+        /*if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment_myStore.newInstance())
                     .commitNow();
-        }
+        }*/
     }
 }

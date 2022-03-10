@@ -26,7 +26,7 @@ public class fragment_myStore extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_myStore, container, false);
+        return inflater.inflate(R.layout.fragment_mystore, container, false);
     }
 
     /* The better way to do this is located in: https://developer.android.com/topic/libraries/architecture/viewmodel?gclid=CjwKCAiA4KaRBhBdEiwAZi1zzvGWeKDauuZad34873iu8S23nTcjZkxmHp0dCTYo4cJkCOU3LS2tthoCbGIQAvD_BwE&gclsrc=aw.ds#java */
