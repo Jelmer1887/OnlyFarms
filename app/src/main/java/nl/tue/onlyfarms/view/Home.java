@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityHomeBinding;
+import nl.tue.onlyfarms.ui.main.MyStore;
 
 
 public class Home extends AppCompatActivity {
@@ -45,8 +46,7 @@ public class Home extends AppCompatActivity {
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), LoginView.class));
-                FirebaseAuth.getInstance().signOut();
+                startActivity(new Intent(getApplicationContext(), MyStore.class));
                 finish();
             }
         });
