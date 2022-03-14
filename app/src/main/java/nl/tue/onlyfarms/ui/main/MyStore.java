@@ -52,7 +52,7 @@ public class MyStore extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.navto_logout) { logout(); }
+                if (id == R.id.navto_logout) { logout(); return true;}
                 if (id == R.id.navto_mystore) { drawerLayout.close(); }
                 startActivity(navLogic.toNavigator(id, getApplicationContext()));
                 finish();
@@ -68,8 +68,8 @@ public class MyStore extends AppCompatActivity {
     }
 
     public void logout(){
-        startActivity(new Intent(getApplicationContext(), LoginView.class));
         FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(getApplicationContext(), LoginView.class));
         finish();
     }
 }
