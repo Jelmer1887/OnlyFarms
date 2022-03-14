@@ -67,7 +67,13 @@ public class RegisterViewModel {
         return true;
     }
 
-    public static void createUser(String uid, String userName, String firstName, String lastName, String emailAddress, User.Status status) {
+    public static void createUser(
+            String uid,
+            String userName,
+            String firstName, String lastName,
+            String emailAddress,
+            User.Status status
+    ) {
         User user = new User(uid, userName, firstName, lastName, emailAddress, status);
         FirebaseUserService.updateUser(user);
     }
