@@ -13,6 +13,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.ui.main.fragment_myStore;
 import nl.tue.onlyfarms.view.Home;
@@ -23,6 +24,8 @@ public class MyStore extends AppCompatActivity {
     MaterialToolbar topBar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+
+    private Navigation navLogic = Navigation.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +50,14 @@ public class MyStore extends AppCompatActivity {
                 if (id == R.id.navto_logout) {
                     logout();
                     return true;
-                } else if (id == R.id.navto_home) {
-                    startActivity(new Intent(getApplicationContext(), Home.class));
-                    finish();
+                }
+                if (id == R.id.navto_mystore) {
+                    drawerLayout.close();
                     return true;
                 }
-
-                return false;
+                startActivity(navLogic.toNavigator(id, getApplicationContext()));
+                finish();
+                return true;
             }
         });
 
