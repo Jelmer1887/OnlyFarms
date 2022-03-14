@@ -28,8 +28,6 @@ public class Home extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SearchView searchView;
 
-    private Button logoutButton;
-
     MaterialToolbar topBar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -46,8 +44,6 @@ public class Home extends AppCompatActivity {
         searchView = binding.search;
         recyclerView = binding.nearRecyclerView;
 
-        logoutButton = binding.logoutTemp;
-
         topBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { drawerLayout.open(); }
@@ -57,14 +53,6 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 searchView.setIconified(false);
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), MyStore.class));
-                finish();
             }
         });
 
