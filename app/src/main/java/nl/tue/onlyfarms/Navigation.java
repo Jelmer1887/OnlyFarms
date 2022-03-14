@@ -2,18 +2,21 @@ package nl.tue.onlyfarms;
 
 import android.content.Context;
 import android.content.Intent;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.Map;
 import java.util.HashMap;
 
 import nl.tue.onlyfarms.ui.main.MyStore;
 import nl.tue.onlyfarms.view.Home;
+import nl.tue.onlyfarms.view.LoginView;
 
 public class Navigation {
     private static Navigation instance;
     private static Map<Integer, Class> navTargets = new HashMap<>();
 
-    public Navigation() {
-    }
+    public Navigation(){}
 
     public static Navigation getInstance() {
         if (instance == null) {
@@ -27,9 +30,7 @@ public class Navigation {
         return instance;
     }
 
-    public void addNavElement(int id, Class destination){
-     navTargets.put(id, destination);
-    }
+    public void addNavElement(int id, Class destination){ navTargets.put(id, destination); }
 
     public Intent toNavigator(int id, Context context) {
         if (!navTargets.containsKey(id)) {

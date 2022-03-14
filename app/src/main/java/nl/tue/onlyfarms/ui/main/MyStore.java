@@ -3,6 +3,8 @@ package nl.tue.onlyfarms.ui.main;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ public class MyStore extends AppCompatActivity {
     MaterialToolbar topBar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
+    MystoreViewModel model;
 
     private Navigation navLogic = Navigation.getInstance();
 
@@ -31,6 +34,8 @@ public class MyStore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_store_activity);
+
+        model = new ViewModelProvider(this).get(MystoreViewModel.class);
 
         topBar = findViewById(R.id.topBar);
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -47,14 +52,8 @@ public class MyStore extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                if (id == R.id.navto_logout) {
-                    logout();
-                    return true;
-                }
-                if (id == R.id.navto_mystore) {
-                    drawerLayout.close();
-                    return true;
-                }
+                if (id == R.id.navto_logout) { logout(); }
+                if (id == R.id.navto_mystore) { drawerLayout.close(); }
                 startActivity(navLogic.toNavigator(id, getApplicationContext()));
                 finish();
                 return true;
