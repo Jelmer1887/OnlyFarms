@@ -6,12 +6,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
 import kotlin.NotImplementedError;
 import nl.tue.onlyfarms.model.FirebaseStoreService;
 import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.OurFirebaseDatabase;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.model.User;
 
@@ -36,20 +38,20 @@ public class MystoreViewModel extends ViewModel {
         // retrieve user-data from user-database
         User userData = FirebaseUserService.getUser(uid);       //TODO: This is dumb
         userStores = storeService.getStore(userData.getUid());  //TODO: This is very dumb
-
         //TODO: check result of getStore
     }
 
     /* Retrieves the current user data */
-    public  LiveData<User> getSubjectUser() {
-        return subjectUser; // note: may be null if the user logged-out or got deleted somehow
-    }
+    // note: may be null if the user logged-out or got deleted somehow
+    public  LiveData<User> getSubjectUser() { return subjectUser; }
 
     /* Retrieves all stores associated with the specified user */
     public LiveData<List<Store>> getStores() {
         return userStores;
     }
 
-    /* Updates the userStores variable to reflect the newest subjectUser's data in the DataBase */
-    private void updateStores() {}
+    /* updates the database with any changes made by the user */
+    private void updateStores(Store store) {
+
+    }
 }

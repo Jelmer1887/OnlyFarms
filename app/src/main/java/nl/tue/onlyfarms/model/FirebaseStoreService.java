@@ -1,6 +1,12 @@
 package nl.tue.onlyfarms.model;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
 
@@ -12,6 +18,7 @@ import java.util.List;
  * */
 public class FirebaseStoreService {
     private static FirebaseStoreService instance;
+    private static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
 
     /**
      * Constructs a new instance of this class, shouldn't be called outside this class.
@@ -45,7 +52,15 @@ public class FirebaseStoreService {
      * @post Firebase has child store with uid, etc.. matching the store-object
      * @throws IllegalStateException if a DatabaseException is received
      * @throws NullPointerException if {@param store == null}
-     * @throws IllegalArgumentException if {@param store} is not a Store type object.
      * */
-    public void updateStore(Store store) {}
+    public void updateStore(Store store) {
+        if (store == null) {
+            throw new NullPointerException("argument 'store' is null!");
+        }
+        Task writeStore = database.getReference().child("stores").child(store.getUid()).setValue(store);
+
+        writeStore.addOnFailureListener(e -> {
+            throw new IllegalStateException(e.getMessage());
+        });
+    }
 }
