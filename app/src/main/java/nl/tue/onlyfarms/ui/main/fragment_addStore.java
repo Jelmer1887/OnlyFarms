@@ -2,6 +2,8 @@ package nl.tue.onlyfarms.ui.main;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,8 +12,14 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import nl.tue.onlyfarms.R;
@@ -38,6 +46,9 @@ public class fragment_addStore extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Button confirmButton;
+    private EditText nameField, descriptionField, locationField;
 
     public fragment_addStore() {
         // Required empty public constructor
@@ -79,5 +90,27 @@ public class fragment_addStore extends Fragment {
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_store, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        confirmButton = getView().findViewById(R.id.addStore_submitButton);
+        nameField = getView().findViewById(R.id.addStore_storeName);
+        descriptionField = getView().findViewById(R.id.addStore_description);
+        locationField = getView().findViewById(R.id.addStore_location);
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text_name = nameField.getText().toString().trim();
+                String text_description = descriptionField.getText().toString().trim();
+                String text_location = locationField.getText().toString().trim();
+                String uid = Long.toString(Calendar.getInstance().getTime().getTime());
+                String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                Store newStore = new Store(uid, userUid, text_name, text_description, text_location);
+                model.updateStores(newStore);
+            }
+        });
     }
 }

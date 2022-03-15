@@ -11,7 +11,12 @@ public class Store {
     private String phoneNumber;
     // TODO: add images (could)
 
-    public Store() {}
+    public Store(String uid, String userUid, String name, String description, String physicalAddress) {
+        this.uid = uid;
+        this.userUid = userUid;
+        this.name = name;
+        this.description = description;
+    }
 
     public String getUid() {
         return uid;

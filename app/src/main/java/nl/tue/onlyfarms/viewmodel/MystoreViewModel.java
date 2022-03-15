@@ -51,5 +51,7 @@ public class MystoreViewModel extends ViewModel {
     }
 
     /* updates the database with any changes made by the user */
-    private void updateStores(Store store) { }
+    public void updateStores(Store store) {
+        storeService.updateStore(store);
+    }
 }
