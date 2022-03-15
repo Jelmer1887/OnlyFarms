@@ -3,7 +3,6 @@ package nl.tue.onlyfarms.ui.main;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
@@ -17,9 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.ui.main.fragment_myStore;
-import nl.tue.onlyfarms.view.Home;
 import nl.tue.onlyfarms.view.LoginView;
+import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
 
 public class MyStore extends AppCompatActivity {
 

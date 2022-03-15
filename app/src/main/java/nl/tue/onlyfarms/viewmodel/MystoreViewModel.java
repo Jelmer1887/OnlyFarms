@@ -1,4 +1,4 @@
-package nl.tue.onlyfarms.ui.main;
+package nl.tue.onlyfarms.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

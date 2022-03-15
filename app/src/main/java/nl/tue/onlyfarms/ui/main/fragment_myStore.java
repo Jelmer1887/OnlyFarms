@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
 
 public class fragment_myStore extends Fragment {
 
