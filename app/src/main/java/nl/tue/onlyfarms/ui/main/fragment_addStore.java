@@ -3,12 +3,20 @@ package nl.tue.onlyfarms.ui.main;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import java.util.List;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -17,10 +25,15 @@ import nl.tue.onlyfarms.R;
  */
 public class fragment_addStore extends Fragment {
 
+    public static fragment_addStore newInstance() {
+        return new fragment_addStore();
+    }
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private MystoreViewModel model;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,6 +73,10 @@ public class fragment_addStore extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        model = new ViewModelProvider(this).get(MystoreViewModel.class);
+        MutableLiveData<Store> stores = model.getStores();
+        Toast.makeText(getActivity(), "retrieved: " + stores.getValue(), Toast.LENGTH_LONG).show();
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_store, container, false);
     }

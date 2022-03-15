@@ -20,7 +20,7 @@ import nl.tue.onlyfarms.model.User;
 public class MystoreViewModel extends ViewModel {
     // TODO: Implement the ViewModel
     private MutableLiveData<User> subjectUser;
-    private MutableLiveData<List<Store>> userStores;
+    private MutableLiveData<Store> userStores;
     private Store currentStore;
     private final FirebaseStoreService storeService = FirebaseStoreService.getInstance();
 
@@ -46,12 +46,10 @@ public class MystoreViewModel extends ViewModel {
     public  LiveData<User> getSubjectUser() { return subjectUser; }
 
     /* Retrieves all stores associated with the specified user */
-    public LiveData<List<Store>> getStores() {
+    public MutableLiveData<Store> getStores() {
         return userStores;
     }
 
     /* updates the database with any changes made by the user */
-    private void updateStores(Store store) {
-
-    }
+    private void updateStores(Store store) { }
 }

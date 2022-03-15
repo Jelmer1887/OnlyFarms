@@ -1,12 +1,18 @@
 package nl.tue.onlyfarms.model;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -42,8 +48,21 @@ public class FirebaseStoreService {
      * @return {@code MutableLiveData<List<Store>>} if {@param uid} was found in the database, and monitors.
      * Returns {@code null} if {@param was} was not found in the database.
      * */
-    public MutableLiveData<List<Store>> getStore(String uid) {
-        return null;
+    public MutableLiveData<Store> getStore(String uid) {
+        MutableLiveData<Store> store = new MutableLiveData<>();
+        database.getReference("stores").equalTo(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                store.postValue(snapshot.getValue(Store.class));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                throw new IllegalStateException("database error: "+ error.getMessage());
+            }
+        });
+
+        return store;
     }
 
     /**

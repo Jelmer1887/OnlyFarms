@@ -60,7 +60,7 @@ public class MyStore extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.replaceElement, fragment_myStore.newInstance())
+                    .replace(R.id.replaceElement, fragment_addStore.newInstance())
                     .commitNow();
         }
     }
