@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
 
 /**
@@ -86,6 +88,15 @@ public class fragment_addStore extends Fragment {
                              Bundle savedInstanceState) {
         model = new ViewModelProvider(this).get(MystoreViewModel.class);
         MutableLiveData<Store> stores = model.getStores();
+        MutableLiveData<User> user = model.getSubjectUser();
+        user.observe(getViewLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                nameField.setText(user.getFirstName());
+            }
+        });
+
+
         Toast.makeText(getActivity(), "retrieved: " + stores.getValue(), Toast.LENGTH_LONG).show();
 
         // Inflate the layout for this fragment

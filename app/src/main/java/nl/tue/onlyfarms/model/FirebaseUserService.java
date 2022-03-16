@@ -1,21 +1,28 @@
 package nl.tue.onlyfarms.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import java.util.Map;
 
 public class FirebaseUserService {
+    private static final String TAG = "FirebaseUserService";
 
     public static void updateUser(User user) {
         FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         database.getReference().child("users").child(user.getUid()).setValue(user);
+        
     }
 
     // function that will hopefully find a user by name (this should work, but I don't have time to test it...
@@ -29,20 +36,38 @@ public class FirebaseUserService {
      *
      * (Consider using {@code MutableLiveData<User>} instead as a return type, and using the onChildChanged hook to update it )
      * */
-    public static User getUser(String uid) {
+    public static MutableLiveData<User> getUser(String uid) {
         // TODO: return actual user with matching uid from database
         final FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReference("users");
-        userRef.orderByChild("firstName").equalTo("Tobias").addChildEventListener(new ChildEventListener() {
+        MutableLiveData<User> result = new MutableLiveData<>();
+        Log.d(TAG, "result variable generated");
+        Task userTask = userRef.child(uid).get().addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                Log.d(TAG, "onComplete: It has completed");
+                Log.d(TAG, "onComplete: "+ task.getResult());
+                DataSnapshot data = (DataSnapshot) task.getResult();
+            }
+        });
 
+        Log.d(TAG, "I AM STILL ALIVE");
+
+
+        userRef.orderByChild("uid").equalTo(uid).addChildEventListener(new ChildEventListener() {
+            // triggers once for each match
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                System.out.println(snapshot.getKey());
+                Log.d(TAG, "onChildAdded: " + snapshot.getValue());
+                result.postValue(snapshot.getValue(User.class));
+                Log.d(TAG, "Updated user value, onChildAdded");
             }
 
+            // this should run any time the object is modified
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                result.postValue(snapshot.getValue(User.class));
+                Log.d(TAG, "Updated user value, onChildChanged");
             }
 
             @Override
@@ -57,17 +82,21 @@ public class FirebaseUserService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.d(TAG, "Database Cancelled");
             }
         });
 
-        return new User(
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                "UsrName",
-                "A",
-                "B",
-                FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                User.Status.VENDOR
-        );
+//        userRef.child(uid).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                Log.d(TAG, "");
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+        return result;
         }
 }
