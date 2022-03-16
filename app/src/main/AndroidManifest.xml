@@ -13,10 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlyFarms">
         <activity
-            android:name=".view.Profile"
-            android:exported="false" />
-        <activity
-            android:name=".profile"
+            android:name=".view.Account"
             android:exported="false" />
         <activity
             android:name=".ui.main.vendor.MyStore"
