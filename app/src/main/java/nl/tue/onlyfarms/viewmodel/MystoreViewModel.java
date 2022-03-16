@@ -56,7 +56,7 @@ public class MystoreViewModel extends ViewModel {
 
     /* Retrieves the current user data */
     // note: may be null if the user logged-out or got deleted somehow
-    public  LiveData<User> getSubjectUser() { return subjectUser; }
+    public  MutableLiveData<User> getSubjectUser() { return subjectUser; }
 
     /* Retrieves all stores associated with the specified user */
     public MutableLiveData<Store> getStores() {
