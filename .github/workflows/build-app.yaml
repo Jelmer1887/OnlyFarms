@@ -16,6 +16,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
+      - name: Get Keystore
+        run: echo "${{ secrets.KEY_STORE }}" | base64 --decode > debug.jks
+
       - name: Build the app
         run: ./gradlew build
 

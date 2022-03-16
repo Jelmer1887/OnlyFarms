@@ -16,6 +16,7 @@ public class FirebaseUserService {
     public static void updateUser(User user) {
         FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         database.getReference().child("users").child(user.getUid()).setValue(user);
+        
     }
 
     // function that will hopefully find a user by name (this should work, but I don't have time to test it...
