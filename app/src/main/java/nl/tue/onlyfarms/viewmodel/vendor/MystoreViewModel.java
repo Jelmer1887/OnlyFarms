@@ -28,7 +28,6 @@ public class MystoreViewModel extends ViewModel {
     private MutableLiveData<User> subjectUser;
     private MutableLiveData<Store> userStores;
     private Store currentStore;
-    private final FirebaseStoreService storeService = FirebaseStoreService.getInstance();
 
     /**
      * creates a new viewmodel:
@@ -44,7 +43,7 @@ public class MystoreViewModel extends ViewModel {
         // retrieve user-data from user-database
         subjectUser = FirebaseUserService.getUser(uid);
         Log.i("viewModel","got user:" + subjectUser.getValue());
-        userStores = storeService.getStore(uid);
+        userStores = FirebaseStoreService.getStore(uid);
         //TODO: check result of getStore
     }
 
@@ -59,6 +58,6 @@ public class MystoreViewModel extends ViewModel {
 
     /* updates the database with any changes made by the user */
     public void updateStores(Store store) {
-        storeService.updateStore(store);
+        FirebaseStoreService.updateStore(store);
     }
 }

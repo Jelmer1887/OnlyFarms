@@ -25,32 +25,14 @@ import java.util.List;
  * To use call {@code getInstance()} to retrieve the instance of the class
  * */
 public class FirebaseStoreService {
-    private static FirebaseStoreService instance;
-    private static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
-
-    /**
-     * Constructs a new instance of this class, shouldn't be called outside this class.
-     * @returns {@code this}
-     * */
-    private FirebaseStoreService() { }
-
-    /**
-     * retrieves the instance of the class, or creates one
-     * @return {@code instance}
-     * @post {/result == instance && instance != null}
-     * */
-    public static FirebaseStoreService getInstance() {
-        if (instance == null) { instance = new FirebaseStoreService(); }
-        return instance;
-    }
-
     /**
      * retrieves a store-object from the database, and monitors it.
      * @param uid uid of the store to retrieve
      * @return {@code MutableLiveData<List<Store>>} if {@param uid} was found in the database, and monitors.
      * Returns {@code null} if {@param was} was not found in the database.
      * */
-    public MutableLiveData<Store> getStore(String uid) {
+    public static MutableLiveData<Store> getStore(String uid) {
+        FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         MutableLiveData<Store> store = new MutableLiveData<>();
         database.getReference("stores").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
@@ -75,7 +57,8 @@ public class FirebaseStoreService {
      * @throws IllegalStateException if a DatabaseException is received
      * @throws NullPointerException if {@param store == null}
      * */
-    public void updateStore(Store store) {
+    public static void updateStore(Store store) {
+        FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         if (store == null) {
             throw new NullPointerException("argument 'store' is null!");
         }
