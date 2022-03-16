@@ -1,0 +1,32 @@
+name: Build
+on: [pull_request, push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the code
+        uses: actions/checkout@v2
+
+      - name: Prepare Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build the app
+        run: ./gradlew build
+
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: Release APK
+          path: app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: Debug APK
+          path: app/build/outputs/apk/debug/app-debug.apk
