@@ -11,10 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OnlyFarms">
-
+        <activity
+            android:name=".view.Profile"
+            android:exported="false" />
+        <activity
+            android:name=".profile"
+            android:exported="false" />
         <activity
             android:name=".ui.main.MyStore"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".view.Home"
             android:exported="true" />
@@ -31,6 +36,7 @@
             android:theme="@style/Theme.OnlyFarms.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
