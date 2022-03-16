@@ -42,7 +42,8 @@ public class MystoreViewModel extends ViewModel {
         String uid = user.getUid();
 
         // retrieve user-data from user-database
-        userData = FirebaseUserService.getUser(uid);
+        subjectUser = FirebaseUserService.getUser(uid);
+        Log.i("viewModel","got user:" + subjectUser.getValue());
         userStores = storeService.getStore(uid);
         //TODO: check result of getStore
     }

@@ -1,5 +1,7 @@
 package nl.tue.onlyfarms.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -54,6 +56,7 @@ public class FirebaseStoreService {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 store.postValue(snapshot.getValue(Store.class));
+                Log.i("storeService", "retrieved: " + store.getValue());
             }
 
             @Override

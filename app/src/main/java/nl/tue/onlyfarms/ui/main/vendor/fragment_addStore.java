@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,11 +85,14 @@ public class fragment_addStore extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         model = new ViewModelProvider(this).get(MystoreViewModel.class);
+        Log.i("addStoreView", "created model!");
         MutableLiveData<Store> stores = model.getStores();
         MutableLiveData<User> user = model.getSubjectUser();
         user.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
+
+                Log.i("addStoreView", "got: " + user);
                 nameField.setText(user.getFirstName());
             }
         });
