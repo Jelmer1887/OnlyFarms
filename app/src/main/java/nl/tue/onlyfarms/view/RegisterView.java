@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityRegisterBinding;
 import nl.tue.onlyfarms.model.User;
+import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.viewmodel.RegisterViewModel;
 
 public class RegisterView extends AppCompatActivity {

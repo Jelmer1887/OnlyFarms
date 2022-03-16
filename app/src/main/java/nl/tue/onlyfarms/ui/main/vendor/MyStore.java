@@ -1,4 +1,4 @@
-package nl.tue.onlyfarms.ui.main;
+package nl.tue.onlyfarms.ui.main.vendor;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.view.LoginView;
-import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
+import nl.tue.onlyfarms.viewmodel.vendor.MystoreViewModel;
 
 public class MyStore extends AppCompatActivity {
 

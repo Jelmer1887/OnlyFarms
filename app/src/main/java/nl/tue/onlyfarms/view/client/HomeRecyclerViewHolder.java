@@ -1,4 +1,4 @@
-package nl.tue.onlyfarms.view;
+package nl.tue.onlyfarms.view.client;
 
 import android.view.View;
 import android.widget.TextView;

@@ -1,9 +1,11 @@
-package nl.tue.onlyfarms.viewmodel;
+package nl.tue.onlyfarms.viewmodel.vendor;
 
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,6 +22,7 @@ import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.model.User;
 
 public class MystoreViewModel extends ViewModel {
+    public MutableLiveData<User> userData;
     private static final String Tag = "MystoreViewModel";
     // TODO: Implement the ViewModel
     private MutableLiveData<User> subjectUser;
@@ -39,18 +42,8 @@ public class MystoreViewModel extends ViewModel {
         String uid = user.getUid();
 
         // retrieve user-data from user-database
-        Log.d(Tag, uid);
-        MutableLiveData<User> userData = FirebaseUserService.getUser(uid); //TODO: This is dumb
-        String test;
-        if (userData.getValue() == null) {
-            test = "getValue is null";
-        } else if (userData.getValue().getUid() == null) {
-            test = "getUid is null";
-        } else {
-            test = "User seems fine?";
-        }
-        Log.d(Tag, userData.toString());
-        userStores = storeService.getStore(uid);  //TODO: This is very dumb
+        userData = FirebaseUserService.getUser(uid);
+        userStores = storeService.getStore(uid);
         //TODO: check result of getStore
     }
 

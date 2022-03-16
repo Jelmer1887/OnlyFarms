@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Random;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.view.client.HomeRecyclerViewHolder;
 
 public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
     private Random random;

@@ -16,10 +16,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import org.w3c.dom.Text;
-
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityLoginBinding;
+import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.viewmodel.LoginViewModel;
 
 public class LoginView extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package nl.tue.onlyfarms.ui.main;
+package nl.tue.onlyfarms.ui.main.vendor;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.viewmodel.MystoreViewModel;
+import nl.tue.onlyfarms.viewmodel.vendor.MystoreViewModel;
 
 public class fragment_myStore extends Fragment {
 

@@ -3,14 +3,11 @@ package nl.tue.onlyfarms;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Map;
 import java.util.HashMap;
 
-import nl.tue.onlyfarms.ui.main.MyStore;
-import nl.tue.onlyfarms.view.Home;
-import nl.tue.onlyfarms.view.LoginView;
+import nl.tue.onlyfarms.ui.main.vendor.MyStore;
+import nl.tue.onlyfarms.view.client.Home;
 
 public class Navigation {
     private static Navigation instance;

@@ -42,20 +42,8 @@ public class FirebaseUserService {
         final DatabaseReference userRef = database.getReference("users");
         MutableLiveData<User> result = new MutableLiveData<>();
         Log.d(TAG, "result variable generated");
-        Task userTask = userRef.child(uid).get().addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                Log.d(TAG, "onComplete: It has completed");
-                Log.d(TAG, "onComplete: "+ task.getResult());
-                DataSnapshot data = (DataSnapshot) task.getResult();
-            }
-        });
-
-        Log.d(TAG, "I AM STILL ALIVE");
-
 
         userRef.orderByChild("uid").equalTo(uid).addChildEventListener(new ChildEventListener() {
-            // triggers once for each match
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Log.d(TAG, "onChildAdded: " + snapshot.getValue());
@@ -72,7 +60,7 @@ public class FirebaseUserService {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                result.postValue(null);
             }
 
             @Override
@@ -82,21 +70,10 @@ public class FirebaseUserService {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, "Database Cancelled");
+                Log.e(TAG, "Database Cancelled");
             }
         });
 
-//        userRef.child(uid).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                Log.d(TAG, "");
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
         return result;
         }
 }

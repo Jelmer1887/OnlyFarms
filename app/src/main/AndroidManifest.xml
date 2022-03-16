@@ -3,6 +3,7 @@
     package="nl.tue.onlyfarms">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -18,13 +19,10 @@
             android:name=".profile"
             android:exported="false" />
         <activity
-            android:name=".ui.main.MyStore"
+            android:name=".ui.main.vendor.MyStore"
             android:exported="true" />
         <activity
-            android:name=".view.Home"
-            android:exported="true" />
-        <activity
-            android:name=".view.MainActivity"
+            android:name=".view.client.Home"
             android:exported="true" />
         <activity
             android:name=".view.RegisterView"
