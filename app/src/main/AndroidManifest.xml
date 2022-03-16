@@ -16,9 +16,6 @@
             android:name=".view.Profile"
             android:exported="false" />
         <activity
-            android:name=".profile"
-            android:exported="false" />
-        <activity
             android:name=".ui.main.vendor.MyStore"
             android:exported="true" />
         <activity
