@@ -1,58 +1,54 @@
 package nl.tue.onlyfarms.view.client;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 
-import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.ActivityHomeBinding;
-import nl.tue.onlyfarms.view.LoginView;
+import nl.tue.onlyfarms.databinding.FragmentHomeBinding;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link Home#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class Home extends Fragment {
 
-public class Home extends AppCompatActivity {
-
-    private ActivityHomeBinding binding;
-    private RecyclerView recyclerView;
+    private FragmentHomeBinding binding;
     private SearchView searchView;
+    private RecyclerView recyclerView;
 
-    private Navigation navLogic = Navigation.getInstance();
-
-    MaterialToolbar topBar;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-
+    public static Home newInstance() {
+        return new Home();
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        binding = FragmentHomeBinding.inflate(getLayoutInflater());
 
+        return inflater.inflate(R.layout.fragment_home, container, false);
+    }
 
-        topBar = findViewById(R.id.home_topBar);
-        drawerLayout = findViewById(R.id.home_drawerLayout);
-        navigationView = findViewById(R.id.home_navigationBar);
-        searchView = binding.search;
-        recyclerView = binding.nearRecyclerView;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        topBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) { drawerLayout.open(); }
-        });
+        recyclerView = getView().findViewById(R.id.near_recyclerView);
+        searchView = getView().findViewById(R.id.search);
 
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,40 +57,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // TODO: generalize navigation logic to new file
-                int id = item.getItemId();
-                if (id == R.id.navto_logout) {
-                    logout();
-                    return true;
-                }
-                if (id == R.id.navto_home) {
-                    drawerLayout.close();
-                    return true;
-                }
-                startActivity(navLogic.toNavigator(id, getApplicationContext()));
-                finish();
-
-                return true;
-            }
-        });
-
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new StoreCardAdapter(1234));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        binding = null;
-    }
-
-    public void logout(){
-        startActivity(new Intent(getApplicationContext(), LoginView.class));
-        FirebaseAuth.getInstance().signOut();
-        finish();
     }
 }

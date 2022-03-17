@@ -18,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityLoginBinding;
-import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.viewmodel.LoginViewModel;
 
 public class LoginView extends AppCompatActivity {
@@ -42,7 +41,7 @@ public class LoginView extends AppCompatActivity {
         // check if user is already logged in
         if (firebaseAuth.getCurrentUser() != null){
             Toast.makeText(LoginView.this, "Already logged in", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(getApplicationContext(), Home.class));
+            startActivity(new Intent(getApplicationContext(), Base.class));
             finish();
         }
 
@@ -68,7 +67,7 @@ public class LoginView extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     Toast.makeText(LoginView.this, "Logged in!", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), Home.class));
+                    startActivity(new Intent(getApplicationContext(), Base.class));
                     finish();
                 } else {
                     Toast.makeText(LoginView.this, "Oops! " + task.getException().getMessage().toString(), Toast.LENGTH_LONG).show();

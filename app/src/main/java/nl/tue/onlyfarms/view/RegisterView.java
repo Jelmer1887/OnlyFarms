@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityRegisterBinding;
 import nl.tue.onlyfarms.model.User;
-import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.viewmodel.RegisterViewModel;
 
 public class RegisterView extends AppCompatActivity {
@@ -50,7 +49,7 @@ public class RegisterView extends AppCompatActivity {
         // check if user is already logged in
         if (firebaseAuth.getCurrentUser() != null){
             Toast.makeText(RegisterView.this, "Already logged in", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(getApplicationContext(), Home.class));
+            startActivity(new Intent(getApplicationContext(), Base.class));
             finish();
         }
 
@@ -103,7 +102,7 @@ public class RegisterView extends AppCompatActivity {
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
                             RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
-                            startActivity(new Intent(getApplicationContext(), Home.class));
+                            startActivity(new Intent(getApplicationContext(), Base.class));
                             finish();
                         } else {
                             spinnerElement.setVisibility(View.INVISIBLE);
