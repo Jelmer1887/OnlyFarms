@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
+import java.util.List;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Store;
@@ -36,6 +37,7 @@ public class fragment_addStore extends Fragment {
     public static fragment_addStore newInstance() {
         return new fragment_addStore();
     }
+    private final static String TAG = "addStoreView";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -85,20 +87,20 @@ public class fragment_addStore extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         model = new ViewModelProvider(this).get(MystoreViewModel.class);
-        Log.i("addStoreView", "created model!");
-        MutableLiveData<Store> stores = model.getStores();
+        Log.i(TAG, "created model!");
+        List<MutableLiveData<Store>> stores = model.getStores();
         MutableLiveData<User> user = model.getSubjectUser();
         user.observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
             public void onChanged(User user) {
 
-                Log.i("addStoreView", "got: " + user);
+                Log.i(TAG, "got user: " + user);
                 nameField.setText(user.getFirstName());
             }
         });
+        Log.d(TAG, "stores upon creation: " + stores);
 
-
-        Toast.makeText(getActivity(), "retrieved: " + stores.getValue(), Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), "retrieved: " + stores, Toast.LENGTH_LONG).show();
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_store, container, false);

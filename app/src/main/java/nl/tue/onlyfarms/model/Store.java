@@ -11,6 +11,10 @@ public class Store {
     private String phoneNumber;
     // TODO: add images (could)
 
+    // mandatory empty constructor
+    public Store(){};
+
+    //TODO: add other fields
     public Store(String uid, String userUid, String name, String description, String physicalAddress) {
         this.uid = uid;
         this.userUid = userUid;
