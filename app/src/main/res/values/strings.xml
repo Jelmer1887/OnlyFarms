@@ -46,5 +46,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="Reservations">Reservations</string>
+    <string name="clientName">Client name</string>
+    <string name="orderedItems">Items ordered:</string>
 
 </resources>

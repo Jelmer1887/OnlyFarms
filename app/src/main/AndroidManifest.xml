@@ -22,6 +22,9 @@
             android:name=".view.RegisterView"
             android:exported="false" />
         <activity
+            android:name=".view.HomeVendor"
+            android:exported="true"/>
+        <activity
             android:name=".view.LoginView"
             android:exported="true"
             android:label="@string/app_name"
