@@ -34,7 +34,7 @@
     <string name="Tags">Tags: </string>
 
     <string name="product_name">Product name</string>
-    <string name="Price">Price:</string>
+    <string name="Price">Price</string>
     <string name="Quantity">Quantity:</string>
 
     <string name="open_closed">open/closed</string>
@@ -50,5 +50,8 @@
     <string name="orderedItems">Items ordered:</string>
     <string name="MakeReservation">Make this reservation</string>
     <string name="seeMore">See more...</string>
+
+    <string name="productName">Product name</string>
+    <string name="addProduct">Add product</string>
 
 </resources>
