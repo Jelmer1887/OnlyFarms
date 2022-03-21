@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 
 import nl.tue.onlyfarms.view.Account;
+import nl.tue.onlyfarms.view.addStore;
 import nl.tue.onlyfarms.view.client.Home;
 
 public class Navigation {
@@ -20,7 +21,7 @@ public class Navigation {
         if (instance == null) {
             instance = new Navigation();
             instance.addNavElement(R.id.navto_home, Home::new);
-            instance.addNavElement(R.id.navto_mystore, Home::new);
+            instance.addNavElement(R.id.navto_mystore, addStore::new);
             instance.addNavElement(R.id.navto_myaccount, Account::new);
             instance.addNavElement(R.id.navto_reservations, Home::new);
         }
