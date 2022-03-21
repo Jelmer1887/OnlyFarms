@@ -86,9 +86,14 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     }
 
     private Store getNextStore() {
-        Log.d(TAG, "getNextStore: " + cards.toString());
+        String msg = "getNextStore: cards:\n";
+        for (Store s : cards.keySet()) {
+            msg += "[" + s + " <=> " + cards.get(s) + "]\n";
+        }
+        Log.d(TAG, msg);
         for (Store s : cards.keySet()) {
             if (cards.get(s) == null) {
+                Log.d(TAG, "getNextStore: next store = " + s);
                 return s;
             }
         }
