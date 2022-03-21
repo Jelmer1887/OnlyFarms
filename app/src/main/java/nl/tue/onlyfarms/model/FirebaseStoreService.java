@@ -16,7 +16,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Class used to retrieve, monitor, update, remove and add stores to the store-database
@@ -25,40 +27,53 @@ import java.util.List;
  * To use call {@code getInstance()} to retrieve the instance of the class
  * */
 public class FirebaseStoreService {
-    public static final String TAG = "FireBaseStoreService";
-    final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
-    final static DatabaseReference storeRef = database.getReference("stores");
+    private static final String TAG = "FireBaseStoreService";
+    private static MutableLiveData<Set<Store>> stores;
+    private static Set<Store> storeList;
+    private static String currentUid;
+
+    private final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
+    private final static DatabaseReference storeRef = database.getReference("stores");
+
+
 
     /**
      * Returns a MutableLiveData object with the stores
+     * May trigger observer in several ways:
+     * - object get re-created upon calling this method.
+     * - become null: something went wrong (note, value may still have been null before)
+     * - contain list of nulls or empty list: no stores found or no result is received yet.
+     * - contain values: finished query
      * */
-    public static List<MutableLiveData<Store>> getStores(String uid) {
-        List<MutableLiveData<Store>> result = new ArrayList<>();
-        Log.i(TAG, "fetching store data associated with user: " + uid);
-        storeRef.orderByChild("userUid").equalTo(uid).addChildEventListener(new ChildEventListener() {
+    public static  MutableLiveData<Set<Store>> getStores(String uid) {
+        if (stores == null) {
+            Log.d(TAG, "Store list is null, creating new store list...");
+            stores = new MutableLiveData<>();
+        }
+        Log.d(TAG, "store list already present... matching uid's...");
+        if (currentUid == null) {
+            currentUid = uid;
+        } else if (currentUid.equals(uid)) {
+            Log.d(TAG, "same user requested... returning same object...");
+            return stores;
+        }
+
+        // reached => new user logged in && stores != null
+
+        storeList = new HashSet<>();  // clear list && make sure its not null
+
+        /* Request data from database */
+        storeRef.orderByChild("userUid").equalTo(currentUid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Log.d(TAG, "onChildAdded: " + snapshot.getValue());
-                Store receivedData = snapshot.getValue(Store.class);
-                if (receivedData == null) {
-                    Log.i(TAG, "  onChildAdded: received null data");
+                Store foundStore = snapshot.getValue(Store.class);
+                if (foundStore == null) {
+                    Log.e(TAG, "received null value for store from database!");
+                    throw new IllegalStateException("received null from database");
                 }
-
-                /* post found data to the list of stores, if the data is new */
-                for (MutableLiveData<Store> data : result) {
-                    if (data.getValue() == null || receivedData == null) { continue; }
-                    if (data.getValue().getUid().equals(receivedData.getUid())) {
-                        // the data already exists in the list. This could be because:
-                        // - system accidentally posted the same store twice to the database.
-                        // - the store re-entered the list of matching stores after having left it.
-                        Log.i(TAG, "onChildAdded: data received already found in list");
-                        return;
-                    }
-                }
-                MutableLiveData<Store> storeData = new MutableLiveData<>();
-                storeData.postValue(receivedData);
-                result.add(storeData);
-                Log.i(TAG, "onChildAdded: received data posted to store-list");
+                Log.d(TAG, "store received from database: " + foundStore.getName());
+                storeList.add(foundStore);
+                onStoreFound();
             }
 
             @Override
@@ -73,6 +88,7 @@ public class FirebaseStoreService {
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
             }
 
             @Override
@@ -81,8 +97,20 @@ public class FirebaseStoreService {
             }
         });
 
-        return result;
+
+        return stores;
     }
+
+    // internal method responsible for update the MutableLiveData with new values
+    private static void onStoreFound() {
+        stores.postValue(storeList);
+    }
+
+    // internal method responsible for changing the list of stores when some value of it changes.
+    private static void onStoreChanged() {
+        return;
+    }
+
 
     /**
      * Yeets a store object to the database, overwriting the existing matching element if any.

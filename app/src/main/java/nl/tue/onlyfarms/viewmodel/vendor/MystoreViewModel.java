@@ -43,7 +43,7 @@ public class MystoreViewModel extends ViewModel {
         // retrieve user-data from user-database
         subjectUser = FirebaseUserService.getUser(uid);
         Log.i("viewModel","got user:" + subjectUser.getValue());
-        userStores = FirebaseStoreService.getStores(uid);
+        //userStores = FirebaseStoreService.getStores(uid);
         //TODO: check result of getStore
     }
 
