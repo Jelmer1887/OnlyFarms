@@ -19,9 +19,6 @@
             android:name=".view.RegisterView"
             android:exported="false" />
         <activity
-            android:name=".view.HomeVendor"
-            android:exported="true"/>
-        <activity
             android:name=".view.ReservationMakingClient"
             android:exported="true"/>
         <activity
