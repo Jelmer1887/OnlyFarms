@@ -70,7 +70,7 @@ public class Home extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new StoreCardAdapter(42, getViewLifecycleOwner(), model.getStores()));
+        recyclerView.setAdapter(new StoreCardAdapter(getViewLifecycleOwner(), model.getStores()));
     }
 
     private void showStores(Set<Store> stores) {

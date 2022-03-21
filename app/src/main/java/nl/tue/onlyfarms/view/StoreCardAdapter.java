@@ -1,5 +1,6 @@
 package nl.tue.onlyfarms.view;
 
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,16 +8,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
@@ -26,13 +25,11 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
     private final static String TAG = "StoreCardAdapter";
-    private Random random;
     private int nrStores = 0;
     private Set<Store> currentlyShownStores = new HashSet<>();
     private Map<Store, HomeRecyclerViewHolder> cards = new HashMap<>();
 
-    public StoreCardAdapter(int seed, LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
-        this.random = new Random(seed);
+    public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
 
         // determine nr of stores and add stores to 'cards' map for creation / update.
         storeList.observe(lifecycleOwner, stores -> {
@@ -71,7 +68,6 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         Log.i(TAG, "onBindViewHolder entered => binding data to viewHolders.");
         Store store = getNextStore();
         cards.put(store, holder);
-        holder.getView().setText(String.valueOf(random.nextInt()));
         Log.d(TAG, "onBindViewHolder: matching store " + store.getUid() + " and " + holder.getAdapterPosition());
         setFields(store, holder);
     }
@@ -104,5 +100,9 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         Log.d(TAG, "setFields: updating cards");
         holder.getNameField().setText(store.getName());
         holder.getAddressField().setText(store.getPhysicalAddress());
+        holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
+        holder.getRatingField().setText("Ratings coming soon (tm)");
+        holder.getOpeningsHoursField().setText("OpeningHours coming soon (tm)");
+        holder.getTagsField().setText("Tags coming soon (tm)");
     }
 }
