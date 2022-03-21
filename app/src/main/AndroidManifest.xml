@@ -16,9 +16,6 @@
             android:name=".view.Base"
             android:exported="true" />
         <activity
-            android:name=".ui.main.vendor.MyStore"
-            android:exported="true" />
-        <activity
             android:name=".view.RegisterView"
             android:exported="false" />
         <activity

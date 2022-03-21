@@ -1,15 +1,11 @@
 package nl.tue.onlyfarms;
 
-import android.content.Context;
-import android.content.Intent;
-
 import androidx.fragment.app.Fragment;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import nl.tue.onlyfarms.ui.main.vendor.MyStore;
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.client.Home;
 
