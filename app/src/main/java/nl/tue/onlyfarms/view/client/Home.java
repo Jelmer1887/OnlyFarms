@@ -56,19 +56,7 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-
-        model.getStores().observe(getViewLifecycleOwner(), new Observer<Set<Store>>() {
-            @Override
-            public void onChanged(Set<Store> stores) {
-                if (stores == null) {
-                    throw new IllegalStateException("stores is changed to null after initialization");
-                }
-                if (stores.isEmpty()) {
-                    Toast.makeText(getContext(), "store list changed to empty!", Toast.LENGTH_LONG).show();
-                }
-                Toast.makeText(getContext(), "stores: "+stores, Toast.LENGTH_LONG).show();
-            }
-        });
+        model.getStores().observe(getViewLifecycleOwner(), this::showStores);
 
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
@@ -83,5 +71,15 @@ public class Home extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new StoreCardAdapter(1234));
+    }
+
+    private void showStores(Set<Store> stores) {
+        if (stores == null) {
+            throw new IllegalStateException("stores is changed to null after initialization");
+        }
+        if (stores.isEmpty()) {
+            Toast.makeText(getContext(), "store list changed to empty!", Toast.LENGTH_LONG).show();
+        }
+        Toast.makeText(getContext(), "found "+stores.size() + " stores", Toast.LENGTH_LONG).show();
     }
 }

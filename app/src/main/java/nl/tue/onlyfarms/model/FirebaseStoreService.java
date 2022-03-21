@@ -50,17 +50,22 @@ public class FirebaseStoreService {
             Log.d(TAG, "Store list is null, creating new store list...");
             stores = new MutableLiveData<>();
         }
-        Log.d(TAG, "store list already present... matching uid's...");
+        Log.d(TAG, "store list present... matching uid's...");
         if (currentUid == null) {
+            Log.d(TAG, "no previous user found...");
             currentUid = uid;
         } else if (currentUid.equals(uid)) {
             Log.d(TAG, "same user requested... returning same object...");
             return stores;
+        } else {
+            Log.d(TAG, "different user requested...");
         }
 
         // reached => new user logged in && stores != null
 
         storeList = new HashSet<>();  // clear list && make sure its not null
+        stores.postValue(storeList);  // pushing cleared data to prevent data old data from
+                                        // showing up while waiting for new data.
 
         /* Request data from database */
         storeRef.orderByChild("userUid").equalTo(currentUid).addChildEventListener(new ChildEventListener() {
