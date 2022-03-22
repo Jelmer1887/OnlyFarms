@@ -70,21 +70,6 @@
                 app:layout_constraintVertical_bias="0.24" />
 
             <TextView
-                android:id="@+id/randomText"
-                android:layout_width="156dp"
-                android:layout_height="16dp"
-                android:background="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                tools:layout_conversion_absoluteHeight="19dp"
-                tools:layout_conversion_absoluteWidth="142dp"
-                tools:text="This is some temp text" />
-
-            <TextView
                 android:id="@+id/storeCard_nameAndDistanceField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
