@@ -13,8 +13,10 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,27 +28,17 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
     private final static String TAG = "StoreCardAdapter";
     private int nrStores = 0;
-    private Set<Store> currentlyShownStores = new HashSet<>();
-    private Map<Store, HomeRecyclerViewHolder> cards = new HashMap<>();
+    private List<Store> storeData = new ArrayList<>();
 
     public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
 
         // determine nr of stores and add stores to 'cards' map for creation / update.
         storeList.observe(lifecycleOwner, stores -> {
             nrStores = 0;
+            storeData.clear();
             for (Store store : stores) {
                 nrStores += 1;
-
-                // check if there is already a viewHolder associated with the store,
-                // if so, then it should be refreshed to reflect any possible changes.
-                if (cards.containsKey(store)) {
-                    HomeRecyclerViewHolder holder = cards.get(store);
-                    if (holder != null) {
-                        setFields(store, holder);
-                    }
-                    continue;
-                }
-                cards.put(store, null); // associated view will be added once they are created by 'onCreateViewHolder'
+                storeData.add(store);
             }
         });
     }
@@ -66,10 +58,7 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     @Override
     public void onBindViewHolder(@NonNull HomeRecyclerViewHolder holder, int position) {
         Log.i(TAG, "onBindViewHolder entered => binding data to viewHolders.");
-        Store store = getNextStore();
-        cards.put(store, holder);
-        Log.d(TAG, "onBindViewHolder: matching store " + store.getUid() + " and " + holder.getAdapterPosition());
-        setFields(store, holder);
+        setFields(storeData.get(position), holder);
     }
 
     @Override
@@ -79,21 +68,6 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         }
         Log.d(TAG, "itemCount will be: " + nrStores);
         return nrStores;
-    }
-
-    private Store getNextStore() {
-        String msg = "getNextStore: cards:\n";
-        for (Store s : cards.keySet()) {
-            msg += "[" + s + " <=> " + cards.get(s) + "]\n";
-        }
-        Log.d(TAG, msg);
-        for (Store s : cards.keySet()) {
-            if (cards.get(s) == null) {
-                Log.d(TAG, "getNextStore: next store = " + s);
-                return s;
-            }
-        }
-        throw new IllegalStateException("no empty Stores left in 'cards' lists to associate!");
     }
 
     private void setFields(Store store, HomeRecyclerViewHolder holder) {

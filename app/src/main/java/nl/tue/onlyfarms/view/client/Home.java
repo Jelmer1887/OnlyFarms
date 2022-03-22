@@ -56,6 +56,7 @@ public class Home extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        model.requestAllStores();
         model.getStores().observe(getViewLifecycleOwner(), this::showStores);
 
         recyclerView = getView().findViewById(R.id.near_recyclerView);
@@ -70,7 +71,12 @@ public class Home extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new StoreCardAdapter(getViewLifecycleOwner(), model.getStores()));
+        StoreCardAdapter adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+        recyclerView.setAdapter(adapter);
+
+        model.getStores().observe(getViewLifecycleOwner(), stores -> {
+            adapter.notifyDataSetChanged();
+        });
     }
 
     private void showStores(Set<Store> stores) {

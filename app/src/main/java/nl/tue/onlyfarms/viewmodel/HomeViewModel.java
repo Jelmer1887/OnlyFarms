@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import nl.tue.onlyfarms.model.FirebaseStoreService;
@@ -23,7 +25,6 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Set<Store>> stores;
     private MutableLiveData<User> user;
 
-
     public HomeViewModel() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -35,7 +36,7 @@ public class HomeViewModel extends ViewModel {
 
         Log.d(TAG, "sending requests to retrieve data...");
         requestUser(uid);
-        requestStores(uid);
+        requestUserStores(uid);
     }
 
     /**
@@ -64,9 +65,13 @@ public class HomeViewModel extends ViewModel {
      * note: there is no guarantee about when the database returns the requested data... as such
      *            it cannot be used in this view model.
      * */
-    public void requestStores(String userUid){
+    public void requestUserStores(String userUid){
         Log.d(TAG, "sending request to get stores associated with this user to StoreService...");
         this.stores = FirebaseStoreService.getStores(userUid);
+    }
+
+    public void requestAllStores() {
+        Log.d(TAG, "sending request to get all stores to StoreService");
     }
 
     /**
