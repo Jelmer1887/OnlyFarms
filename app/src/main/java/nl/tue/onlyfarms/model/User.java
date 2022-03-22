@@ -14,10 +14,8 @@ public class User {
     private String firstName;
     private String lastName;
     private String emailAddress;
-    // to be set to 'vendor' or 'client'
     private Status status;
 
-    // for now I just make empty constructors
     public User() {}
 
     public User(String uid, String userName, String firstName, String lastName, String emailAddress, Status status) {
