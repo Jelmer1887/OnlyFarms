@@ -24,6 +24,7 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<Set<Store>> stores;
     private MutableLiveData<User> user;
+    private String uid;
 
     public HomeViewModel() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -33,10 +34,6 @@ public class HomeViewModel extends ViewModel {
         }
         // reached => user != null
         String uid = user.getUid();
-
-        Log.d(TAG, "sending requests to retrieve data...");
-        requestUser(uid);
-        requestUserStores(uid);
     }
 
     /**
@@ -72,6 +69,7 @@ public class HomeViewModel extends ViewModel {
 
     public void requestAllStores() {
         Log.d(TAG, "sending request to get all stores to StoreService");
+        this.stores = FirebaseStoreService.getStores();
     }
 
     /**
