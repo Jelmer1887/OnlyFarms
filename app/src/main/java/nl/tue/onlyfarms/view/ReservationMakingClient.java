@@ -26,9 +26,13 @@ public class ReservationMakingClient extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_makingareservation_client);
+        setContentView(R.layout.activity_reservation_confirm);
 
-        recyclerView = findViewById(R.id.recyclerView);
+        // Enabled action bar back to Base activity
+        setSupportActionBar(findViewById(R.id.topBar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        recyclerView = findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);

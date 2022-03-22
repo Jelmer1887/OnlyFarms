@@ -54,4 +54,7 @@
     <string name="productName">Product name</string>
     <string name="addProduct">Add product</string>
 
+    <string name="reserve">Reserve</string>
+    <string name="cancel">Cancel</string>
+
 </resources>

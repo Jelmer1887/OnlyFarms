@@ -1,0 +1,20 @@
+package nl.tue.onlyfarms.view;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import nl.tue.onlyfarms.R;
+
+public class StoreGeneral extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_store_general);
+
+        // Enabled action bar back to Base activity
+        setSupportActionBar(findViewById(R.id.topBar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+}
