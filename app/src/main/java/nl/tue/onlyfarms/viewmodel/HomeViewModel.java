@@ -26,6 +26,11 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<User> user;
     private String uid;
 
+    /**
+     * Initializes the viewModel:
+     * - Retrieves the uid of the logged-in user.
+     * - requests the user-data of the logged-in user from the database.
+     * */
     public HomeViewModel() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -34,6 +39,9 @@ public class HomeViewModel extends ViewModel {
         }
         // reached => user != null
         String uid = user.getUid();
+
+        requestUser(uid);   // pre-emptively request data of the user
+                            // note: required to be called before loading the myProfile fragment
     }
 
     /**
