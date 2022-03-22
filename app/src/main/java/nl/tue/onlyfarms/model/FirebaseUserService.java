@@ -25,6 +25,11 @@ public class FirebaseUserService {
         
     }
 
+    public static void deleteUser(User user) {
+        FirebaseDatabase database = OurFirebaseDatabase.getInstance();
+        database.getReference().child("users").child(user.getUid()).removeValue();
+    }
+
     // function that will hopefully find a user by name (this should work, but I don't have time to test it...
     /**
      * Retrieves a user object with the specified UID from the database
@@ -37,7 +42,7 @@ public class FirebaseUserService {
      * (Consider using {@code MutableLiveData<User>} instead as a return type, and using the onChildChanged hook to update it )
      * */
     public static MutableLiveData<User> getUser(String uid) {
-        // TODO: return actual user with matching uid from database
+
         final FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         final DatabaseReference userRef = database.getReference("users");
         MutableLiveData<User> result = new MutableLiveData<>();
