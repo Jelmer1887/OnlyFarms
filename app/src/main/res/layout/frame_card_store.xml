@@ -10,64 +10,47 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="2dp"
-        app:contentPadding="20dp"
+        app:cardCornerRadius="5dp"
+        app:contentPadding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="98dp">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/storeCard_TagsField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Tags"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.962" />
+                app:layout_constraintTop_toBottomOf="@+id/storeCard_RatingField" />
 
             <TextView
                 android:id="@+id/storeCard_RatingField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Rating"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.721" />
+                app:layout_constraintTop_toBottomOf="@+id/storeCard_OpeningHoursField" />
 
             <TextView
                 android:id="@+id/storeCard_OpeningHoursField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Opening_hours"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.481" />
+                app:layout_constraintTop_toBottomOf="@+id/storeCard_addressField" />
 
             <TextView
                 android:id="@+id/storeCard_addressField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/address"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.24" />
+                app:layout_constraintTop_toBottomOf="@+id/storeCard_nameAndDistanceField" />
 
             <TextView
                 android:id="@+id/storeCard_nameAndDistanceField"
@@ -75,24 +58,16 @@
                 android:layout_height="wrap_content"
                 android:text="@string/store_name"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/storeCard_imageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:contentDescription="Store_photo"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
                 tools:ignore="ImageContrastCheck"
                 tools:srcCompat="@tools:sample/avatars" />
         </androidx.constraintlayout.widget.ConstraintLayout>
