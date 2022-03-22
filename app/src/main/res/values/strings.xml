@@ -34,7 +34,7 @@
     <string name="Tags">Tags: </string>
 
     <string name="product_name">Product name</string>
-    <string name="Price">Price</string>
+    <string name="Price">Price:</string>
     <string name="Quantity">Quantity:</string>
 
     <string name="open_closed">open/closed</string>

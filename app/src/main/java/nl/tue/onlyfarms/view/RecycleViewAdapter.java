@@ -46,7 +46,7 @@ public class RecycleViewAdapter extends RecyclerView.Adapter<RecycleViewAdapter.
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            textview8 = itemView.findViewById(R.id.textView8);
+            textview8 = itemView.findViewById(R.id.store_name);
         }
     }
 }
