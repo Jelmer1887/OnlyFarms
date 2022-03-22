@@ -35,7 +35,66 @@ public class FirebaseStoreService {
     private final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
     private final static DatabaseReference storeRef = database.getReference("stores");
 
+    private static ChildEventListener listener = new ChildEventListener() {
+        @Override
+        public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            Store foundStore = snapshot.getValue(Store.class);
+            if (foundStore == null) {
+                Log.e(TAG, "received null value for store from database!");
+                throw new IllegalStateException("received null from database");
+            }
+            Log.d(TAG, "store received from database: " + foundStore.getName());
+            storeList.add(foundStore);
+            onStoreFound();
+        }
 
+        @Override
+        public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+            Store changedStore = snapshot.getValue(Store.class);
+            if (changedStore == null) {
+                Log.e(TAG, "received null value for store from database!");
+                throw new IllegalStateException("received null from database");
+            }
+            Log.d(TAG, "store changed from database: " + changedStore.getName());
+            if (storeList.removeIf(store -> store.getUid().equals(changedStore.getUid()))) {
+                Log.d(TAG, "changed store found in storeList... updating...");
+                storeList.add(changedStore);
+                stores.postValue(storeList);
+            }
+        }
+
+        @Override
+        public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+        }
+
+        @Override
+        public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+
+        }
+    };
+
+    public static MutableLiveData<Set<Store>> getStores() {
+        if (stores == null) {
+            Log.d(TAG, "Store list is null, creating new store list...");
+            stores = new MutableLiveData<>();
+        }
+        Log.d(TAG, "store list present... getting stores");
+
+        storeList = new HashSet<>();  // clear list && make sure its not null
+        stores.postValue(storeList);  // pushing cleared data to prevent data old data from
+                                        // showing up while waiting for new data.
+
+        /* Request data from database */
+        storeRef.orderByChild("uid").addChildEventListener(listener);
+
+        return stores;
+    }
 
     /**
      * Returns a MutableLiveData object with the stores
@@ -68,39 +127,7 @@ public class FirebaseStoreService {
                                         // showing up while waiting for new data.
 
         /* Request data from database */
-        storeRef.orderByChild("userUid").equalTo(currentUid).addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Store foundStore = snapshot.getValue(Store.class);
-                if (foundStore == null) {
-                    Log.e(TAG, "received null value for store from database!");
-                    throw new IllegalStateException("received null from database");
-                }
-                Log.d(TAG, "store received from database: " + foundStore.getName());
-                storeList.add(foundStore);
-                onStoreFound();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        storeRef.orderByChild("userUid").equalTo(currentUid).addChildEventListener(listener);
 
 
         return stores;
