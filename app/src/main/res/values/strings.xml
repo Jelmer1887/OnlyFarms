@@ -29,7 +29,7 @@
 
     <string name="store_name">Store name (distance)</string>
     <string name="address">Address:</string>
-    <string name="Opening_hours">Opening hours:</string>
+    <string name="Opening_hours">Opening hours</string>
     <string name="Rating">Rating:</string>
     <string name="Tags">Tags: </string>
 
@@ -56,5 +56,10 @@
 
     <string name="reserve">Reserve</string>
     <string name="cancel">Cancel</string>
+
+    <string name="description_placeholder">This is where a description should go...</string>
+    <string name="description">Description</string>
+    <string name="open">Open:</string>
+    <string name="opening_hours_placeholder">This is where the detailed/fromatted opening hours should go...</string>
 
 </resources>
