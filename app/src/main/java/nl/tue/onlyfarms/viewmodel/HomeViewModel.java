@@ -2,19 +2,16 @@ package nl.tue.onlyfarms.viewmodel;
 
 import android.util.Log;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import nl.tue.onlyfarms.model.FirebaseStoreService;
-import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.model.User;
 
@@ -24,7 +21,9 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<Set<Store>> stores;
     private MutableLiveData<User> user;
-    private String uid;
+    public String uid;
+    private FireBaseService<User> userFireBaseService;
+    private FireBaseService<Store> storeFireBaseService;
 
     /**
      * Initializes the viewModel:
@@ -32,16 +31,22 @@ public class HomeViewModel extends ViewModel {
      * - requests the user-data of the logged-in user from the database.
      * */
     public HomeViewModel() {
+        Log.d(TAG, "retrieving user id from firebase-auth...");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        Log.d(TAG, "creating services...");
+        userFireBaseService = new FireBaseService<>(User.class, "users");
+        storeFireBaseService = new FireBaseService<>(Store.class, "stores");
         if (user == null) {
             Log.e(TAG, "attempted to get user, while no user is logged in");
             throw new IllegalStateException("No user logged in!");
         }
         // reached => user != null
         String uid = user.getUid();
+        Log.d(TAG, "user id: " + uid);
+        Log.d(TAG, "sending preliminary requests for user updates");
 
-        requestUser(uid);   // pre-emptively request data of the user
-                            // note: required to be called before loading the myProfile fragment
+        this.stores = storeFireBaseService.getResults();
+        this.user = userFireBaseService.getFirstResult();
     }
 
     /**
@@ -52,7 +57,7 @@ public class HomeViewModel extends ViewModel {
      * */
     public void requestUser(String uid){
         Log.d(TAG, "sending request to get data associated with this user to UserService...");
-        this.user = FirebaseUserService.getUser(uid);
+        userFireBaseService.getFirstMatchingField("uid", uid);
     }
 
     /**
@@ -72,12 +77,12 @@ public class HomeViewModel extends ViewModel {
      * */
     public void requestUserStores(String userUid){
         Log.d(TAG, "sending request to get stores associated with this user to StoreService...");
-        this.stores = FirebaseStoreService.getStores(userUid);
+        storeFireBaseService.getAllMatchingField("userUid", userUid);
     }
 
     public void requestAllStores() {
         Log.d(TAG, "sending request to get all stores to StoreService");
-        this.stores = FirebaseStoreService.getStores();
+        storeFireBaseService.getAllAtReference();
     }
 
     /**

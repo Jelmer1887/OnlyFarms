@@ -16,8 +16,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.model.FirebaseStoreService;
-import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.Store;
 
 public class addStore extends Fragment {
@@ -46,7 +45,7 @@ public class addStore extends Fragment {
             String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             Store newStore = new Store(uid, userUid, placeHolder_name, placeHolder_desc, placeHolder_location);
             // TODO: implement viewModel!
-            FirebaseStoreService.updateStore(newStore);
+            new FireBaseService<>(Store.class, "stores").updateToDatabase(newStore, uid);
         });
     }
 }

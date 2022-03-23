@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
@@ -89,7 +89,7 @@ public class Account extends Fragment {
                 emailField.getText().toString().trim(),
                 model.getUser().getValue().getStatus()
             );
-            FirebaseUserService.updateUser(newUser);
+            new FireBaseService<>(User.class, "users").updateToDatabase(newUser, newUser.getUid());
         });
     }
 }

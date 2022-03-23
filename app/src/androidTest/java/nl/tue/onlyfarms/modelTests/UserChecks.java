@@ -19,7 +19,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import nl.tue.onlyfarms.model.FireBaseService;
-import nl.tue.onlyfarms.model.FirebaseUserService;
 import nl.tue.onlyfarms.model.User;
 
 /**
@@ -51,9 +50,9 @@ public class UserChecks {
         user.setEmailAddress("tester@testing.com");
         user.setStatus(User.Status.VENDOR);
         userService.updateToDatabase(user, user.getUid());
-        MutableLiveData<User> result;
-        result = userService.getFirstMatchingField(new TestLifecycleOwner(), "uid", user.getUid());
-        result.observe(new TestLifecycleOwner(), new Observer<User>() {
+        MutableLiveData<User> result = userService.getFirstResult();
+        userService.getFirstMatchingField("uid", user.getUid());
+        result.observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 if (result.getValue() == null) {
@@ -108,10 +107,10 @@ public class UserChecks {
         user.setEmailAddress("tester@testing.com");
         user.setStatus(User.Status.VENDOR);
         userService.updateToDatabase(user, user.getUid());
-        MutableLiveData<User> result;
-        result = userService.getFirstMatchingField(new TestLifecycleOwner(), "uid", user.getUid());
+        MutableLiveData<User> result = userService.getFirstResult();
+        userService.getFirstMatchingField("uid", user.getUid());
         // apparently the data isn't updated if it isn't observed
-        result.observe(new TestLifecycleOwner(), new Observer<User>() {
+        result.observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {}
         });

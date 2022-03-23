@@ -1,5 +1,6 @@
 package nl.tue.onlyfarms.view.client;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,12 +11,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Set;
 
@@ -49,13 +52,14 @@ public class Home extends Fragment {
         return inflater.inflate(R.layout.fragment_home_client, container, false);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.d("Home", "creating view model...");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
         model.requestAllStores();
-        model.getStores().observe(getViewLifecycleOwner(), this::showStores);
 
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
@@ -87,15 +91,5 @@ public class Home extends Fragment {
         model.getStores().observe(getViewLifecycleOwner(), stores -> {
             adapter.notifyDataSetChanged();
         });
-    }
-
-    private void showStores(Set<Store> stores) {
-        if (stores == null) {
-            throw new IllegalStateException("stores is changed to null after initialization");
-        }
-        if (stores.isEmpty()) {
-            Toast.makeText(getContext(), "store list changed to empty!", Toast.LENGTH_LONG).show();
-        }
-        Toast.makeText(getContext(), "found "+stores.size() + " stores", Toast.LENGTH_LONG).show();
     }
 }
