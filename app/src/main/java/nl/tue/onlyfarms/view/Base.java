@@ -68,7 +68,7 @@ public class Base extends AppCompatActivity {
         }
     }
 
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.replaceElement, fragment)
                 .commitNow();
