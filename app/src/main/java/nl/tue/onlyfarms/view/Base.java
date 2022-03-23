@@ -35,7 +35,13 @@ public class Base extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        model.getUser().observe(this, u -> {isClient = u.getStatus() == User.Status.CLIENT;});
+        model.getUser().observe(this, u -> {
+            isClient = u.getStatus() == User.Status.CLIENT;
+
+            if (savedInstanceState == null) {
+                replaceFragment(isClient ? new Home() : new HomeVendor());
+            }
+        });
         super.onCreate(savedInstanceState);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_base);
@@ -63,10 +69,6 @@ public class Base extends AppCompatActivity {
                 return true;
             }
         });
-
-        if (savedInstanceState == null) {
-            replaceFragment(isClient ? new Home() : new HomeVendor());
-        }
     }
 
     public void replaceFragment(Fragment fragment) {
