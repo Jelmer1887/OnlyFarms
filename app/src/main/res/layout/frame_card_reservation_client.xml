@@ -25,6 +25,7 @@
                 android:id="@+id/quantity_reserved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/quantity_reserved"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/open" />
@@ -33,6 +34,7 @@
                 android:id="@+id/open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="@string/open_closed"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/address" />
@@ -41,9 +43,14 @@
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="@string/address"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store_name" />
+                app:layout_constraintTop_toBottomOf="@+id/tvStoreName"
+                app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/randomText"
@@ -55,13 +62,14 @@
                 tools:text="This is some temp text" />
 
             <TextView
-                android:id="@+id/store_name"
+                android:id="@+id/tvStoreName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:text="@string/store_name"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/imageView"
