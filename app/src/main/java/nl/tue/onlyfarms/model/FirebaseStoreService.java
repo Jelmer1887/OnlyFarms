@@ -149,7 +149,7 @@ public class FirebaseStoreService {
      * @param store store object ot push to the databse
      * Returns true if succesfull, false otherwise
      */
-    public static void updateStore(Store store) {
+    public static Task<Void> updateStore(Store store) {
         Task<Void> t = database.getReference().child("stores").child(store.getUid()).setValue(store);
 
         t.addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -167,5 +167,29 @@ public class FirebaseStoreService {
                 Log.e(TAG,"failed to push store to database: ", e);
             }
         });
+
+        return t;
+    }
+
+    public Task<Void> deleteStore(String uid) {
+        Task<Void> t = database.getReference().child("stores").child(uid).removeValue();
+
+        t.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.i(TAG, "store pushed to database");
+                }
+            }
+        });
+
+        t.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG,"failed to push store to database: ", e);
+            }
+        });
+
+        return t;
     }
 }

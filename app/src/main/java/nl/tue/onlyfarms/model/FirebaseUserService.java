@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -19,15 +20,49 @@ import java.util.Map;
 public class FirebaseUserService {
     private static final String TAG = "FirebaseUserService";
 
-    public static void updateUser(User user) {
+    public static Task updateUser(User user) {
         FirebaseDatabase database = OurFirebaseDatabase.getInstance();
-        database.getReference().child("users").child(user.getUid()).setValue(user);
-        
+        Task<Void> t = database.getReference().child("users").child(user.getUid()).setValue(user);
+
+        t.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.i(TAG, "user pushed to database");
+                }
+            }
+        });
+
+        t.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG,"failed to push user to database: ", e);
+            }
+        });
+
+        return t;
     }
 
-    public static void deleteUser(User user) {
+    public static Task<Void> deleteUser(User user) {
         FirebaseDatabase database = OurFirebaseDatabase.getInstance();
-        database.getReference().child("users").child(user.getUid()).removeValue();
+        Task<Void> t = database.getReference().child("users").child(user.getUid()).removeValue();
+        t.addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.i(TAG, "deleted user");
+                }
+            }
+        });
+
+        t.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG,"failed to delete user: ", e);
+            }
+        });
+
+        return t;
     }
 
     // function that will hopefully find a user by name (this should work, but I don't have time to test it...
