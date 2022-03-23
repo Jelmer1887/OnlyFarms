@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,11 +31,12 @@ public class Base extends AppCompatActivity {
     private NavigationView navigationView;
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
-    private HomeViewModel model = new HomeViewModel();
+    private HomeViewModel model;
     private boolean isClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        model = new ViewModelProvider(this).get(HomeViewModel.class);
         model.getUser().observe(this, u -> {
             isClient = u.getStatus() == User.Status.CLIENT;
 
