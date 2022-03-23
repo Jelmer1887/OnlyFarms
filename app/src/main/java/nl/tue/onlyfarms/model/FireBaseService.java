@@ -41,6 +41,8 @@ public class FireBaseService<T> {
             Iterator<T> iterator = ts.iterator();
             if (iterator.hasNext()) {
                 firstResult.postValue(iterator.next());
+            } else {
+                firstResult.postValue(null);
             }
         }
     };
@@ -78,7 +80,14 @@ public class FireBaseService<T> {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
+                T removedResult = snapshot.getValue(aClass);
+                if (removedResult == null) {
+                    throw new IllegalStateException("removed result from database is null!");
+                }
+                if (resultList.removeIf(store -> store.equals(removedResult))) {
+                    Log.d(TAG, "removed result found in resultList... updating...");
+                    onResultFound();
+                }
             }
 
             @Override
