@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -25,13 +26,24 @@ public class FireBaseService<T> {
     private T t;
     private static final String TAG = "FireBaseService";
     private final MutableLiveData<Set<T>> results;
+    private final MutableLiveData<T> firstResult = new MutableLiveData<>();
     private final Set<T> resultList;
 
     private final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
     private static DatabaseReference reference;
-    private String referenceString;
+    private final String referenceString;
 
     private final ChildEventListener listener;
+
+    private final Observer<Set<T>> getFirst = new androidx.lifecycle.Observer<Set<T>>() {
+        @Override
+        public void onChanged(Set<T> ts) {
+            Iterator<T> iterator = ts.iterator();
+            if (iterator.hasNext()) {
+                firstResult.postValue(iterator.next());
+            }
+        }
+    };
 
     public FireBaseService(Class<T> aClass, String ref){
         referenceString = ref.toLowerCase(Locale.ROOT);
@@ -126,44 +138,28 @@ public class FireBaseService<T> {
     public MutableLiveData<T> getFirstMatchingField(LifecycleOwner lifecycleOwner, String field, String value) {
         resultList.clear();
         results.postValue(resultList);
-        MutableLiveData<T> firstResult = new MutableLiveData<>();
-        getAllMatchingField(field, value).observe(lifecycleOwner, r -> {
-            Iterator<T> iterator = r.iterator();
-            firstResult.postValue(iterator.next());
-        });
+        getAllMatchingField(field, value).observe(lifecycleOwner, getFirst);
 
         return firstResult;
     }
     public MutableLiveData<T> getFirstMatchingField(LifecycleOwner lifecycleOwner, String field, int value) {
         resultList.clear();
         results.postValue(resultList);
-        MutableLiveData<T> firstResult = new MutableLiveData<>();
-        getAllMatchingField(field, value).observe(lifecycleOwner, r -> {
-            Iterator<T> iterator = r.iterator();
-            firstResult.postValue(iterator.next());
-        });
+        getAllMatchingField(field, value).observe(lifecycleOwner, getFirst);
 
         return firstResult;
     }
     public MutableLiveData<T> getFirstMatchingField(LifecycleOwner lifecycleOwner, String field, float value) {
         resultList.clear();
         results.postValue(resultList);
-        MutableLiveData<T> firstResult = new MutableLiveData<>();
-        getAllMatchingField(field, value).observe(lifecycleOwner, r -> {
-            Iterator<T> iterator = r.iterator();
-            firstResult.postValue(iterator.next());
-        });
+        getAllMatchingField(field, value).observe(lifecycleOwner, getFirst);
 
         return firstResult;
     }
     public MutableLiveData<T> getFirstMatchingField(LifecycleOwner lifecycleOwner, String field, boolean value) {
         resultList.clear();
         results.postValue(resultList);
-        MutableLiveData<T> firstResult = new MutableLiveData<>();
-        getAllMatchingField(field, value).observe(lifecycleOwner, r -> {
-            Iterator<T> iterator = r.iterator();
-            firstResult.postValue(iterator.next());
-        });
+        getAllMatchingField(field, value).observe(lifecycleOwner, getFirst);
 
         return firstResult;
     }
@@ -180,5 +176,5 @@ public class FireBaseService<T> {
                 .child(uid).removeValue();
     }
 
-    protected void onResultFound(){ results.postValue(resultList); }
+    private void onResultFound() { results.postValue(resultList); }
 }
