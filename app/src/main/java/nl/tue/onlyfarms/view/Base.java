@@ -20,6 +20,7 @@ import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityBaseBinding;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.view.client.Home;
+import nl.tue.onlyfarms.view.vendor.HomeVendor;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class Base extends AppCompatActivity {
@@ -64,7 +65,7 @@ public class Base extends AppCompatActivity {
         });
 
         if (savedInstanceState == null) {
-            replaceFragment(Home.newInstance());
+            replaceFragment(isClient ? new Home() : new HomeVendor());
         }
     }
 
