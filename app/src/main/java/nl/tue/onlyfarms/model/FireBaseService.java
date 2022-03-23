@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Set;
 
-public abstract class FireBaseService<T> {
+public class FireBaseService<T> {
     private T t;
     private static final String TAG = "FireBaseService";
     private final MutableLiveData<Set<T>> results;
