@@ -27,8 +27,9 @@
     <string name="old_password">Old password</string>
     <string name="new_password">New password</string>
 
-    <string name="store_name">Store name (distance)</string>
-    <string name="address">Address:</string>
+    <string name="store_name">Store name</string>
+    <string name="address">Address</string>
+    <string name="address2">Address:</string>
     <string name="Opening_hours">Opening hours</string>
     <string name="Rating">Rating:</string>
     <string name="Tags">Tags: </string>
@@ -61,5 +62,41 @@
     <string name="description">Description</string>
     <string name="open">Open:</string>
     <string name="opening_hours_placeholder">This is where the detailed/fromatted opening hours should go...</string>
+
+    <string name="myStore">My store</string>
+    
+    <string-array name="hours">
+        <item>6:00</item>
+        <item>6:30</item>
+        <item>7:00</item>
+        <item>7:30</item>
+        <item>8:00</item>
+        <item>8:30</item>
+        <item>9:00</item>
+        <item>9:30</item>
+        <item>10:00</item>
+        <item>10:30</item>
+        <item>11:00</item>
+        <item>11:30</item>
+        <item>12:00</item>
+        <item>12:30</item>
+        <item>13:00</item>
+        <item>13:30</item>
+        <item>14:00</item>
+        <item>14:30</item>
+        <item>15:00</item>
+        <item>15:30</item>
+        <item>16:00</item>
+        <item>16:30</item>
+        <item>17:00</item>
+        <item>17:30</item>
+        <item>18:00</item>
+        <item>18:30</item>
+        <item>19:00</item>
+        <item>19:30</item>
+        <item>20:00</item>
+        <item>20:30</item>
+        <item>21:00</item>
+    </string-array>
 
 </resources>
