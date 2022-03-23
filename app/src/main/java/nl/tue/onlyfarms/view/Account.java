@@ -60,8 +60,6 @@ public class Account extends Fragment {
         lastNameField = fragmentView.findViewById(R.id.myAccount_lastName);
         userNameField = fragmentView.findViewById(R.id.myAccount_userName);
         emailField = fragmentView.findViewById(R.id.myAccount_email);
-        oldPassWordField = fragmentView.findViewById(R.id.myAccount_oldPassword);
-        newPassWordField = fragmentView.findViewById(R.id.myAccount_newPassword);
         confirmButton = fragmentView.findViewById(R.id.myAccount_confirmButton);
 
         // Fill fields with current data (when the data is retrieved)

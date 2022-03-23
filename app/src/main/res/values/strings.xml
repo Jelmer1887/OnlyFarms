@@ -62,4 +62,10 @@
     <string name="open">Open:</string>
     <string name="opening_hours_placeholder">This is where the detailed/fromatted opening hours should go...</string>
 
+    <string name="settings">Settings</string>
+    <string name="gps">GPS</string>
+    <string name="gps_description">GPS is used to determine store distance</string>
+
+    <string name="your_stores">Your Stores</string>
+
 </resources>
