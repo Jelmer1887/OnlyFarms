@@ -20,7 +20,7 @@ import java.util.Map;
 public class FirebaseUserService {
     private static final String TAG = "FirebaseUserService";
 
-    public static Task updateUser(User user) {
+    public static Task<Void> updateUser(User user) {
         FirebaseDatabase database = OurFirebaseDatabase.getInstance();
         Task<Void> t = database.getReference().child("users").child(user.getUid()).setValue(user);
 
