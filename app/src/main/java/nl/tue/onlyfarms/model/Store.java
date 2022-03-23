@@ -1,4 +1,5 @@
 package nl.tue.onlyfarms.model;
+import org.osmdroid.util.GeoPoint;
 
 public class Store {
     private String uid;
@@ -6,7 +7,7 @@ public class Store {
     private String name;
     private String description;
     private String physicalAddress;
-    private double[] coordinates;
+    private GeoPoint coordinates;
     private String emailAddress;
     private String phoneNumber;
     // TODO: add images (could)
@@ -62,12 +63,12 @@ public class Store {
         this.physicalAddress = physicalAddress;
     }
 
-    public double[] getCoordinates() {
+    public GeoPoint getCoordinates() {
         return coordinates;
     }
 
     public void setCoordinates(double[] coordinates) {
-        this.coordinates = coordinates;
+        this.coordinates = new GeoPoint(coordinates[0], coordinates[1]);
     }
 
     public String getEmailAddress() {

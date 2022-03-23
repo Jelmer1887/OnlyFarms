@@ -1,8 +1,9 @@
-package nl.tue.onlyfarms.modleTests;
+package nl.tue.onlyfarms.modelTests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import android.content.Context;
 
@@ -10,17 +11,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.testing.TestLifecycleOwner;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.google.firebase.FirebaseApp;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import nl.tue.onlyfarms.model.FirebaseUserService;
-import nl.tue.onlyfarms.model.OurFirebaseDatabase;
 import nl.tue.onlyfarms.model.User;
 
 /**
@@ -34,12 +32,12 @@ public class UserChecks {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    @Test
+    @Test(timeout = 2000)
     public void create_and_query_user() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         FirebaseApp.initializeApp(appContext);
-//        OurFirebaseDatabase.USE_EMULATOR = true;
+        // OurFirebaseDatabase.USE_EMULATOR = true;
         // creates a user and adds it to the database
         User user = new User();
         user.setUid("test_uid");
@@ -55,10 +53,11 @@ public class UserChecks {
             @Override
             public void onChanged(User user) {
                 if (result.getValue() == null) {
-                    // this would always be false
+                    // this should always be false
                     assertNotEquals(null, result.getValue());
                 }
                 else {
+                    System.out.println("Observer ran");
                     // this is always true
                     assertNotEquals(null, result.getValue());
                     // check if a user is returned
@@ -74,10 +73,64 @@ public class UserChecks {
             }
         });
 
+        // gives the result time to update
+        User value = result.getValue();
+
+        while(value == null) {
+            value = result.getValue();
+        }
 
         // here so that we know the observer code ran
         assertNotNull(result.getValue());
 
         FirebaseUserService.deleteUser(user);
+    }
+
+    @Test(timeout = 2000)
+    public void delete_user() {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        FirebaseApp.initializeApp(appContext);
+        // OurFirebaseDatabase.USE_EMULATOR = true;
+        // creates a user and adds it to the database
+        User user = new User();
+        user.setUid("test_uid");
+        user.setUserName("T.Tester");
+        user.setFirstName("Testy");
+        user.setLastName("Tester");
+        user.setEmailAddress("tester@testing.com");
+        user.setStatus(User.Status.VENDOR);
+        FirebaseUserService.updateUser(user);
+        MutableLiveData<User> result;
+        result = FirebaseUserService.getUser("test_uid");
+        // apparently the data isn't updated if it isn't observed
+        result.observe(new TestLifecycleOwner(), new Observer<User>() {
+            @Override
+            public void onChanged(User user) {}
+        });
+
+
+        // gives the result time to update
+        User value = result.getValue();
+
+        while(value == null) {
+            value = result.getValue();
+        }
+
+        // Make sure the user is not null
+        assertNotNull(result.getValue());
+
+        // actually delete it
+        FirebaseUserService.deleteUser(user);
+
+        while (value != null) {
+            value = result.getValue();
+        }
+
+        // check if deleting the user makes it null
+        assertNull(result.getValue());
+
+        // note: the asserts here will always return true
+        // instead the testcase fail is signified by the timeout
     }
 }
