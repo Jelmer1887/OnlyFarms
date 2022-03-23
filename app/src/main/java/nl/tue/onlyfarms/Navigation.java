@@ -23,12 +23,11 @@ public class Navigation {
     public static Navigation getInstance() {
         if (instance == null) {
             instance = new Navigation();
-            instance.addNavElement(R.id.navto_home, (isClient) -> {return isClient ? new Home() : new HomeVendor();
-            });
-            instance.addNavElement(R.id.navto_mystore, (isClient) -> {return new addStore();});
-            instance.addNavElement(R.id.navto_myaccount, (isClient) -> {return new Account();});
-            instance.addNavElement(R.id.navto_reservations, (isClient) -> {return new Home();});
-            instance.addNavElement(R.id.navto_settings, (isClient) -> {return new Settings();});
+            instance.addNavElement(R.id.navto_home, isClient -> isClient ? new Home() : new HomeVendor());
+            instance.addNavElement(R.id.navto_mystore, isClient -> new addStore());
+            instance.addNavElement(R.id.navto_myaccount, isClient -> new Account());
+            instance.addNavElement(R.id.navto_reservations, isClient -> new Home());
+            instance.addNavElement(R.id.navto_settings, isClient -> new Settings());
         }
 
         return instance;
