@@ -29,7 +29,7 @@ public class FireBaseService<T> {
 
     private final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
     private static DatabaseReference reference;
-    private static String referenceString;
+    private String referenceString;
 
     private final ChildEventListener listener;
 
