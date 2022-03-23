@@ -27,6 +27,10 @@
                 android:id="@+id/navto_myaccount"
                 android:icon="@drawable/ic_baseline_bug_report_24"/>
             <item
+                android:title="@string/settings"
+                android:id="@+id/navto_settings"
+                android:icon="@drawable/ic_baseline_bug_report_24"/>
+            <item
                 android:title="Logout"
                 android:id="@+id/navto_logout"
                 android:icon="@drawable/ic_baseline_exit_to_app_24"/>
