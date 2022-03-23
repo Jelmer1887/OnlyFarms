@@ -6,24 +6,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.FragmentHomeBinding;
+import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -35,7 +32,7 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
  */
 public class Home extends Fragment {
 
-    private FragmentHomeBinding binding;
+    private FragmentHomeClientBinding binding;
     private SearchView searchView;
     private RecyclerView recyclerView;
     private HomeViewModel model;
@@ -47,9 +44,9 @@ public class Home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(getLayoutInflater());
+        binding = FragmentHomeClientBinding.inflate(getLayoutInflater());
 
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return inflater.inflate(R.layout.fragment_home_client, container, false);
     }
 
     @Override

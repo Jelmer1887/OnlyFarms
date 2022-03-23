@@ -66,4 +66,6 @@
     <string name="gps">GPS</string>
     <string name="gps_description">GPS is used to determine store distance</string>
 
+    <string name="your_stores">Your Stores</string>
+
 </resources>
