@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityBaseBinding;
+import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.view.client.Home;
+import nl.tue.onlyfarms.view.vendor.HomeVendor;
+import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class Base extends AppCompatActivity {
 
@@ -26,9 +30,18 @@ public class Base extends AppCompatActivity {
     private NavigationView navigationView;
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
+    private HomeViewModel model = new HomeViewModel();
+    private boolean isClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        model.getUser().observe(this, u -> {
+            isClient = u.getStatus() == User.Status.CLIENT;
+
+            if (savedInstanceState == null) {
+                replaceFragment(isClient ? new Home() : new HomeVendor());
+            }
+        });
         super.onCreate(savedInstanceState);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_base);
@@ -50,19 +63,15 @@ public class Base extends AppCompatActivity {
                 int id = item.getItemId();
                 if (id == R.id.navto_logout) { logout(); return true;}
 
-                replaceFragment(navLogic.toNavigator(id));
+                replaceFragment(navLogic.toNavigator(id, isClient));
                 drawerLayout.close();
 
                 return true;
             }
         });
-
-        if (savedInstanceState == null) {
-            replaceFragment(Home.newInstance());
-        }
     }
 
-    private void replaceFragment(Fragment fragment) {
+    public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.replaceElement, fragment)
                 .commitNow();
