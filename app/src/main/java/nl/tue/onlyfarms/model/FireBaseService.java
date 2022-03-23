@@ -29,11 +29,13 @@ public class FireBaseService<T> {
 
     private final static FirebaseDatabase database = OurFirebaseDatabase.getInstance();
     private static DatabaseReference reference;
+    private static String referenceString;
 
     private final ChildEventListener listener;
 
-    public FireBaseService(Class<T> aClass){
-        reference = database.getReference(aClass.getName()+"s");
+    public FireBaseService(Class<T> aClass, String ref){
+        referenceString = ref.toLowerCase(Locale.ROOT);
+        reference = database.getReference(referenceString);
         this.results = new MutableLiveData<>();
         this.resultList = new HashSet<>();
 
@@ -169,12 +171,12 @@ public class FireBaseService<T> {
     public Task<Void> updateToDatabase(T object, String uid) {
 
         return database.getReference()
-                .child(object.getClass().getName().toLowerCase(Locale.ROOT)+"s")
+                .child(referenceString)
                 .child(uid).setValue(object);
     }
 
-    public Task<Void> deleteFromDatabase(String uid, Class<T> type) {
-        return database.getReference().child(type.getName().toLowerCase(Locale.ROOT)+"s")
+    public Task<Void> deleteFromDatabase(String uid) {
+        return database.getReference().child(referenceString)
                 .child(uid).removeValue();
     }
 
