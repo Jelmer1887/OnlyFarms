@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.w3c.dom.Text;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.view.StoreCardAdapter;
 
-public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
+public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     private TextView nameField;
     private TextView addressField;
@@ -20,14 +21,19 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
     private TextView tagsField;
     private ImageView imageField;
 
-    public HomeRecyclerViewHolder(@NonNull View itemView) {
+    private StoreCardAdapter.ItemClickListener listener;
+
+    public HomeRecyclerViewHolder(@NonNull View itemView, StoreCardAdapter.ItemClickListener itemClickListener) {
         super(itemView);
+        listener = itemClickListener;
         nameField = itemView.findViewById(R.id.storeCard_nameAndDistanceField);
         addressField = itemView.findViewById(R.id.storeCard_addressField);
         openingsHoursField = itemView.findViewById(R.id.storeCard_OpeningHoursField);
         ratingField = itemView.findViewById(R.id.storeCard_RatingField);
         tagsField = itemView.findViewById(R.id.storeCard_TagsField);
         imageField = itemView.findViewById(R.id.storeCard_imageView);
+
+        itemView.setOnClickListener(this);
     }
 
     public TextView getNameField() { return nameField; }
@@ -41,4 +47,11 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder {
     public TextView getTagsField() { return tagsField; }
 
     public ImageView getImageField() { return imageField; }
+
+    @Override
+    public void onClick(View v) {
+        if (this.listener != null) {
+            listener.onItemClick(v, getAdapterPosition());
+        }
+    }
 }

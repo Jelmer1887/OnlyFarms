@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,17 +27,28 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class Base extends AppCompatActivity {
 
+    private static final String TAG = "Base";
+
     private MaterialToolbar topBar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
-    private HomeViewModel model = new HomeViewModel();
+    private HomeViewModel model;
     private boolean isClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("Base", "creating model...");
+        model = new ViewModelProvider(this).get(HomeViewModel.class);
+        Log.d("Base", "requesting user data...");
+        model.requestUser(FirebaseAuth.getInstance().getUid());
+        Log.d("Base", "Attaching observer to user object: " + model.getUser());
         model.getUser().observe(this, u -> {
+            if (u == null) {
+                Log.d(TAG, "User has been changed to null");
+                return;
+            }
             isClient = u.getStatus() == User.Status.CLIENT;
 
             if (savedInstanceState == null) {

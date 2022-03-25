@@ -1,5 +1,6 @@
 package nl.tue.onlyfarms.view.client;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,18 +11,21 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
@@ -30,11 +34,12 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
  * Use the {@link Home#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class Home extends Fragment implements StoreCardAdapter.ItemClickListener{
 
     private FragmentHomeClientBinding binding;
     private SearchView searchView;
     private RecyclerView recyclerView;
+    private StoreCardAdapter adapter;
     private HomeViewModel model;
 
     public static Home newInstance() {
@@ -49,13 +54,13 @@ public class Home extends Fragment {
         return inflater.inflate(R.layout.fragment_home_client, container, false);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Log.d("Home", "creating view model...");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        model.requestAllStores();
-        model.getStores().observe(getViewLifecycleOwner(), this::showStores);
 
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
@@ -81,7 +86,8 @@ public class Home extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        StoreCardAdapter adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+        adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+        adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
         model.getStores().observe(getViewLifecycleOwner(), stores -> {
@@ -89,13 +95,11 @@ public class Home extends Fragment {
         });
     }
 
-    private void showStores(Set<Store> stores) {
-        if (stores == null) {
-            throw new IllegalStateException("stores is changed to null after initialization");
-        }
-        if (stores.isEmpty()) {
-            Toast.makeText(getContext(), "store list changed to empty!", Toast.LENGTH_LONG).show();
-        }
-        Toast.makeText(getContext(), "found "+stores.size() + " stores", Toast.LENGTH_LONG).show();
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.replaceElement, new Account())
+                .commitNow();
     }
 }

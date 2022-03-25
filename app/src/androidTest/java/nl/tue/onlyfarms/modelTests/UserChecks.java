@@ -18,7 +18,7 @@ import com.google.firebase.FirebaseApp;
 import org.junit.Rule;
 import org.junit.Test;
 
-import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 
 /**
@@ -38,6 +38,9 @@ public class UserChecks {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         FirebaseApp.initializeApp(appContext);
         // OurFirebaseDatabase.USE_EMULATOR = true;
+
+        FireBaseService<User> userService = new FireBaseService<>(User.class, "users");
+
         // creates a user and adds it to the database
         User user = new User();
         user.setUid("test_uid");
@@ -46,10 +49,10 @@ public class UserChecks {
         user.setLastName("Tester");
         user.setEmailAddress("tester@testing.com");
         user.setStatus(User.Status.VENDOR);
-        FirebaseUserService.updateUser(user);
-        MutableLiveData<User> result;
-        result = FirebaseUserService.getUser("test_uid");
-        result.observe(new TestLifecycleOwner(), new Observer<User>() {
+        userService.updateToDatabase(user, user.getUid());
+        MutableLiveData<User> result = userService.getFirstResult();
+        userService.getFirstMatchingField("uid", user.getUid());
+        result.observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {
                 if (result.getValue() == null) {
@@ -83,7 +86,7 @@ public class UserChecks {
         // here so that we know the observer code ran
         assertNotNull(result.getValue());
 
-        FirebaseUserService.deleteUser(user);
+        userService.deleteFromDatabase(user.getUid());
     }
 
     @Test(timeout = 2000)
@@ -92,6 +95,9 @@ public class UserChecks {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
         FirebaseApp.initializeApp(appContext);
         // OurFirebaseDatabase.USE_EMULATOR = true;
+
+        FireBaseService<User> userService = new FireBaseService<>(User.class, "users");
+
         // creates a user and adds it to the database
         User user = new User();
         user.setUid("test_uid");
@@ -100,11 +106,11 @@ public class UserChecks {
         user.setLastName("Tester");
         user.setEmailAddress("tester@testing.com");
         user.setStatus(User.Status.VENDOR);
-        FirebaseUserService.updateUser(user);
-        MutableLiveData<User> result;
-        result = FirebaseUserService.getUser("test_uid");
+        userService.updateToDatabase(user, user.getUid());
+        MutableLiveData<User> result = userService.getFirstResult();
+        userService.getFirstMatchingField("uid", user.getUid());
         // apparently the data isn't updated if it isn't observed
-        result.observe(new TestLifecycleOwner(), new Observer<User>() {
+        result.observeForever(new Observer<User>() {
             @Override
             public void onChanged(User user) {}
         });
@@ -121,7 +127,7 @@ public class UserChecks {
         assertNotNull(result.getValue());
 
         // actually delete it
-        FirebaseUserService.deleteUser(user);
+        userService.deleteFromDatabase(user.getUid());
 
         while (value != null) {
             value = result.getValue();

@@ -1,13 +1,9 @@
 package nl.tue.onlyfarms.viewmodel;
 
-import android.graphics.Color;
 import android.text.TextUtils;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
-import com.google.firebase.auth.FirebaseAuth;
-
-import nl.tue.onlyfarms.model.FirebaseUserService;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 
 public class RegisterViewModel {
@@ -45,6 +41,6 @@ public class RegisterViewModel {
             User.Status status
     ) {
         User user = new User(uid, userName, firstName, lastName, emailAddress, status);
-        FirebaseUserService.updateUser(user);
+        new FireBaseService<>(User.class, "users").updateToDatabase(user, uid);
     }
 }
