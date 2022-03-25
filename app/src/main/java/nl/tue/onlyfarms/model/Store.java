@@ -1,7 +1,10 @@
 package nl.tue.onlyfarms.model;
-import org.osmdroid.util.GeoPoint;
 
-public class Store {
+
+import org.osmdroid.util.GeoPoint;
+import java.io.Serializable;
+
+public class Store implements Serializable {
     private String uid;
     private String userUid;
     private String name;

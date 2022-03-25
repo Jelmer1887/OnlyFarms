@@ -1,6 +1,7 @@
 package nl.tue.onlyfarms.view.client;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
+import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 /**
@@ -98,8 +100,8 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     @Override
     public void onItemClick(View view, int position) {
         Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.replaceElement, new Account())
-                .commitNow();
+        Intent intent = new Intent(getContext(), StoreGeneral.class);
+        intent.putExtra("store", adapter.getItem(position));
+        startActivity(intent);
     }
 }
