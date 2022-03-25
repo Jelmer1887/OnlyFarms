@@ -31,9 +31,6 @@
             android:exported="true"
             android:parentActivityName=".view.StoreGeneral" />
         <activity
-            android:name=".view.client.ClientReservations"
-            android:exported="true" />
-        <activity
             android:name=".view.MyStore"
             android:exported="true" />
         <activity
