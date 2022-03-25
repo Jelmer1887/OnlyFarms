@@ -59,7 +59,6 @@ public class Home extends Fragment {
 
         Log.d("Home", "creating view model...");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        model.requestAllStores();
 
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);

@@ -18,7 +18,7 @@ import nl.tue.onlyfarms.model.User;
 
 public class MystoreViewModel extends ViewModel {
     public MutableLiveData<User> userData;
-    private static final String Tag = "MystoreViewModel";
+    private static final String TAG = "MystoreViewModel";
     // TODO: Implement the ViewModel
     private MutableLiveData<User> subjectUser;
     private MutableLiveData<Set<Store>> userStores;
@@ -42,8 +42,8 @@ public class MystoreViewModel extends ViewModel {
         storeFireBaseService = new FireBaseService<>(Store.class, "stores");
         userFireBaseService = new FireBaseService<>(User.class, "users");
 
-        this.userStores = storeFireBaseService.getResults();
-        this.subjectUser = userFireBaseService.getFirstResult();
+        this.userStores = storeFireBaseService.getAllMatchingField("userUid", uid);
+        this.subjectUser = userFireBaseService.getSingleMatchingField("uid", uid);
 
         Log.i("viewModel","got user:" + subjectUser.getValue());
         //userStores = FirebaseStoreService.getStores(uid);
@@ -51,11 +51,13 @@ public class MystoreViewModel extends ViewModel {
     }
 
     public void requestUserUpdate(LifecycleOwner lifecycleOwner, String uid) {
-        userFireBaseService.getFirstMatchingField("uid", uid);
+        this.subjectUser = userFireBaseService.getSingleMatchingField("uid", uid);
+        Log.d(TAG, "user object has been replaced!");
     }
 
     public void requestStoreUpdate(String uid) {
-       storeFireBaseService.getAllMatchingField("userUid", uid);
+       this.userStores = storeFireBaseService.getAllMatchingField("userUid", uid);
+        Log.d(TAG, "userStores object has been replaced!");
     }
 
     /* Retrieves the current user data */

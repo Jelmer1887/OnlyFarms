@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +29,8 @@ public class HomeViewModel extends ViewModel {
     /**
      * Initializes the viewModel:
      * - Retrieves the uid of the logged-in user.
-     * - requests the user-data of the logged-in user from the database.
+     * - requests the user-data of the logged-in user from the database, stored in 'user'
+     * - requests the store-data of the logged-in user after the user-data is received.
      * */
     public HomeViewModel() {
         Log.d(TAG, "retrieving user id from firebase-auth...");
@@ -36,6 +38,7 @@ public class HomeViewModel extends ViewModel {
         Log.d(TAG, "creating services...");
         userFireBaseService = new FireBaseService<>(User.class, "users");
         storeFireBaseService = new FireBaseService<>(Store.class, "stores");
+
         if (user == null) {
             Log.e(TAG, "attempted to get user, while no user is logged in");
             throw new IllegalStateException("No user logged in!");
@@ -43,10 +46,16 @@ public class HomeViewModel extends ViewModel {
         // reached => user != null
         String uid = user.getUid();
         Log.d(TAG, "user id: " + uid);
-        Log.d(TAG, "sending preliminary requests for user updates");
 
-        this.stores = storeFireBaseService.getResults();
-        this.user = userFireBaseService.getFirstResult();
+        // retrieve data from database upon creation:
+
+        this.user = userFireBaseService.getSingleMatchingField("uid", uid);
+        this.user.observeForever( u -> {    // when the user-data is retrieved, use it to fetch the correct stores
+            if (u == null) { return; }
+            this.stores = (u.getStatus() == User.Status.CLIENT) ?
+                    storeFireBaseService.getAllAtReference() :
+                    storeFireBaseService.getAllMatchingField("userUid", u.getUid());
+        });
     }
 
     /**
@@ -54,10 +63,13 @@ public class HomeViewModel extends ViewModel {
      * @param uid unique identifier of the user to retrieve.
      * note: there is no guarantee about when the database returns the requested data... as such
      *            it cannot be used in this view model.
+     * note 2: when this method is called, the object stored in user is discarded and replaced,
+     *            be careful with it.
      * */
     public void requestUser(String uid){
         Log.d(TAG, "sending request to get data associated with this user to UserService...");
-        userFireBaseService.getFirstMatchingField("uid", uid);
+        this.user = userFireBaseService.getSingleMatchingField("uid", uid);
+        Log.d(TAG, "user object has been replaced!");
     }
 
     /**
@@ -74,15 +86,18 @@ public class HomeViewModel extends ViewModel {
      * @param userUid unique identifier of the user to retrieve stores for.
      * note: there is no guarantee about when the database returns the requested data... as such
      *            it cannot be used in this view model.
+     * note2: calling this method replaces the object stored in 'stores', be careful!
      * */
     public void requestUserStores(String userUid){
         Log.d(TAG, "sending request to get stores associated with this user to StoreService...");
-        storeFireBaseService.getAllMatchingField("userUid", userUid);
+        this.stores = storeFireBaseService.getAllMatchingField("userUid", userUid);
+        Log.d(TAG, "stores object has been replaced!");
     }
 
     public void requestAllStores() {
         Log.d(TAG, "sending request to get all stores to StoreService");
-        storeFireBaseService.getAllAtReference();
+        this.stores = storeFireBaseService.getAllAtReference();
+        Log.d(TAG, "stores object has been replaced!");
     }
 
     /**
