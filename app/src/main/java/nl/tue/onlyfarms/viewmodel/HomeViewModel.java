@@ -22,46 +22,49 @@ public class HomeViewModel extends ViewModel {
 
     private MutableLiveData<Set<Store>> stores;
     private MutableLiveData<User> user;
-    public String uid;
-    private FireBaseService<User> userFireBaseService;
-    private FireBaseService<Store> storeFireBaseService;
+    private User.Status type;
+
+    private final static FireBaseService<User> userFireBaseService = new FireBaseService<>(User.class, "users");
+    private final static FireBaseService<Store> storeFireBaseService = new FireBaseService<>(Store.class, "stores");
+    private final MutableLiveData<Boolean> allDataReceived = new MutableLiveData<>();
 
     /**
      * Initializes the viewModel:
-     * - Retrieves the uid of the logged-in user.
-     * - requests the user-data of the logged-in user from the database, stored in 'user'
-     * - requests the store-data of the logged-in user after the user-data is received.
+     * - Creates a monitoring state reporting if the data is received yet
      * */
     public HomeViewModel() {
-        Log.d(TAG, "retrieving user id from firebase-auth...");
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        Log.d(TAG, "creating services...");
-        userFireBaseService = new FireBaseService<>(User.class, "users");
-        storeFireBaseService = new FireBaseService<>(Store.class, "stores");
+        allDataReceived.postValue(false);
+    }
 
-        if (user == null) {
-            Log.e(TAG, "attempted to get user, while no user is logged in");
-            throw new IllegalStateException("No user logged in!");
+    public void startForUserType(User.Status type) {
+        this.type = type;
+
+        this.user = userFireBaseService.getSingleMatchingField("uid", FirebaseAuth.getInstance().getUid());
+        if (type == User.Status.VENDOR) {
+            this.stores = storeFireBaseService.getAllMatchingField("userUid", FirebaseAuth.getInstance().getUid());
+        } else {
+            this.stores = storeFireBaseService.getAllAtReference();
         }
-        // reached => user != null
-        String uid = user.getUid();
+        setReceivedFlagObservers("stores");
+        setReceivedFlagObservers("user");
+    }
 
-        // retrieve data from database upon creation:
-        Log.d(TAG, "retrieving user data from logged in user...");
-        this.user = userFireBaseService.getSingleMatchingField("uid", uid);
-        Log.d(TAG, "attaching listener to user data lifeData: " + this.user);
-        this.user.observeForever( u -> {    // when the user-data is retrieved, use it to fetch the correct stores
-            if (u == null) {
-                Log.e(TAG, "listener: lifeData " + this.user + " contains null user");
-                return;
-            }
-            Log.d(TAG, "listener: lifeData " + this.user + " contains valid user!\n" +
-                    "retrieving store data from database");
-            this.stores = (u.getStatus() == User.Status.CLIENT) ?
-                    storeFireBaseService.getAllAtReference() :
-                    storeFireBaseService.getAllMatchingField("userUid", u.getUid());
-            Log.d(TAG, "listener: created store object " + this.stores);
-        });
+    public MutableLiveData<Boolean> getIsDataReceived() {
+        if (allDataReceived.getValue() == null) {
+            allDataReceived.postValue(this.user != null && this.stores != null);
+        }
+        return allDataReceived;
+    }
+
+    private void setReceivedFlagObservers(String type) {
+        if (type.equals("user")) {
+            this.user.observeForever(u ->
+                    this.allDataReceived.postValue((u != null) && (this.stores.getValue() != null)));
+        }
+        else {
+            this.stores.observeForever(s ->
+                    this.allDataReceived.postValue((this.user.getValue() != null) && (s != null)));
+        }
     }
 
     /**
@@ -75,6 +78,7 @@ public class HomeViewModel extends ViewModel {
     public void requestUser(String uid){
         Log.d(TAG, "sending request to get data associated with this user to UserService...");
         this.user = userFireBaseService.getSingleMatchingField("uid", uid);
+        setReceivedFlagObservers("user");
         Log.d(TAG, "user object has been replaced!");
     }
 
@@ -98,12 +102,14 @@ public class HomeViewModel extends ViewModel {
         Log.d(TAG, "sending request to get stores associated with this user to StoreService...");
         this.stores = storeFireBaseService.getAllMatchingField("userUid", userUid);
         Log.d(TAG, "stores object has been replaced!");
+        setReceivedFlagObservers("stores");
     }
 
     public void requestAllStores() {
         Log.d(TAG, "sending request to get all stores to StoreService");
         this.stores = storeFireBaseService.getAllAtReference();
         Log.d(TAG, "stores object has been replaced!");
+        setReceivedFlagObservers("stores");
     }
 
     /**
