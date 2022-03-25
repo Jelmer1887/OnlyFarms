@@ -104,7 +104,7 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        if (model.getIsDataReceived().getValue()) {
+        if (model.getIsDataReceived().getValue() == null) {
             Log.e("Home", "no store or user lifeData available yet -> building list with empty adapter");
             RecyclerViewAdapterEmpty adapterEmpty = new RecyclerViewAdapterEmpty();
             recyclerView.setAdapter(adapterEmpty);

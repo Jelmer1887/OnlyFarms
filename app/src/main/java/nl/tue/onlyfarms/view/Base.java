@@ -10,12 +10,16 @@ import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Iterator;
 
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
@@ -33,17 +37,16 @@ public class Base extends AppCompatActivity {
     private MaterialToolbar topBar;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
+    private Menu menu;
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
     private HomeViewModel model;
-    private boolean isClient;
-
-    public boolean getIsClient() {
-        return isClient;
-    }
+    private boolean isClient = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        invalidateOptionsMenu();  // notify the options menu that it needs to adjust itself
         Log.d(TAG, "creating model");
         model = new ViewModelProvider(this).get(HomeViewModel.class);
         new FireBaseService<>(User.class, "users").getSingleMatchingField("uid", FirebaseAuth.getInstance().getUid())
@@ -57,24 +60,32 @@ public class Base extends AppCompatActivity {
 
             // tell model what data it should retrieve.
             model.startForUserType(u.getStatus());
-
             isClient = u.getStatus() == User.Status.CLIENT;
+            Log.d(TAG, "invalidating navigationView...");
+            navigationView.invalidate();  // notify the options menu that it needs to adjust itself
             if (savedInstanceState == null) {
                 replaceFragment(isClient ? new Home() : new HomeVendor());
             }
         });
-        super.onCreate(savedInstanceState);
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_base);
 
         topBar = findViewById(R.id.topBar);
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationBar);
+        menu = navigationView.getMenu();
 
         topBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 drawerLayout.open();
+                navLogic.getTargetsIterable().forEachRemaining(target -> {
+                    if (target == null) {
+                        throw new NullPointerException("navTarget received is null!");
+                    }
+
+                    target.setVisibility(menu, isClient);
+                });
             }
         });
 
@@ -84,7 +95,7 @@ public class Base extends AppCompatActivity {
                 int id = item.getItemId();
                 if (id == R.id.navto_logout) { logout(); return true;}
 
-                replaceFragment(navLogic.toNavigator(id, isClient));
+                replaceFragment(navLogic.getTarget(id).apply(isClient));
                 drawerLayout.close();
 
                 return true;
