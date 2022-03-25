@@ -46,21 +46,19 @@ public class Base extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "creating model");
         model = new ViewModelProvider(this).get(HomeViewModel.class);
-        model.getUser().observe(this, u -> {
+        new FireBaseService<>(User.class, "users").getSingleMatchingField("uid", FirebaseAuth.getInstance().getUid())
+        .observe(this, u -> {
+
             if (u == null) {
                 Log.d(TAG, "User has been changed to null");
                 return;
             }
             Log.d(TAG, "Valid user object received!");
+
+            // tell model what data it should retrieve.
+            model.startForUserType(u.getStatus());
+
             isClient = u.getStatus() == User.Status.CLIENT;
-            // stall until the store object is assigned (shouldn't be long)
-            int stallIter = 0;
-            while (model.getStores() == null) {
-                Log.d(TAG, "waiting for store object to be created: " + stallIter);
-                stallIter++;
-            }
-            Log.d(TAG, "store object found: " +
-                    model.getStores() + " after " + stallIter + " iterations of waiting.");
             if (savedInstanceState == null) {
                 replaceFragment(isClient ? new Home() : new HomeVendor());
             }

@@ -19,14 +19,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
-import nl.tue.onlyfarms.model.Store;
-import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.RecyclerViewAdapterEmpty;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.StoreGeneral;
@@ -39,10 +34,13 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
  */
 public class Home extends Fragment implements StoreCardAdapter.ItemClickListener{
 
+    private static final String TAG = "Home";
     private FragmentHomeClientBinding binding;
     private SearchView searchView;
-    private RecyclerView recyclerView;
-    private StoreCardAdapter adapter;
+
+    private RecyclerView recyclerView;              // list element where cards appear
+    private StoreCardAdapter adapterCards;           // adapter that will be used in the list-card
+
     private HomeViewModel model;
 
     public static Home newInstance() {
@@ -53,7 +51,6 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentHomeClientBinding.inflate(getLayoutInflater());
-
         return inflater.inflate(R.layout.fragment_home_client, container, false);
     }
 
@@ -61,19 +58,37 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Log.d("Home", "creating view model...");
-        model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
         FloatingActionButton button = getView().findViewById(R.id.floatingActionButton);
+        if (getActivity() == null) {
+            throw new NullPointerException("Attempted to launch home-fragment without Activity!");
+        }
+
+        Log.d("Home", "retrieving view model...");
+        model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        model.getIsDataReceived().observe(getActivity(), isReceived -> {
+            if (isReceived) {
+                Log.d(TAG, "observer: all data is received -> replacing adapter!");
+                adapterCards = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+                model.getStores().observe(getViewLifecycleOwner(), s -> adapterCards.notifyDataSetChanged());
+                adapterCards.setClickListener(this);
+                recyclerView.swapAdapter(adapterCards,true);
+            } else {
+                Log.e(TAG, "observer: data is no longer present -> swapping to empty adapter!");
+                RecyclerViewAdapterEmpty adapterEmpty = new RecyclerViewAdapterEmpty();
+                recyclerView.swapAdapter(adapterEmpty,true);
+            }
+        });
+        if (model.getIsDataReceived() == null) {
+            throw new NullPointerException("Somehow the isDataReceived flag was never initialized");
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.replaceElement, new Map())
+                        .replace(R.id.replaceElement, new MapView())
                         .commitNow();
             }
         });
@@ -88,28 +103,24 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
         Log.d("Home", "creating UI for storelist...");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        if (model.getStores() == null) {
-            Log.e("Home", "no store lifeData available yet -> building list with empty adapter");
-            Log.d("Home", "creating empty adapter");
-            RecyclerViewAdapterEmpty adapter = new RecyclerViewAdapterEmpty();
-            recyclerView.setAdapter(adapter);
+
+        if (model.getIsDataReceived().getValue()) {
+            Log.e("Home", "no store or user lifeData available yet -> building list with empty adapter");
+            RecyclerViewAdapterEmpty adapterEmpty = new RecyclerViewAdapterEmpty();
+            recyclerView.setAdapter(adapterEmpty);
         } else {
-            Log.d("Home", "store lifeData available: building list!");
-            Log.d("Home", "creating adapter with lifedata: " + model.getStores());
-            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
-            model.getStores().observe(getViewLifecycleOwner(), stores -> {
-                adapter.notifyDataSetChanged();
-            });
-            adapter.setClickListener(this);
-            recyclerView.setAdapter(adapter);
+            adapterCards = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+            model.getStores().observe(getViewLifecycleOwner(), s -> adapterCards.notifyDataSetChanged());
+            adapterCards.setClickListener(this);
+            recyclerView.setAdapter(adapterCards);
         }
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "Clicked: " + adapterCards.getItem(position), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), StoreGeneral.class);
-        intent.putExtra("store", adapter.getItem(position));
+        intent.putExtra("store", adapterCards.getItem(position));
         Log.d("Home", "creating StoreGeneral activity with intent: " + intent);
         startActivity(intent);
     }

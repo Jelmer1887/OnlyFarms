@@ -36,7 +36,7 @@ public class FireBaseService<T> {
         this.aClass = aClass;
         this.TAG = TAG + aClass.getName() + ">";
 
-        Log.d(TAG, "creating reference to " + ref);
+        Log.d(TAG, "service created looking at " + ref);
         this.referenceString = ref.toLowerCase(Locale.ROOT);
         this.reference = database.getReference(referenceString);
     }
