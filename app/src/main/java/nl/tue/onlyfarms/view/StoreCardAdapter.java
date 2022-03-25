@@ -23,12 +23,14 @@ import java.util.Set;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.client.HomeRecyclerViewHolder;
+import nl.tue.onlyfarms.view.client.RecyclerViewAdapterClientReservations;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
     private final static String TAG = "StoreCardAdapter";
     private int nrStores = 0;
     private List<Store> storeData = new ArrayList<>();
+    private ItemClickListener itemClickListener;
 
     public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
 
@@ -52,7 +54,7 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     @Override
     public HomeRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
-        return new HomeRecyclerViewHolder(view);
+        return new HomeRecyclerViewHolder(view, itemClickListener);
     }
 
     @Override
@@ -68,6 +70,17 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         }
         Log.d(TAG, "itemCount will be: " + nrStores);
         return nrStores;
+    }
+
+    // method to retrieve store of clicked card
+    public Store getItem(int id) { return storeData.get(id); }
+
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener{
+        void onItemClick(View view, int position);
     }
 
     private void setFields(Store store, HomeRecyclerViewHolder holder) {

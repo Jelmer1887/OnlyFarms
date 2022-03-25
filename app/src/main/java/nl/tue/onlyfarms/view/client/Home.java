@@ -25,6 +25,7 @@ import java.util.Set;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
@@ -33,11 +34,12 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
  * Use the {@link Home#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class Home extends Fragment implements StoreCardAdapter.ItemClickListener{
 
     private FragmentHomeClientBinding binding;
     private SearchView searchView;
     private RecyclerView recyclerView;
+    private StoreCardAdapter adapter;
     private HomeViewModel model;
 
     public static Home newInstance() {
@@ -84,11 +86,20 @@ public class Home extends Fragment {
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        StoreCardAdapter adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+        adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+        adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
         model.getStores().observe(getViewLifecycleOwner(), stores -> {
             adapter.notifyDataSetChanged();
         });
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.replaceElement, new Account())
+                .commitNow();
     }
 }
