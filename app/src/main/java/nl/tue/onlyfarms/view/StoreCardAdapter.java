@@ -33,9 +33,16 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     private ItemClickListener itemClickListener;
 
     public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
-
+        if (storeList == null) {
+            String msg = "received null LifeData object as argument!";
+            throw new NullPointerException(msg);
+        }
         // determine nr of stores and add stores to 'cards' map for creation / update.
         storeList.observe(lifecycleOwner, stores -> {
+            if (stores == null) {
+                nrStores = 0;
+                return;
+            }
             nrStores = 0;
             storeData.clear();
             for (Store store : stores) {

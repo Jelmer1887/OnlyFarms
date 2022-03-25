@@ -45,16 +45,22 @@ public class HomeViewModel extends ViewModel {
         }
         // reached => user != null
         String uid = user.getUid();
-        Log.d(TAG, "user id: " + uid);
 
         // retrieve data from database upon creation:
-
+        Log.d(TAG, "retrieving user data from logged in user...");
         this.user = userFireBaseService.getSingleMatchingField("uid", uid);
+        Log.d(TAG, "attaching listener to user data lifeData: " + this.user);
         this.user.observeForever( u -> {    // when the user-data is retrieved, use it to fetch the correct stores
-            if (u == null) { return; }
+            if (u == null) {
+                Log.e(TAG, "listener: lifeData " + this.user + " contains null user");
+                return;
+            }
+            Log.d(TAG, "listener: lifeData " + this.user + " contains valid user!\n" +
+                    "retrieving store data from database");
             this.stores = (u.getStatus() == User.Status.CLIENT) ?
                     storeFireBaseService.getAllAtReference() :
                     storeFireBaseService.getAllMatchingField("userUid", u.getUid());
+            Log.d(TAG, "listener: created store object " + this.stores);
         });
     }
 

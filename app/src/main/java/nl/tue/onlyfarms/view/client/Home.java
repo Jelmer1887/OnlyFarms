@@ -27,6 +27,7 @@ import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.Account;
+import nl.tue.onlyfarms.view.RecyclerViewAdapterEmpty;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -84,17 +85,24 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
             }
         });
 
-
-
+        Log.d("Home", "creating UI for storelist...");
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
-
-        model.getStores().observe(getViewLifecycleOwner(), stores -> {
-            adapter.notifyDataSetChanged();
-        });
+        if (model.getStores() == null) {
+            Log.e("Home", "no store lifeData available yet -> building list with empty adapter");
+            Log.d("Home", "creating empty adapter");
+            RecyclerViewAdapterEmpty adapter = new RecyclerViewAdapterEmpty();
+            recyclerView.setAdapter(adapter);
+        } else {
+            Log.d("Home", "store lifeData available: building list!");
+            Log.d("Home", "creating adapter with lifedata: " + model.getStores());
+            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
+            model.getStores().observe(getViewLifecycleOwner(), stores -> {
+                adapter.notifyDataSetChanged();
+            });
+            adapter.setClickListener(this);
+            recyclerView.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -102,6 +110,7 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
         Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), StoreGeneral.class);
         intent.putExtra("store", adapter.getItem(position));
+        Log.d("Home", "creating StoreGeneral activity with intent: " + intent);
         startActivity(intent);
     }
 }

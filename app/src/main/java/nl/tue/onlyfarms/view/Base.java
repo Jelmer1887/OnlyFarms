@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityBaseBinding;
+import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.view.vendor.HomeVendor;
@@ -37,20 +38,29 @@ public class Base extends AppCompatActivity {
     private HomeViewModel model;
     private boolean isClient;
 
+    public boolean getIsClient() {
+        return isClient;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d("Base", "creating model...");
+        Log.d(TAG, "creating model");
         model = new ViewModelProvider(this).get(HomeViewModel.class);
-        Log.d("Base", "requesting user data...");
-        model.requestUser(FirebaseAuth.getInstance().getUid());
-        Log.d("Base", "Attaching observer to user object: " + model.getUser());
         model.getUser().observe(this, u -> {
             if (u == null) {
                 Log.d(TAG, "User has been changed to null");
                 return;
             }
+            Log.d(TAG, "Valid user object received!");
             isClient = u.getStatus() == User.Status.CLIENT;
-
+            // stall until the store object is assigned (shouldn't be long)
+            int stallIter = 0;
+            while (model.getStores() == null) {
+                Log.d(TAG, "waiting for store object to be created: " + stallIter);
+                stallIter++;
+            }
+            Log.d(TAG, "store object found: " +
+                    model.getStores() + " after " + stallIter + " iterations of waiting.");
             if (savedInstanceState == null) {
                 replaceFragment(isClient ? new Home() : new HomeVendor());
             }
