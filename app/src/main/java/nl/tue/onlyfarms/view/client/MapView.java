@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import nl.tue.onlyfarms.R;
 
-public class Map extends Fragment {
+public class MapView extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
