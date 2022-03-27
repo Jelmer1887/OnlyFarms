@@ -1,7 +1,6 @@
 package nl.tue.onlyfarms.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,15 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
-import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +29,12 @@ public class StoreGeneral extends AppCompatActivity {
     private static final String TAG = "StoreGeneral";
 
     private Store store;
+
+    private TextView storeNameField;
+    private TextView storeAddressField;
+    private TextView storeOpeningHoursField;
+    private TextView storeRatingField;
+    private TextView storeTagsField;
 
     private RecyclerView productListView;
     private RecyclerViewAdapterProductList adapter;
@@ -50,23 +52,32 @@ public class StoreGeneral extends AppCompatActivity {
         binding = ActivityStoreGeneralBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_store_general);
 
-        // check if variables were restored (!= null) by savedInstanceState.
+        // check if state important variables were restored (!= null) by savedInstanceState.
         StringBuilder debug = new StringBuilder();
         if (model == null) {
             this.model = new ViewModelProvider(this).get(ProductViewModel.class);
             model.setStore(store);  // setting the store requests the product-data.
-            debug.append("\n o model = ").append(model);
         }
         if (this.store == null) {
             this.store = (Store) getIntent().getExtras().getSerializable("store");
-            debug.append("\n o store = ").append(store);
         }
         if (this.productListView == null) {
             this.productListView = findViewById(R.id.storeGeneral_recyclerview);
-            debug.append("\n o productList = ").append(productListView);
         }
 
-        Log.d(TAG, debug.toString());
+        // retrieve and set store-fields of the ui to their values.
+        // TODO: set these ID's to the correct fields (currently overwriting labels)
+        this.storeNameField = findViewById(R.id.storeGeneral_store_name);
+        this.storeAddressField = findViewById(R.id.storeGeneral_address);
+        this.storeOpeningHoursField = findViewById(R.id.storeGeneral_opening_hours);
+        this.storeRatingField = findViewById(R.id.storeGeneral_rating);
+        this.storeTagsField = findViewById(R.id.storeGeneral_tags);
+
+        storeNameField.setText(store.getName());
+        storeAddressField.setText(store.getPhysicalAddress());
+        storeOpeningHoursField.setText("No data stored!");
+        storeRatingField.setText("ratings coming soon! (tm)");
+        storeTagsField.setText("tags no");
 
         // ensure store is set in model (required to get product data from database)
         if (model.getStore().getValue() == null) {
@@ -81,6 +92,9 @@ public class StoreGeneral extends AppCompatActivity {
         // Product list configuration
         productListView.setHasFixedSize(true);
         productListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+
+        // Store information configuration
+
 
         // Product list initial creation
         Log.d(TAG, "Expecting data to be unavailable ( is actually: "+ model.getAllDataReceived().getValue() +"). Using empty adapter");
@@ -114,8 +128,9 @@ public class StoreGeneral extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // 'make this reservation' button listener -> create a new product (TODO: replace with actual func)
+        // 'make this reservation' button listener -> create a new product
         findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
+            //TODO: instead of creating a new product, this button should go to make-reservation-ish screen.
             //Create new random product with random quantity
             String[] tags = new String[]{"spicey", "disgusting", "'chicken'"};
             Set<String> chosenTags = new HashSet<>();
@@ -127,11 +142,13 @@ public class StoreGeneral extends AppCompatActivity {
             Log.d(TAG, "price is now " + price);
             Product product = new Product(
                     UUID.randomUUID().toString(),
-                    store.getUid(),     // associates store with product
-                    String.valueOf(new Random().nextInt() % 200),   // this should be replaced with actual data
-                    String.valueOf(new Random().nextLong()),        // this should be replaced with actual data
-                    price,                                          // this should be replaced with actual data
-                    new ArrayList<>(chosenTags)                     // 2 or 1 tag chosen from the random list above
+                    store.getUid(),
+                    String.valueOf(new Random().nextInt() % 200),
+                    String.valueOf(new Random().nextLong()),
+                    price,
+                    (10 - generator.nextInt(5)),
+                    "Kg",
+                    new ArrayList<>(chosenTags)
             );
 
             model.UploadProduct(product).addOnCompleteListener(task -> {

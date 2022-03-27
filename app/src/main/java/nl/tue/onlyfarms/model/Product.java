@@ -13,6 +13,7 @@ public class Product implements Model{
     private String name;
     private String description;
     private double price;
+    private int quantity;
     private String unit;
     // might need to be changed to a single tag idk
     private List<String> tags;
@@ -20,13 +21,15 @@ public class Product implements Model{
 
     public Product() {}
 
-    public Product(String uid, String storeUid, String name, String description, double price, List<String> tags) {
+    public Product(String uid, String storeUid, String name, String description, double price, int quantity, String unit, List<String> tags) {
         this.uid = uid;
         this.storeUid = storeUid;
         this.name = name;
         this.description = description;
         this.price = price;
         this.tags = tags;
+        this.quantity = quantity;
+        this.unit = unit;
     }
 
     public String getUid() {
@@ -68,6 +71,10 @@ public class Product implements Model{
     public void setPrice(double price) {
         this.price = price;
     }
+
+    public int getQuantity() { return this.quantity; }
+
+    public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public String getUnit() {
         return unit;

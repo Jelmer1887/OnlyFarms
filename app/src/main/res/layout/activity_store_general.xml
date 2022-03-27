@@ -49,7 +49,7 @@
                     android:clipToPadding="false">
 
                     <androidx.cardview.widget.CardView
-                        android:id="@+id/cardview"
+                        android:id="@+id/storeGeneral_cardView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
@@ -132,7 +132,7 @@
                         android:elevation="4dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cardview"
+                        app:layout_constraintTop_toBottomOf="@+id/storeGeneral_cardView"
                         app:queryBackground="@android:color/transparent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,7 +24,6 @@ import nl.tue.onlyfarms.model.Product;
 public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<RecyclerViewAdapterProductList.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapterProductList";
     private List<Product> products = new ArrayList<>();
-    private ItemClickListener itemClickListener;
 
     public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         // when product data changes, (re)build the list of products
@@ -51,6 +50,8 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         setFields(holder, products.get(position));
+        holder.setQuantitySelectedField();  // this prevents a recycled card from using the 'quantitySelected' value of its...
+                                            // ...previously held product for the new product.
     }
 
     @Override
@@ -62,6 +63,9 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     public Product getItem(int pos) { return products.get(pos); }
 
     private void setFields(@NonNull ViewHolder holder, Product product) {
+
+        // build strings required as values in the UI fields
+        String quantity = String.format("%x %s", product.getQuantity(),product.getUnit());
         StringBuilder descr = new StringBuilder();
         product.getTags().forEach(tag -> {
             descr.append(tag).append(" ");
@@ -70,36 +74,59 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
 
         holder.getNameField().setText(product.getName());
         holder.getDescriptionField().setText(descr.toString());
-        holder.getQuantityField().setText("No Qnt Data");
+        holder.getQuantityField().setText(quantity);
         holder.getPriceField().setText(String.valueOf(product.getPrice()));
+        holder.setMaxQuantity(product.getQuantity());
     }
 
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    protected class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    protected class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView nameField;
         private final TextView priceField;
         private final TextView quantityField;
         private final TextView descriptionField;
         private final TextView quantitySelectedField;
 
-        private final Button decreaseButton;
         private final Button increaseButton;
+        private final Button decreaseButton;
+
+        private int selectedQuantity;
+        private int maxQuantity;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
 
             nameField = itemView.findViewById(R.id.productCard_product_name);
             priceField = itemView.findViewById(R.id.productCard_price);
             quantityField = itemView.findViewById(R.id.productCard_quantity);
             descriptionField = itemView.findViewById(R.id.productCard_description_placeholder);
             quantitySelectedField = itemView.findViewById(R.id.productCard_number);
-            decreaseButton = itemView.findViewById(R.id.productCard_button_decrease);
             increaseButton = itemView.findViewById(R.id.productCard_button_increase);
+            decreaseButton = itemView.findViewById(R.id.productCard_button_decrease);
+
+            // quantitySelectedField must contain a number before entering listeners
+            quantitySelectedField.setText(String.valueOf(0));
+
+            // listeners required for responding to buttons
+            increaseButton.setOnClickListener(v -> setQuantitySelectedField(1));
+            decreaseButton.setOnClickListener(v -> setQuantitySelectedField(-1));
         }
+
+        private void setQuantitySelectedField(int val) {
+            selectedQuantity = Integer.parseInt((String) quantitySelectedField.getText());
+
+            if (selectedQuantity + val < 0 || selectedQuantity + val > maxQuantity) {
+                return;
+            }
+
+            //TODO: pass new value to other views here!
+            quantitySelectedField.setText(String.valueOf(selectedQuantity + val));
+        }
+
+        private void setQuantitySelectedField() {
+            quantitySelectedField.setText(String.valueOf(0));
+        }
+
+        protected void setMaxQuantity(int max) { this.maxQuantity = max; }
 
         protected TextView getNameField() {
             return nameField;
@@ -128,17 +155,5 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         protected Button getIncreaseButton() {
             return increaseButton;
         }
-
-        @Override
-        public void onClick(View v) {
-            if (itemClickListener != null) {
-                itemClickListener.onItemClick(v, getAdapterPosition());
-            }
-        }
-    }
-
-    // implement this in parent activity to assign functionality to click
-    public interface ItemClickListener {
-        void onItemClick(View v, int position);
     }
 }

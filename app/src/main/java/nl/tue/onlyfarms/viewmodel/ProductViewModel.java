@@ -9,8 +9,12 @@ import androidx.lifecycle.ViewModel;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.Product;
@@ -27,16 +31,21 @@ public class ProductViewModel extends ViewModel {
     private final MutableLiveData<Store> store;
     private MutableLiveData<Set<Product>> productData;
 
+    // 'filters' is used to remove unwanted entries in the dataset, applyTo method is defined for this specific variable.
+    private final HashMap<String, Function<Product, Boolean>> filters = new HashMap<String, Function<Product, Boolean>>();
+
     /**
      * Creates a new instance of this viewModel
      * and creates the dataReceived flag (set to false)
      * */
     public ProductViewModel() {
-        this.productFireBaseService = new FireBaseService<>(Product.class, "products");
-        this.activeProductObservers = new ArrayList<>();
-        this.allDataReceived = new MutableLiveData<>(false);
+        this.productFireBaseService =   new FireBaseService<>(Product.class, "products");
+        this.activeProductObservers =   new ArrayList<>();
+        this.allDataReceived =          new MutableLiveData<>(false);
+        this.store =                    new MutableLiveData<>(null);
 
-        this.store = new MutableLiveData<>(null);
+        // prevents 'out-of-stock' products from showing up
+        this.filters.put("out_of_stock", product -> product.getQuantity() == 0);
 
         this.store.observeForever(store -> {
             // Old product data should be removed when the store changes to prevent data-leaks
@@ -59,13 +68,22 @@ public class ProductViewModel extends ViewModel {
 
             // product get added to the dataset as they are fetched from the database.
             Observer<Set<Product>> productListener = (products -> {
-                if (products == null) {
-                    String msg = "a null-set of products was received from the productService!";
-                    Log.e(TAG, msg);
-                }
+                if (products == null) { return; }
                 Log.e(TAG, "productData is just received -> allDataReceived = true");
+
+                // removes values of received data based on filters in 'filters'
+                products.removeIf(product -> {
+                    for (Function<Product, Boolean> filter : this.filters.values()) {
+                        if (!filter.apply(product)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
                 this.allDataReceived.postValue(true);
             });
+
             this.productData.observeForever(productListener);
             activeProductObservers.add(productListener);
         });
@@ -81,9 +99,11 @@ public class ProductViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getAllDataReceived() { return allDataReceived; }
 
-    public MutableLiveData<Set<Product>> getProductData() {
-        return productData;
-    }
+    public MutableLiveData<Set<Product>> getProductData() { return productData; }
+
+    public void addFilter(String name, Function<Product, Boolean> filter) { this.filters.put(name, filter); }
+
+    public void removeFilter(String name) { this.filters.remove(name); }
 
     public Task<Void> UploadProduct(Product p) {
         return productFireBaseService.updateToDatabase(p, p.getUid());
