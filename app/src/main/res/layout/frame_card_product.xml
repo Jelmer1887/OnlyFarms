@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+    android:id="@+id/productCard_frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
@@ -28,17 +28,17 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/productCard_button_decrease"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="-"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/number"
+                app:layout_constraintEnd_toStartOf="@+id/productCard_number"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/productCard_button_increase"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:text="+"
@@ -48,24 +48,24 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView10"
+                android:id="@+id/productCard_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
                 android:text="@string/Quantity"
-                app:layout_constraintStart_toEndOf="@+id/price"
-                app:layout_constraintTop_toBottomOf="@+id/product_name" />
+                app:layout_constraintStart_toEndOf="@+id/productCard_price"
+                app:layout_constraintTop_toBottomOf="@+id/productCard_product_name" />
 
             <TextView
-                android:id="@+id/price"
+                android:id="@+id/productCard_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/Price"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/product_name" />
+                app:layout_constraintTop_toBottomOf="@+id/productCard_product_name" />
 
             <TextView
-                android:id="@+id/description"
+                android:id="@+id/productCard_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
@@ -73,21 +73,21 @@
                 android:text="@string/description"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/price" />
+                app:layout_constraintTop_toBottomOf="@+id/productCard_price" />
 
             <TextView
-                android:id="@+id/description_placeholder"
+                android:id="@+id/productCard_description_placeholder"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/description_placeholder"
                 android:layout_marginEnd="5dp"
                 android:textSize="12sp"
-                app:layout_constraintEnd_toStartOf="@+id/button6"
+                app:layout_constraintEnd_toStartOf="@+id/productCard_button_increase"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description" />
+                app:layout_constraintTop_toBottomOf="@+id/productCard_description" />
 
             <TextView
-                android:id="@+id/product_name"
+                android:id="@+id/productCard_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/product_name"
@@ -96,15 +96,15 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/number"
+                android:id="@+id/productCard_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:text="#"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/button5"
-                app:layout_constraintTop_toTopOf="@+id/button5" />
+                app:layout_constraintEnd_toStartOf="@+id/productCard_button_increase"
+                app:layout_constraintTop_toTopOf="@+id/productCard_button_decrease" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

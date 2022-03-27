@@ -67,39 +67,39 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:id="@+id/tags"
+                                android:id="@+id/storeGeneral_tags"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Tags"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/rating" />
+                                app:layout_constraintTop_toBottomOf="@+id/storeGeneral_rating" />
 
                             <TextView
-                                android:id="@+id/rating"
+                                android:id="@+id/storeGeneral_rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Rating"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/opening_hours" />
+                                app:layout_constraintTop_toBottomOf="@+id/storeGeneral_opening_hours" />
 
                             <TextView
-                                android:id="@+id/opening_hours"
+                                android:id="@+id/storeGeneral_opening_hours"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/open"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/address" />
+                                app:layout_constraintTop_toBottomOf="@+id/storeGeneral_address" />
 
                             <TextView
-                                android:id="@+id/address"
+                                android:id="@+id/storeGeneral_address"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/address"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/store_name" />
+                                app:layout_constraintTop_toBottomOf="@+id/storeGeneral_store_name" />
 
                             <TextView
-                                android:id="@+id/store_name"
+                                android:id="@+id/storeGeneral_store_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/store_name"
@@ -108,7 +108,7 @@
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:id="@+id/see_more"
+                                android:id="@+id/storeGeneral_see_more"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
@@ -122,7 +122,7 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.appcompat.widget.SearchView
-                        android:id="@+id/search"
+                        android:id="@+id/storeGeneral_search"
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:layout_marginStart="24dp"
@@ -139,7 +139,7 @@
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerview"
+                    android:id="@+id/storeGeneral_recyclerview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="24dp"
@@ -148,14 +148,14 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/search" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeGeneral_search" />
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
         <Button
-            android:id="@+id/reserve"
+            android:id="@+id/storeGeneral_reserve"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
