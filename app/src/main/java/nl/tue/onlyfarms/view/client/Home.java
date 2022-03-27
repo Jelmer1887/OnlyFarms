@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -118,7 +117,6 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), "Clicked: " + adapterCards.getItem(position), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getContext(), StoreGeneral.class);
         intent.putExtra("store", adapterCards.getItem(position));
         Log.d("Home", "creating StoreGeneral activity with intent: " + intent);

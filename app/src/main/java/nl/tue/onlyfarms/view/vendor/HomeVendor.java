@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -23,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeVendorBinding;
-import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -84,7 +82,6 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
 
     @Override
     public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), "Clicked: " + adapter.getItem(position), Toast.LENGTH_SHORT).show();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.replaceElement, new Account())
                 .commitNow();
