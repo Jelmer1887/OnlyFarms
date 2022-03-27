@@ -54,7 +54,7 @@ public class ProductViewModel extends ViewModel {
             if (store == null) { return; }
 
 
-            this.productData = productFireBaseService.getAllAtReference();
+            this.productData = productFireBaseService.getAllMatchingField("storeUid", store.getUid());
             Log.d(TAG, "requested product data from service, result will be in " + this.productData);
 
             // product get added to the dataset as they are fetched from the database.
