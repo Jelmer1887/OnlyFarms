@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class FireBaseService<T> {
+public class FireBaseService<T extends Model> {
     private final Class<T> aClass;
     private String TAG = "FireBaseService<";
 
@@ -105,7 +105,7 @@ public class FireBaseService<T> {
 
         @Override
         public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            Log.d(TAG, "change detected");
+            Log.d(TAG, "addition change detected");
             T foundResult = snapshot.getValue(aClass);
             if (foundResult == null) {
                 throw new IllegalStateException("this btch empty-yo!");
@@ -117,10 +117,10 @@ public class FireBaseService<T> {
 
         @Override
         public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-            Log.d(TAG, "change detected");
+            Log.d(TAG, "edit change detected");
             T foundResult = snapshot.getValue(aClass);
             if (foundResult == null) { return; }
-            if (multiple_found.removeIf(object -> object.equals(foundResult))) {
+            if (multiple_found.removeIf(object -> object.getUid().equals(foundResult.getUid()))) {
                 multiple_found.add(foundResult);
                 results.postValue(multiple_found);
                 determineSingleResult();
@@ -129,11 +129,16 @@ public class FireBaseService<T> {
 
         @Override
         public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+            Log.d(TAG, "removal change detected");
             T removedResult = snapshot.getValue(aClass);
             if (removedResult == null){ return; }
-            if (multiple_found.removeIf(object -> object.equals(removedResult))) {
+            Log.d(TAG, "looking for object in lists...");
+            if (multiple_found.removeIf(object -> object.getUid().equals(removedResult.getUid()))) {
+                Log.d(TAG, "found!");
                 results.postValue(multiple_found);
                 determineSingleResult();
+            } else {
+                Log.d(TAG, "not found!");
             }
         }
 

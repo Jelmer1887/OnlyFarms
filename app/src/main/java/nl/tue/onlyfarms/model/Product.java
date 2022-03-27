@@ -1,6 +1,13 @@
 package nl.tue.onlyfarms.model;
 
-public class Product {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+public class Product implements Model{
     private String uid;
     private String storeUid;
     private String name;
@@ -8,10 +15,19 @@ public class Product {
     private double price;
     private String unit;
     // might need to be changed to a single tag idk
-    private String[] tags;
+    private List<String> tags;
     // TODO: add images
 
     public Product() {}
+
+    public Product(String uid, String storeUid, String name, String description, double price, List<String> tags) {
+        this.uid = uid;
+        this.storeUid = storeUid;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.tags = tags;
+    }
 
     public String getUid() {
         return uid;
@@ -61,11 +77,9 @@ public class Product {
         this.unit = unit;
     }
 
-    public String[] getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
+    public void setTags(List<String> tags) { this.tags = tags; }
 }

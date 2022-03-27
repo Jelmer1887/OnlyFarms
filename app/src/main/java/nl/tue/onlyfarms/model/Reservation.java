@@ -3,7 +3,7 @@ package nl.tue.onlyfarms.model;
 import java.util.Date;
 import java.util.HashMap;
 
-public class Reservation {
+public class Reservation implements Model{
     public String uid;
     public String storeUid;
     public String userUid;

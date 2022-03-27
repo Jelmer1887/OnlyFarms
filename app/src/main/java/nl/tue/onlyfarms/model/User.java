@@ -3,7 +3,7 @@ package nl.tue.onlyfarms.model;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 @IgnoreExtraProperties
-public class User {
+public class User implements Model {
     public enum Status {
         VENDOR,
         CLIENT
