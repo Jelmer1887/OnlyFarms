@@ -1,14 +1,19 @@
 package nl.tue.onlyfarms.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +34,9 @@ public class StoreGeneral extends AppCompatActivity {
     private static final String TAG = "StoreGeneral";
 
     private Store store;
+
+    private SearchView searchBar;
+    private final MutableLiveData<String> searchText = new MutableLiveData<>("");
 
     private TextView storeNameField;
     private TextView storeAddressField;
@@ -64,6 +72,33 @@ public class StoreGeneral extends AppCompatActivity {
         if (this.productListView == null) {
             this.productListView = findViewById(R.id.storeGeneral_recyclerview);
         }
+        if (this.searchBar == null) {
+            this.searchBar = findViewById(R.id.storeGeneral_search);
+        }
+
+        /* Search bar related */
+        // follows: https://stackoverflow.com/questions/19588311
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchBar.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchBar.setIconifiedByDefault(false);
+
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) { return false; }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, String.format("search text entered is: '%s'", newText));
+                if (newText.length() == 0) {
+                    model.removeFilter("searchText");
+                    model.applyFilters();
+                    return false;
+                }
+                model.addFilter("searchText", product -> product.getName().contains(newText));
+                model.applyFilters();
+                return false;
+            }
+        });
 
         // retrieve and set store-fields of the ui to their values.
         // TODO: set these ID's to the correct fields (currently overwriting labels)

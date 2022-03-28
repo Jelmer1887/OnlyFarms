@@ -48,7 +48,7 @@ public class ProductViewModel extends ViewModel {
         this.filteredProductData =      new MutableLiveData<>(null);
 
         // prevents 'out-of-stock' products from showing up
-        this.filters.put("out_of_stock", product -> product.getQuantity() == 0);
+        this.filters.put("out_of_stock", product -> product.getQuantity() > 0);
 
         this.store.observeForever(store -> {
             // Old product data should be removed when the store changes to prevent data-leaks
@@ -97,22 +97,45 @@ public class ProductViewModel extends ViewModel {
 
     public void removeFilter(String name) { this.filters.remove(name); }
 
-    private void applyFilters() {
+    public void applyFilters() {
         if (productData == null) {return;}
         if (productData.getValue() == null) {return;}
 
-        Set<Product> filtered = new HashSet<>(productData.getValue());
+        final Set<Product> removals = new HashSet<>();
+        final Set<Product> filtered = new HashSet<>(productData.getValue());
 
         // removes values of received data based on filters in 'filters'
-        filtered.removeIf(product -> {
-            for (Function<Product, Boolean> filter : this.filters.values()) {
-                if (!filter.apply(product)) {
-                    return false;
-                }
-            }
-            return true;
-        });
+        productData.getValue().forEach((product -> {
+            filters.forEach((name, filter) -> {
+                Log.d(TAG, String.format("Applying '%s' to %s", name, product.getName()));
+                if (!filter.apply(product)) { removals.add(product); }
+            });
+        }));
+        StringBuilder s = new StringBuilder();
+        for (Product p : removals) { s.append(p.getName()).append(" "); }
+        Log.d(TAG, s.append("will be removed.").toString());
+        filtered.removeAll(removals);
+        this.filteredProductData.postValue(filtered);
+    }
 
+    public void applyFilters(String name) {
+        if (productData == null) {return;}
+        if (productData.getValue() == null) {return;}
+        Function<Product, Boolean> filter = filters.get(name);
+        if (filter == null) { Log.e(TAG, "filter not found!"); return; }
+
+        final Set<Product> removals = new HashSet<>();
+        final Set<Product> filtered = new HashSet<>(productData.getValue());
+
+        // removes values of received data based on filters in 'filters'
+        productData.getValue().forEach((product -> {
+            Log.d(TAG, String.format("Applying '%s' to %s", name, product.getName()));
+            if (!filter.apply(product)) { removals.add(product); }
+        }));
+        StringBuilder s = new StringBuilder();
+        for (Product p : removals) { s.append(p.getName()).append(" "); }
+        Log.d(TAG, s.append("will be removed.").toString());
+        filtered.removeAll(removals);
         this.filteredProductData.postValue(filtered);
     }
 
