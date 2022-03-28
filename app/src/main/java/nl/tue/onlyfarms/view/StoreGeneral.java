@@ -93,11 +93,8 @@ public class StoreGeneral extends AppCompatActivity {
         productListView.setHasFixedSize(true);
         productListView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        // Store information configuration
-
-
         // Product list initial creation
-        Log.d(TAG, "Expecting data to be unavailable ( is actually: "+ model.getAllDataReceived().getValue() +"). Using empty adapter");
+        Log.d(TAG, "Expecting data to be unavailable ( which is actually "+ (!model.getAllDataReceived().getValue()) +"). Using empty adapter");
         productListView.setAdapter(new RecyclerViewAdapterEmpty());
 
 
@@ -110,8 +107,8 @@ public class StoreGeneral extends AppCompatActivity {
             if (receivedData) {
                 debug1.append(true).append(" -> swapping adapter from ")
                         .append(adapter).append(" to ProductListAdapter");
-                adapter = new RecyclerViewAdapterProductList(this, model.getProductData());
-                model.getProductData().observe(this, s -> adapter.notifyDataSetChanged());
+                adapter = new RecyclerViewAdapterProductList(this, model.getFilteredProductData());
+                model.getFilteredProductData().observe(this, s -> adapter.notifyDataSetChanged());
                 productListView.swapAdapter(adapter, true);
             } else {
                 debug1.append(false).append(" -> swapping adapter from ")
