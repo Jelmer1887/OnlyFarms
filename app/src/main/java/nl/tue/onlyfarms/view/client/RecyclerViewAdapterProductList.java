@@ -65,7 +65,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
         // build strings required as values in the UI fields
-        String quantity = String.format("%x %s", product.getQuantity(),product.getUnit());
+        String quantity = String.format("%d %s", product.getQuantity(),product.getUnit());
         StringBuilder descr = new StringBuilder();
         product.getTags().forEach(tag -> {
             descr.append(tag).append(" ");

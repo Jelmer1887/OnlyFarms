@@ -23,6 +23,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import nl.tue.onlyfarms.DebugVals;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityStoreGeneralBinding;
 import nl.tue.onlyfarms.model.Product;
@@ -175,7 +176,7 @@ public class StoreGeneral extends AppCompatActivity {
             Product product = new Product(
                     UUID.randomUUID().toString(),
                     store.getUid(),
-                    String.valueOf(new Random().nextInt() % 200),
+                    DebugVals.getRandom(DebugVals.Type.PRODUCT),
                     String.valueOf(new Random().nextLong()),
                     price,
                     (10 - generator.nextInt(5)),
