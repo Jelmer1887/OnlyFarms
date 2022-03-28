@@ -35,10 +35,10 @@ public class FireBaseService<T extends Model> {
     public FireBaseService(Class<T> aClass, String ref){
         this.aClass = aClass;
         this.TAG = TAG + aClass.getName() + ">";
-
-        Log.d(TAG, "service created looking at " + ref);
         this.referenceString = ref.toLowerCase(Locale.ROOT);
         this.reference = database.getReference(referenceString);
+
+        Log.d(TAG, "service created looking at " + ref);
     }
 
     public MutableLiveData<Set<T>> getAllAtReference() {

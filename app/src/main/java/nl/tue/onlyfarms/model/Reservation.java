@@ -2,16 +2,31 @@ package nl.tue.onlyfarms.model;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Reservation implements Model{
-    public String uid;
-    public String storeUid;
-    public String userUid;
-    // products and quantities with products as keys
-    public HashMap<Product, Integer> products;
-    public Date date;
+    private String uid;
+    private String storeUid;
+    private String userUid;
+    // products and quantities with product-uid's as keys
+    private HashMap<String, Integer> products;
+    private Date date;
 
     public Reservation() {}
+
+    public Reservation(
+            String uid,
+            String storeUid,
+            String userUid,
+            Map<String, Integer> products,
+            Date creationDate
+    ) {
+        this.uid = uid;
+        this.storeUid = storeUid;
+        this.userUid = userUid;
+        this.products = (HashMap<String, Integer>) products;
+        this.date = creationDate;
+    }
 
     public String getUid() {
         return uid;
@@ -37,11 +52,11 @@ public class Reservation implements Model{
         this.userUid = userUid;
     }
 
-    public HashMap<Product, Integer> getProducts() {
+    public HashMap<String, Integer> getProducts() {
         return products;
     }
 
-    public void setProducts(HashMap<Product, Integer> products) {
+    public void setProducts(HashMap<String, Integer> products) {
         this.products = products;
     }
 
