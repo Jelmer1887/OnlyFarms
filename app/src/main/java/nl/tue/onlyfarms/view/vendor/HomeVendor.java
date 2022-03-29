@@ -1,7 +1,6 @@
 package nl.tue.onlyfarms.view.vendor;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeVendorBinding;
@@ -60,7 +58,7 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
 
         Log.d(TAG, "create view model");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        model.requestUserStores(FirebaseAuth.getInstance().getUid());
+        //model.requestUserStores(FirebaseAuth.getInstance().getUid());
 
         //TODO: shouldn't these ID's be different than those of the client Homepage?
         recyclerView = getView().findViewById(R.id.near_recyclerView);

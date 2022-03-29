@@ -80,8 +80,6 @@ public class StoreGeneral extends AppCompatActivity {
 
         /* Search bar related */
         // follows: https://stackoverflow.com/questions/19588311
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchBar.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchBar.setIconifiedByDefault(false);
 
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

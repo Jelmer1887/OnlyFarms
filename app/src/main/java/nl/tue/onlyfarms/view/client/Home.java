@@ -1,6 +1,7 @@
 package nl.tue.onlyfarms.view.client;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,9 +20,10 @@ import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Locale;
+
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
-import nl.tue.onlyfarms.view.RecyclerViewAdapterEmpty;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -36,9 +38,10 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     private static final String TAG = "Home";
     private FragmentHomeClientBinding binding;
     private SearchView searchView;
+    private FloatingActionButton actionButton;
 
     private RecyclerView recyclerView;              // list element where cards appear
-    private StoreCardAdapter adapterCards;           // adapter that will be used in the list-card
+    private StoreCardAdapter adapter;               // adapter that will be used in the list-card
 
     private HomeViewModel model;
 
@@ -56,39 +59,80 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        recyclerView = getView().findViewById(R.id.near_recyclerView);
-        searchView = getView().findViewById(R.id.search);
-        FloatingActionButton button = getView().findViewById(R.id.floatingActionButton);
         if (getActivity() == null) {
             throw new NullPointerException("Attempted to launch home-fragment without Activity!");
         }
 
-        Log.d("Home", "retrieving view model...");
-        model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
-        model.getIsDataReceived().observe(getActivity(), isReceived -> {
-            if (isReceived) {
-                Log.d(TAG, "observer: all data is received -> replacing adapter!");
-                adapterCards = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
-                model.getStores().observe(getViewLifecycleOwner(), s -> adapterCards.notifyDataSetChanged());
-                adapterCards.setClickListener(this);
-                recyclerView.swapAdapter(adapterCards,true);
-            } else {
-                Log.e(TAG, "observer: data is no longer present -> swapping to empty adapter!");
-                RecyclerViewAdapterEmpty adapterEmpty = new RecyclerViewAdapterEmpty();
-                recyclerView.swapAdapter(adapterEmpty,true);
-            }
-        });
-        if (model.getIsDataReceived() == null) {
-            throw new NullPointerException("Somehow the isDataReceived flag was never initialized");
-        }
+        // Variable initialisation
+        recyclerView = getView().findViewById(R.id.near_recyclerView);
+        searchView = getView().findViewById(R.id.search);
+        actionButton = getView().findViewById(R.id.floatingActionButton);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        /* ViewModel retrieval */
+        Log.d(TAG, "retrieving viewModel");
+        model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);    // model != null <=>
+        Log.d(TAG, "performing health checks on model");                                // constructor called <=>
+        assert model.getAllDataReceived() != null;                                          // getAllDataReceived != null &&
+        assert model.getAllDataReceived().getValue() != null;                               // getAllDataReceived.getValue() != null &&
+        assert model.getUser() != null;                                                     // getUser() != null <=>
+                                                                                            // eventually getStores() != null <=>
+        /* storeList creation */                                                            // eventually getFilteredStores() != null
+        Log.d(TAG, "attempting to create list with data...");
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if (model.getAllDataReceived().getValue()) {
+            Log.d(TAG, "all data available upon fragment initialisation! creating list with data");
+            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores());
+            adapter.setClickListener(this);
+        } else {
+            Log.e(TAG, "data unavailable upon fragment initialisation! creating empty list");
+            adapter = new StoreCardAdapter();
+        }
+        recyclerView.setAdapter(adapter);
+
+        /* ------ Listeners ------ */
+
+        // data-state listener - changes and notifies adapter when availability/content of data changes.
+        model.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
+            if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
+            Log.d(TAG, "Update to data-state. Data-availability became " + isReceived);
+
+            adapter = isReceived ? new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores()) : new StoreCardAdapter();
+            adapter.setClickListener(this);
+            recyclerView.swapAdapter(adapter, true);
+            model.getFilteredStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+        });
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.replaceElement, new MapView())
                         .commitNow();
+            }
+        });
+
+        // search bar filter application - follows: https://stackoverflow.com/questions/19588311
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.d(TAG, String.format("search text entered is: '%s'", newText));
+                if (newText.length() == 0) {
+                    model.removeFilter("searchText");
+                    model.applyFilters();
+                    return false;
+                }
+                model.addFilter("searchText", product ->
+                        product.getName().toLowerCase(Locale.ROOT)
+                                .contains(newText.toLowerCase(Locale.ROOT)));
+                model.applyFilters();
+                return false;
             }
         });
 
@@ -98,27 +142,15 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
                 searchView.setIconified(false);
             }
         });
-
-        Log.d("Home", "creating UI for storelist...");
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        if (model.getIsDataReceived().getValue() == null) {
-            Log.e("Home", "no store or user lifeData available yet -> building list with empty adapter");
-            RecyclerViewAdapterEmpty adapterEmpty = new RecyclerViewAdapterEmpty();
-            recyclerView.setAdapter(adapterEmpty);
-        } else {
-            adapterCards = new StoreCardAdapter(getViewLifecycleOwner(), model.getStores());
-            model.getStores().observe(getViewLifecycleOwner(), s -> adapterCards.notifyDataSetChanged());
-            adapterCards.setClickListener(this);
-            recyclerView.setAdapter(adapterCards);
-        }
     }
+
+
 
     @Override
     public void onItemClick(View view, int position) {
+        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
         Intent intent = new Intent(getContext(), StoreGeneral.class);
-        intent.putExtra("store", adapterCards.getItem(position));
+        intent.putExtra("store", adapter.getItem(position));
         Log.d("Home", "creating StoreGeneral activity with intent: " + intent);
         startActivity(intent);
     }

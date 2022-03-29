@@ -1,35 +1,27 @@
 package nl.tue.onlyfarms.view;
 
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.client.HomeRecyclerViewHolder;
-import nl.tue.onlyfarms.view.client.RecyclerViewAdapterClientReservations;
-import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
 public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolder> {
     private final static String TAG = "StoreCardAdapter";
-    private int nrStores = 0;
-    private List<Store> storeData = new ArrayList<>();
+    private final List<Store> storeData = new ArrayList<>();
     private ItemClickListener itemClickListener;
 
     public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
@@ -37,19 +29,19 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
             String msg = "received null LifeData object as argument!";
             throw new NullPointerException(msg);
         }
+
         // determine nr of stores and add stores to 'cards' map for creation / update.
-        storeList.observe(lifecycleOwner, stores -> {
-            if (stores == null) {
-                nrStores = 0;
-                return;
-            }
-            nrStores = 0;
+        Observer<Set<Store>> dataCopierListener = stores -> {
+            if (stores == null) { return; }
             storeData.clear();
-            for (Store store : stores) {
-                nrStores += 1;
-                storeData.add(store);
-            }
-        });
+            storeData.addAll(stores);
+        };
+        storeList.observe(lifecycleOwner, dataCopierListener);
+    }
+
+    public StoreCardAdapter() {
+        // a change to empty data -> set size to 0!
+        storeData.clear();
     }
 
     @Override
@@ -72,11 +64,11 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
 
     @Override
     public int getItemCount() {
-        if (nrStores == 0) {
-            Log.e(TAG, "storeList is most likely empty! -> not showing jack shit");
+        if (storeData.size() == 0) {
+            Log.d(TAG, "storeList is most likely empty!");
         }
-        Log.d(TAG, "itemCount will be: " + nrStores);
-        return nrStores;
+        Log.d(TAG, "itemCount will be: " + storeData.size());
+        return storeData.size();
     }
 
     // method to retrieve store of clicked card
