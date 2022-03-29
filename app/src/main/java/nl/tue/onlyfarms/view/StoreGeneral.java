@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
@@ -87,6 +88,7 @@ public class StoreGeneral extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) { return false; }
 
+            /* user input of search-balk is available in this method's scope */
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, String.format("search text entered is: '%s'", newText));
@@ -95,7 +97,9 @@ public class StoreGeneral extends AppCompatActivity {
                     model.applyFilters();
                     return false;
                 }
-                model.addFilter("searchText", product -> product.getName().contains(newText));
+                model.addFilter("searchText", product ->
+                        product.getName().toLowerCase(Locale.ROOT)
+                                .contains(newText.toLowerCase(Locale.ROOT)));
                 model.applyFilters();
                 return false;
             }
