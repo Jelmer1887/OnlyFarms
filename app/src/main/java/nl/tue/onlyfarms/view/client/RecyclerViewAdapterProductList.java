@@ -12,10 +12,9 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
@@ -23,7 +22,7 @@ import nl.tue.onlyfarms.model.Product;
 
 public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<RecyclerViewAdapterProductList.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapterProductList";
-    private List<Product> products = new ArrayList<>();
+    private final List<Product> products = new ArrayList<>();
 
     public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         // when product data changes, (re)build the list of products
@@ -60,26 +59,24 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         return products.size();
     }
 
-    public Product getItem(int pos) { return products.get(pos); }
-
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
         // build strings required as values in the UI fields
-        String quantity = String.format("%d %s", product.getQuantity(),product.getUnit());
-        StringBuilder descr = new StringBuilder();
-        product.getTags().forEach(tag -> {
-            descr.append(tag).append(" ");
-        });
-        descr.append("\n").append(product.getDescription());
+        String quantity = String.format(Locale.ENGLISH, "%d %s", product.getQuantity(),product.getUnit());
+        String priceString = "€ " + product.getPrice();
+
+        StringBuilder description = new StringBuilder();
+        product.getTags().forEach(tag -> description.append(tag).append(" "));
+        description.append("\n").append(product.getDescription());
 
         holder.getNameField().setText(product.getName());
-        holder.getDescriptionField().setText(descr.toString());
+        holder.getDescriptionField().setText(description.toString());
         holder.getQuantityField().setText(quantity);
-        holder.getPriceField().setText(String.valueOf(product.getPrice()));
+        holder.getPriceField().setText(priceString);
         holder.setMaxQuantity(product.getQuantity());
     }
 
-    protected class ViewHolder extends RecyclerView.ViewHolder{
+    protected static class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView nameField;
         private final TextView priceField;
         private final TextView quantityField;
