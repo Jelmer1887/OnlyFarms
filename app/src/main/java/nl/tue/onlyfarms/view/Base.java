@@ -36,7 +36,7 @@ public class Base extends AppCompatActivity {
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
     private HomeViewModel model;
-    private boolean isClient = true;
+    private boolean isClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +123,7 @@ public class Base extends AppCompatActivity {
             throw new IllegalStateException("user was null while allDataReceived was true!");
         }
         this.isClient = (model.getUser().getValue().getStatus() == User.Status.CLIENT);
+        navigationView.invalidate();
         if (savedInstanceState == null) {
             replaceFragment(isClient ? new Home() : new HomeVendor());
         }

@@ -15,6 +15,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.util.HashSet;
@@ -42,20 +44,30 @@ public class FireBaseService<T extends Model> {
     }
 
     public MutableLiveData<Set<T>> getAllAtReference() {
-        DataListener l = new DataListener(aClass);
-        reference.orderByChild("uid").addChildEventListener(l);
+        ExistanceListener e = new ExistanceListener();
+        DataListener l = new DataListener(aClass,e.getExistance().getValue());
+        Query query = reference.orderByChild("uid");
+        query.addValueEventListener(e);
+        query.addChildEventListener(l);
         return l.getMultipleResults();
     }
 
     public MutableLiveData<Set<T>> getAllMatchingField(String field, String value){
-        DataListener l = new DataListener(aClass);
-        reference.orderByChild(field).equalTo(value).addChildEventListener(l);
+        ExistanceListener e = new ExistanceListener();
+        DataListener l = new DataListener(aClass, e.getExistance().getValue());
+        Log.e(TAG, "listening to " + field + " = " + value);
+        Query query = reference.orderByChild(field).equalTo(value);
+        query.addValueEventListener(e);
+        query.addChildEventListener(l);
         return l.getMultipleResults();
     }
 
     public MutableLiveData<T> getSingleMatchingField(String field, String value){
-        DataListener l = new DataListener(aClass);
-        reference.orderByChild(field).equalTo(value).addChildEventListener(l);
+        ExistanceListener e = new ExistanceListener();
+        DataListener l = new DataListener(aClass, e.getExistance().getValue());
+        Query query = reference.orderByChild(field).equalTo(value);
+        query.addValueEventListener(e);
+        query.addChildEventListener(l);
         return l.getSingleResult();
     }
 
@@ -71,6 +83,25 @@ public class FireBaseService<T extends Model> {
                 .child(uid).removeValue();
     }
 
+    private class ExistanceListener implements ValueEventListener {
+        private MutableLiveData<Boolean> existance = new MutableLiveData<>(false);
+
+        public ExistanceListener() {}
+
+        public MutableLiveData<Boolean> getExistance() {
+            return existance;
+        }
+
+        @Override
+        public void onDataChange(@NonNull DataSnapshot snapshot) {
+            existance.postValue(snapshot.exists());
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            throw error.toException();
+        }
+    }
 
     private class DataListener implements ChildEventListener{
         private static final String TAG = "DataListener";
@@ -79,11 +110,17 @@ public class FireBaseService<T extends Model> {
         private final Class<T> aClass;
         private final Set<T> multiple_found;
 
-        public DataListener(Class<T> aClass) {
+        public DataListener(Class<T> aClass, Boolean existence) {
             this.multiple_found = new HashSet<>();
             this.result = new MutableLiveData<>();
             this.results = new MutableLiveData<>();
             this.aClass = aClass;
+
+
+            if (!existence) {
+                this.results.postValue(multiple_found);
+                determineSingleResult();
+            }
         }
 
         private void determineSingleResult() {
@@ -149,7 +186,7 @@ public class FireBaseService<T extends Model> {
 
         @Override
         public void onCancelled(@NonNull DatabaseError error) {
-
+            throw error.toException();
         }
     }
 }
