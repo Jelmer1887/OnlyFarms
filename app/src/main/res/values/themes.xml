@@ -1,8 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.OnlyFarms" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.OnlyFarms" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/theme</item>
+        <item name="colorPrimaryDark">?attr/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/green_900</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -20,7 +22,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="Theme.OnlyFarms.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.OnlyFarms.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar" />
 
     <style name="Theme.OnlyFarms.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
