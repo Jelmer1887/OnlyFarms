@@ -3,6 +3,7 @@ package nl.tue.onlyfarms.view.vendor;
 import androidx.annotation.NonNull;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import java.util.Locale;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeVendorBinding;
 import nl.tue.onlyfarms.view.Account;
+import nl.tue.onlyfarms.view.MyStore;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.client.MapView;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -104,9 +106,9 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.replaceElement, new MapView())
-                        .commitNow();
+                Intent intent = new Intent(getContext(), MyStore.class);
+                intent.putExtra("mode", "add");
+                startActivity(intent);
             }
         });
 
