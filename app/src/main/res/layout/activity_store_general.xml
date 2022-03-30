@@ -15,12 +15,12 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topBar"
+            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title=""
             android:background="@android:color/transparent"
-            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
-            android:elevation="0dp"/>
+            android:elevation="0dp"
+            app:title="@string/store_name" />
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -40,6 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:paddingBottom="96dp"
+                android:clipToPadding="false"
                 app:layout_constraintTop_toTopOf="@+id/nestedScrollView">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
