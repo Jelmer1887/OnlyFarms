@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.AppBarLayout.PrimarySurface"
+        style="@style/Widget.MaterialComponents.AppBarLayout.Primary"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -19,7 +19,7 @@
             android:layout_height="?attr/actionBarSize"
             app:title=""
             android:background="@android:color/transparent"
-            style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:elevation="0dp"/>
 
 

@@ -14,7 +14,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.AppBarLayout.PrimarySurface"
+            style="@style/Widget.MaterialComponents.AppBarLayout.Primary"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.MaterialToolbar
@@ -24,7 +24,7 @@
                 app:title=""
                 app:navigationIcon="@drawable/ic_baseline_menu_24"
                 android:background="@android:color/transparent"
-                style="@style/Widget.MaterialComponents.Toolbar.PrimarySurface"
+                style="@style/Widget.MaterialComponents.Toolbar.Primary"
                 android:elevation="0dp"/>
 
 
