@@ -60,7 +60,7 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (getActivity() == null) {
-            throw new NullPointerException("Attempted to launch home-fragment without Activity!");
+            throw new NullPointerException("Attempted to launch homeClient-fragment without Activity!");
         }
 
         // Variable initialisation
