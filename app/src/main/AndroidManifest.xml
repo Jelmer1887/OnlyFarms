@@ -34,6 +34,9 @@
             android:name=".view.MyStore"
             android:exported="true" />
         <activity
+            android:name=".view.vendor.AddProduct"
+            android:exported="true" />
+        <activity
             android:name=".view.LoginView"
             android:exported="true"
             android:label="@string/app_name"
