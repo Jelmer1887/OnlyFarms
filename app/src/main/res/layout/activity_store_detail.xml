@@ -14,7 +14,7 @@
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topBar"
+            android:id="@+id/storeDetail_topBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:title=""
@@ -31,7 +31,7 @@
         android:layout_marginTop="?attr/actionBarSize">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardview"
+            android:id="@+id/storeDetail_cardview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -49,39 +49,39 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tags"
+                    android:id="@+id/storeDetail_tags"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/Tags"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rating" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_rating" />
 
                 <TextView
-                    android:id="@+id/rating"
+                    android:id="@+id/storeDetail_rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/Rating"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/open" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_open" />
 
                 <TextView
-                    android:id="@+id/open"
+                    android:id="@+id/storeDetail_open"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/open"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/address" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_address" />
 
                 <TextView
-                    android:id="@+id/address"
+                    android:id="@+id/storeDetail_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/address"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/store_name" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_store_name" />
 
                 <TextView
-                    android:id="@+id/store_name"
+                    android:id="@+id/storeDetail_store_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/store_name"
@@ -90,32 +90,32 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/description"
+                    android:id="@+id/storeDetail_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/description"
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tags" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_tags" />
 
                 <TextView
-                    android:id="@+id/description_placeholder"
+                    android:id="@+id/storeDetail_description_placeholder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/description_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_description" />
 
                 <TextView
-                    android:id="@+id/opening_hours"
+                    android:id="@+id/storeDetail_opening_hours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/Opening_hours"
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/description_placeholder" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_description_placeholder" />
 
                 <TextView
                     android:id="@+id/opening_hours_placeholder"
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/description_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/opening_hours" />
+                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_opening_hours" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

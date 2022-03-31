@@ -32,7 +32,7 @@ public class Navigation {
         if (instance == null) {
             instance = new Navigation();
             instance.new NavTarget<Boolean>(R.id.navto_home, isClient -> isClient ? new Home() : new HomeVendor());
-            instance.new NavTarget<Boolean>(false, true, R.id.navto_mystore, new addStore());
+            instance.new NavTarget<Boolean>(true, true, R.id.navto_mystore, new addStore());
             instance.new NavTarget<Boolean>(R.id.navto_myaccount, new Account());
             instance.new NavTarget<Boolean>(true, false, R.id.navto_reservations, new ReservationsClient());
             instance.new NavTarget<Boolean>(R.id.navto_settings, new Settings());
