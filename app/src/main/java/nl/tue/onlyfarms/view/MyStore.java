@@ -5,18 +5,31 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.appbar.MaterialToolbar;
 
 import nl.tue.onlyfarms.R;
 
 public class MyStore extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    String mode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_mystore);
+        setContentView(R.layout.activity_mystore);
+
+        mode = (String) getIntent().getExtras().getSerializable("mode");
+
+        if (mode.equals("edit")) {
+            ((TextView)findViewById(R.id.addStore)).setText(R.string.editStore);
+            ((MaterialToolbar)findViewById(R.id.topBar)).setTitle(R.string.editStore);
+            prefillFields();
+        }
 
         Spinner spinner = findViewById(R.id.spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.hours, android.R.layout.simple_spinner_item);
@@ -30,7 +43,6 @@ public class MyStore extends AppCompatActivity implements AdapterView.OnItemSele
         spinner2.setAdapter(adapter2);
         spinner2.setOnItemSelectedListener(this);
 
-
     }
 
     @Override
@@ -42,5 +54,9 @@ public class MyStore extends AppCompatActivity implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    private void prefillFields() {
+        //TODO: Prefill fields
     }
 }
