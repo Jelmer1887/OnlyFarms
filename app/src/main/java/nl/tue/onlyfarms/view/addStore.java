@@ -14,6 +14,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
 import java.util.Random;
+import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.FireBaseService;
@@ -41,7 +42,7 @@ public class addStore extends Fragment {
             String placeHolder_name = String.valueOf(r.nextLong());
             String placeHolder_desc = String.valueOf(r.nextLong());
             String placeHolder_location = String.valueOf(r.nextDouble());
-            String uid = Long.toString(Calendar.getInstance().getTime().getTime());
+            String uid = UUID.randomUUID().toString();
             String userUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
             Store newStore = new Store(uid, userUid, placeHolder_name, placeHolder_desc, placeHolder_location);
             // TODO: implement viewModel!
