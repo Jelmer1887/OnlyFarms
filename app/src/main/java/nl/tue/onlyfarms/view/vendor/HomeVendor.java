@@ -123,14 +123,18 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, String.format("search text entered is: '%s'", newText));
                 if (newText.length() == 0) {
-                    model.removeFilter("searchText");
+                    model.removeFilter("searchStoreName");
+                    model.removeFilter("searchStoreProduct");
                     model.applyFilters();
                     return false;
                 }
-                model.addFilter("searchText", product ->
-                        product.getName().toLowerCase(Locale.ROOT)
-                                .contains(newText.toLowerCase(Locale.ROOT)));
-                model.applyFilters();
+                model.addFilter("searchStoreName", store ->
+                        store.getName().toLowerCase(Locale.ROOT)
+                                .contains(newText.toLowerCase(Locale.ROOT))
+                );
+                model.addFilter("searchStoreProduct", HomeViewModel.OR , store ->
+                        model.storeHasProductInSet(store, model.getProductsMatchingName(newText))
+                );
                 return false;
             }
         });

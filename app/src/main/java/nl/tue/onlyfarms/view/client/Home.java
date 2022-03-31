@@ -116,21 +116,24 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
         // search bar filter application - follows: https://stackoverflow.com/questions/19588311
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
+            public boolean onQueryTextSubmit(String query) { return false; }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 Log.d(TAG, String.format("search text entered is: '%s'", newText));
                 if (newText.length() == 0) {
-                    model.removeFilter("searchText");
+                    model.removeFilter("searchStoreName");
+                    model.removeFilter("searchStoreProduct");
                     model.applyFilters();
                     return false;
                 }
-                model.addFilter("searchText", product ->
-                        product.getName().toLowerCase(Locale.ROOT)
-                                .contains(newText.toLowerCase(Locale.ROOT)));
+                model.addFilter("searchStoreName", store ->
+                        store.getName().toLowerCase(Locale.ROOT)
+                                .contains(newText.toLowerCase(Locale.ROOT))
+                );
+                model.addFilter("searchStoreProduct", HomeViewModel.OR , store ->
+                        model.storeHasProductInSet(store, model.getProductsMatchingName(newText))
+                );
                 model.applyFilters();
                 return false;
             }

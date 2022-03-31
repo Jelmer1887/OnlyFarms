@@ -12,9 +12,11 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.Product;
@@ -28,13 +30,20 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Set<Store>> stores;
     private final MutableLiveData<Set<Store>> filteredStores;
     private MutableLiveData<User> user;
+    private MutableLiveData<Set<Product>> products;
+    private MutableLiveData<Set<Product>> productsMatching;
 
     private final FireBaseService<User> userFireBaseService;
     private final FireBaseService<Store> storeFireBaseService;
+    private final FireBaseService<Product> productFireBaseService;
     private final MutableLiveData<Boolean> allDataReceived;
 
     // 'filters' is used to remove unwanted entries in the dataset, applyTo method is defined for this specific variable.
     private final Map<String, Function<Store, Boolean>> filters = new HashMap<>();
+    private final Map<String, Boolean> filterMode = new HashMap<>();
+
+    public final static boolean AND = true;
+    public final static boolean OR = false;
 
     /**
      * Initializes the viewModel:
@@ -43,8 +52,11 @@ public class HomeViewModel extends ViewModel {
     public HomeViewModel() {
         this.userFireBaseService = new FireBaseService<>(User.class, "users");
         this.storeFireBaseService = new FireBaseService<>(Store.class, "stores");
+        this.productFireBaseService = new FireBaseService<>(Product.class, "products");
         this.allDataReceived = new MutableLiveData<>(false);
         this.user = userFireBaseService.getSingleMatchingField("uid", FirebaseAuth.getInstance().getUid());
+        this.products = productFireBaseService.getAllAtReference(); // all products are retrieved to make searching faster
+        this.productsMatching = new MutableLiveData<>(new HashSet<>());
         this.filteredStores = new MutableLiveData<>(null);
         // 'stores' is set only by the queries on the database.
 
@@ -72,6 +84,12 @@ public class HomeViewModel extends ViewModel {
             this.stores.observeForever(storeListener);
 
         });
+
+        this.products.observeForever(productSet -> {
+            Log.d(TAG, "product set received: " + productSet);
+            if (productSet == null) { return; }
+            applyFilters();
+        });
     }
 
     public MutableLiveData<User> getUser() { return this.user; }
@@ -80,24 +98,45 @@ public class HomeViewModel extends ViewModel {
 
     public MutableLiveData<Set<Store>> getStores() { return this.stores; }
 
-    public void addFilter(String name, Function<Store, Boolean> filter) { this.filters.put(name, filter); }
+    public void addFilter(String name, Function<Store, Boolean> filter) {
+        this.filters.put(name, filter);
+        this.filterMode.put(name, AND);
+    }
+    public void addFilter(String name, Boolean MODE, Function<Store, Boolean> filter) {
+        this.filters.put(name, filter);
+        this.filterMode.put(name, MODE ? AND : OR);
+    }
 
-    public void removeFilter(String name) { this.filters.remove(name); }
+    public void removeFilter(String name) { this.filters.remove(name); this.filterMode.remove(name); }
 
     public void applyFilters() {
         if (stores == null) { return; }
         if (stores.getValue() == null) { return; }
 
         final Set<Store> removals = new HashSet<>();
+        final Set<Store> whiteList = new HashSet<>();
         final Set<Store> filtered = new HashSet<>(stores.getValue());
 
-        // queue any store not resulting in 'true' to be removed
+        // queue any store not resulting in AND 'true' to be removed, any OR 'true' will always be kept.
         stores.getValue().forEach(store -> {
             filters.forEach((name, filter) -> {
+                assert filterMode.containsKey(name);
                 Log.d(TAG, String.format("Applying '%s' to %s", name, store.getName()));
-                if (!filter.apply(store)) { removals.add(store); }
+
+                if (filterMode.get(name) == OR) {
+                    Log.d(TAG, "filter is OR filter");
+                    if (filter.apply(store)) {
+                        whiteList.add(store);
+                    }
+                } else {
+                    if (!filter.apply(store)) {
+                        removals.add(store);
+                    }
+                }
             });
         });
+
+        removals.removeAll(whiteList);
 
         StringBuilder s = new StringBuilder();
         for (Store st : removals) { s.append(st.getName()).append(" "); }
@@ -107,4 +146,28 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Set<Store>> getFilteredStores() { return this.filteredStores; }
+
+    public MutableLiveData<Set<Product>> getProducts() { return this.products; }
+
+    public Set<Product> getProductsMatchingName(String name) {
+        // return empty set to prevent database slowness from crashing the app when values are null.
+        if (this.products == null) { return new HashSet<>(); }
+        if (this.products.getValue() == null) {return new HashSet<>(); }
+
+        final Set<Product> productSet = new HashSet<>();
+        products.getValue().forEach(product -> {
+            if (product.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT))) {
+                productSet.add(product);
+            }
+        });
+
+        return productSet;
+    }
+
+    public boolean storeHasProductInSet(Store store, Set<Product> productSet) {
+        assert store != null && productSet != null;
+        return !productSet.stream().filter(
+                product -> product.getStoreUid().equals(store.getUid()) // this is the actual filter predicate (product's store == given store)
+        ).collect(Collectors.toSet()).isEmpty();
+    }
 }
