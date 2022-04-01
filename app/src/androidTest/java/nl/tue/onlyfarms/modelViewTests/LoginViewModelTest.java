@@ -4,6 +4,8 @@ import android.content.Context;
 import android.text.Editable;
 import android.widget.EditText;
 
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.testing.TestLifecycleOwner;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -48,7 +50,7 @@ public class LoginViewModelTest {
         Mockito.when(e1.toString()).thenReturn("World");
         Mockito.when(e2.toString()).thenReturn("!");
 
-        boolean check = nl.tue.onlyfarms.viewmodel.LoginViewModel.checkFields(texts);
+        boolean check = new LoginViewModel().checkFields(texts);
         assertTrue(check);
     }
 
@@ -68,7 +70,7 @@ public class LoginViewModelTest {
         Mockito.when(e1.toString()).thenReturn("World");
         Mockito.when(e2.toString()).thenReturn("");
 
-        boolean check = nl.tue.onlyfarms.viewmodel.LoginViewModel.checkFields(texts);
+        boolean check = new LoginViewModel().checkFields(texts);
         assertFalse(check);
     }
 }

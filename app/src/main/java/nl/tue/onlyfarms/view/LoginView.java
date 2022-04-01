@@ -2,6 +2,7 @@ package nl.tue.onlyfarms.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import nl.tue.onlyfarms.viewmodel.LoginViewModel;
 
 public class LoginView extends AppCompatActivity {
 
+    LoginViewModel model;
+
     FirebaseAuth firebaseAuth;
     ActivityLoginBinding binding;
     EditText emailElement, passwordElement;
@@ -34,6 +37,7 @@ public class LoginView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        model = new ViewModelProvider(this).get(LoginViewModel.class);
 
         // get firebase authentication instance
         firebaseAuth = FirebaseAuth.getInstance();
@@ -41,8 +45,7 @@ public class LoginView extends AppCompatActivity {
         // check if user is already logged in
         if (firebaseAuth.getCurrentUser() != null){
             Toast.makeText(LoginView.this, "Already logged in", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(getApplicationContext(), Base.class));
-            finish();
+            toBase();
         }
 
         // retrieve elements from UI
@@ -54,30 +57,29 @@ public class LoginView extends AppCompatActivity {
 
     public void submit(View view) {
 
-        if (!LoginViewModel.checkFields(new EditText[]{emailElement, passwordElement})) {
-            return;
-        }
+        if (!model.checkFields(new EditText[]{emailElement, passwordElement})) { return; }
 
         String email = emailElement.getText().toString().trim();
         String password = passwordElement.getText().toString().trim();
 
-        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-
-                if (task.isSuccessful()) {
-                    Toast.makeText(LoginView.this, "Logged in!", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(getApplicationContext(), Base.class));
-                    finish();
-                } else {
-                    Toast.makeText(LoginView.this, "Oops! " + task.getException().getMessage().toString(), Toast.LENGTH_LONG).show();
-                }
-
+        model.login(email, password).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(LoginView.this, "Logged in!", Toast.LENGTH_LONG).show();
+                toBase();
+            } else {
+                Toast.makeText(LoginView.this, "Oops! " + task.getException().getMessage().toString(), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public void toRegister(View view) {
+    public void toRegister() {
         startActivity(new Intent(getApplicationContext(), RegisterView.class));
     }
+    public void toRegister(View view) { toRegister(); }
+
+    public void toBase() {
+        startActivity(new Intent(getApplicationContext(), Base.class));
+        finish();
+    }
+    public void toBase(View view) { toBase(); }
 }
