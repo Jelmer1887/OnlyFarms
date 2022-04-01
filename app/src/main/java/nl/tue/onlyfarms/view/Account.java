@@ -2,6 +2,7 @@
 
 package nl.tue.onlyfarms.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.FireBaseService;
@@ -34,6 +37,7 @@ public class Account extends Fragment {
     private EditText oldPassWordField;
     private EditText newPassWordField;
     private Button confirmButton;
+    private Button removeButton;
 
 
     public static Account newInstance() {
@@ -61,6 +65,7 @@ public class Account extends Fragment {
         userNameField = fragmentView.findViewById(R.id.myAccount_userName);
         emailField = fragmentView.findViewById(R.id.myAccount_email);
         confirmButton = fragmentView.findViewById(R.id.myAccount_confirmButton);
+        removeButton = fragmentView.findViewById(R.id.myAccount_REMOVE);
 
         // Fill fields with current data (when the data is retrieved)
         model.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -89,7 +94,31 @@ public class Account extends Fragment {
                 emailField.getText().toString().trim(),
                 model.getUser().getValue().getStatus()
             );
-            new FireBaseService<>(User.class, "users").updateToDatabase(newUser, newUser.getUid());
+            model.uploadUser(newUser).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getContext(), "account updated!", Toast.LENGTH_SHORT).show();
+                } else {
+                    String msg = task.getException() == null ? "Something went wrong" : task.getException().getMessage();
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                }
+            });
+        });
+
+        removeButton.setOnClickListener(v -> {
+            assert getActivity() != null;
+            Log.d(TAG, "Remove account pressed!");
+            if (model.getUser().getValue() == null) {
+                Toast.makeText(getActivity(), "user couldn't be determined: was null!", Toast.LENGTH_SHORT).show();
+                throw new NullPointerException("failed to determine user, user is null!");
+            }
+
+            model.removeCurrentUser().observeForever(complete -> {
+                String msg = "Your account was removed!";
+                if (complete) { Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show(); }
+            });
+            FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(getContext(), LoginView.class));
+            getActivity().finish();
         });
     }
 }

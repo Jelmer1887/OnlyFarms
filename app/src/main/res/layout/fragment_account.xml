@@ -40,8 +40,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myAccount_title"
-        tools:src="@tools:sample/avatars"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        tools:src="@tools:sample/avatars" />
 
     <EditText
         android:id="@+id/myAccount_firstName"
@@ -163,5 +163,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myAccount_userName"
         app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/myAccount_REMOVE"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="0dp"
+        android:paddingVertical="0dp"
+        android:text="REMOVE"
+        android:textSize="15dp"
+        app:layout_constraintBottom_toBottomOf="@+id/myAccount_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/myAccount_image"
+        app:layout_constraintTop_toTopOf="@+id/myAccount_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -183,11 +183,12 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Boolean> removeCurrentUser() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         assert user != null;
+        firebaseAuth.signOut();
+        assert firebaseAuth.getCurrentUser() == null;
         final MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
 
         user.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                firebaseAuth.signOut();
                 removeUserFromDatabase(user.getUid()).observeForever(isComplete::postValue);
             } else {
                 String msg = "Failed to remove user from authentication database";

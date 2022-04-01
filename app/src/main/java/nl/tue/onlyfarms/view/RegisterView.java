@@ -19,10 +19,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityRegisterBinding;
+import nl.tue.onlyfarms.model.FireBaseService;
+import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.viewmodel.RegisterViewModel;
 
@@ -102,6 +105,15 @@ public class RegisterView extends AppCompatActivity {
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
                             RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
+                            if (status.get() == User.Status.VENDOR) {
+                                String uid = UUID.randomUUID().toString();
+                                new FireBaseService<Store>(Store.class, "stores").updateToDatabase(new Store(
+                                        uid,
+                                        task.getResult().getUser().getUid(),
+                                        "Your default store ",
+                                        "A random store we created for you " +  uid,
+                                        "Nowhere"), uid);
+                            }
                             startActivity(new Intent(getApplicationContext(), Base.class));
                             finish();
                         } else {

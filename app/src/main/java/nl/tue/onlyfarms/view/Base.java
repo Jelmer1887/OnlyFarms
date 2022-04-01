@@ -119,9 +119,9 @@ public class Base extends AppCompatActivity {
 
     //PRE: User cannot be null && allDataReceived should be true!
     private void userReceived(Bundle savedInstanceState) {
-        if (model.getUser().getValue() == null) {
-            throw new IllegalStateException("user was null while allDataReceived was true!");
-        }
+        //if (model.getUser().getValue() == null) {
+            //throw new IllegalStateException("user was null while allDataReceived was true!");
+        //}
         this.isClient = (model.getUser().getValue().getStatus() == User.Status.CLIENT);
         navigationView.invalidate();
         if (savedInstanceState == null) {
