@@ -63,24 +63,6 @@ public class Base extends AppCompatActivity {
             });
         }
 
-        /*new FireBaseService<>(User.class, "users").getSingleMatchingField("uid", FirebaseAuth.getInstance().getUid())
-        .observe(this, u -> {
-
-            if (u == null) {
-                Log.d(TAG, "User has been changed to null");
-                return;
-            }
-            Log.d(TAG, "Valid user object received!");
-
-            // tell model what data it should retrieve.
-            model.startForUserType(u.getStatus());
-            isClient = u.getStatus() == User.Status.CLIENT;
-            Log.d(TAG, "invalidating navigationView...");
-            navigationView.invalidate();  // notify the options menu that it needs to adjust itself
-            if (savedInstanceState == null) {
-                replaceFragment(isClient ? new Home() : new HomeVendor());
-            }
-        });*/
         binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_base);
 
@@ -108,7 +90,6 @@ public class Base extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.navto_logout) { logout(); return true;}
-
                 replaceFragment(navLogic.getTarget(id).apply(isClient));
                 drawerLayout.close();
 

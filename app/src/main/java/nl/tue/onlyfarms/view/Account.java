@@ -96,10 +96,10 @@ public class Account extends Fragment {
             );
             model.uploadUser(newUser).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getContext(), "account updated!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "account updated!", Toast.LENGTH_SHORT).show();
                 } else {
-                    String msg = task.getException() == null ? "Something went wrong" : task.getException().getMessage();
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    String msg = "something went wrong!";
+                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -113,12 +113,15 @@ public class Account extends Fragment {
             }
 
             model.removeCurrentUser().observeForever(complete -> {
+                Log.d(TAG, "removalProcessMonitor: complete = " + complete);
                 String msg = "Your account was removed!";
-                if (complete) { Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show(); }
+                if (complete) {
+                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "starting log-in activity and finishing Base");
+                    startActivity(new Intent(getContext(), LoginView.class));
+                    getActivity().finish();
+                }
             });
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getContext(), LoginView.class));
-            getActivity().finish();
         });
     }
 }

@@ -11,10 +11,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +67,11 @@ public class HomeViewModel extends ViewModel {
         this.filteredStores = new MutableLiveData<>(null);
         // 'stores' is set only by the queries on the database.
 
+        // debug observer reporting any changes in data availability
+        this.allDataReceived.observeForever(bool -> {
+            Log.d(TAG + ":availabilityListener", "data available = " + bool);
+        });
+
         this.user.observeForever(user -> {
             Log.d(TAG, String.format("user in update is %s", user));
             this.allDataReceived.postValue(false);
@@ -82,9 +89,13 @@ public class HomeViewModel extends ViewModel {
 
             Observer<Set<Store>> storeListener = (storeSet -> {
                 if (storeSet == null) { return; }
-                Log.d(TAG, "set of Stores received -> allDataReceived = =true");
+                Log.d(TAG, "set of Stores received");
                 applyFilters();
-                this.allDataReceived.postValue(true);
+                if (this.user.getValue() != null) {
+                    Log.d(TAG, "user and stores available -> allDataReceived = true");
+                    this.allDataReceived.postValue(true);
+                }
+
             });
             this.stores.observeForever(storeListener);
 
@@ -181,117 +192,93 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Boolean> removeCurrentUser() {
+        final String TASK_TAG = "REMOVE_USER";
+
         FirebaseUser user = firebaseAuth.getCurrentUser();
         assert user != null;
+        Log.d(TAG, "logging-out to be deleted user...");
         firebaseAuth.signOut();
         assert firebaseAuth.getCurrentUser() == null;
         final MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
 
+        Log.d(TASK_TAG, "scheduling task to remove stores of user...");
+        removeStoresOfUser(0, user.getUid());
+
+        Log.d(TASK_TAG, "scheduled task for removing user-data");
+        userFireBaseService.deleteFromDatabase(user.getUid()).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.d(TASK_TAG, "removal task completed!");
+                isComplete.postValue(true);
+            }
+        });
+
+        Log.d(TASK_TAG, "scheduling task to remove authentication credentials...");
         user.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                removeUserFromDatabase(user.getUid()).observeForever(isComplete::postValue);
+                Log.d(TAG, "user credentials deleted -> removing other stored data...");
             } else {
                 String msg = "Failed to remove user from authentication database";
                 msg = task.getException() == null ? msg :msg + ":\n" + task.getException().getMessage();
                 throw new IllegalStateException(msg);
             }
         });
-        return isComplete;
-    }
-
-    private MutableLiveData<Boolean> removeUserFromDatabase(String uid) {
-        final MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
-        userFireBaseService.deleteFromDatabase(uid).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                removeStoresFromDatabase(uid).observeForever(complete -> {
-                    if (complete) { isComplete.postValue(true); }
-                });
-            } else {
-                String msg = task.getException() == null ? "" : task.getException().getMessage();
-                Log.e(TAG, "failed to remove user " + uid + "from database: " + msg);
-            }
-        });
 
         return isComplete;
     }
 
-    private MutableLiveData<Boolean> removeStoresFromDatabase(String userUid) {
-        final Set<String> storesUids = new HashSet<>();
-        final MutableLiveData<Set<Store>> storesSet = storeFireBaseService.getAllMatchingField("userUid", userUid);
-        final Map<String, Boolean> taskTracker = new HashMap<>();
-        final MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
+    public void removeStoresOfUser(final int TASK_ID, final String userUid) {
+        final String TASK_TAG = String.format("REMOVEALL_STORES#%d", TASK_ID);
+        final List<String> removed = new ArrayList<>();
 
-        storesSet.observeForever(set -> {
+        Log.d(TASK_TAG, "awaiting store data.");
+        storeFireBaseService.getAllMatchingField("userUid", userUid).observeForever(set -> {
             if (set == null) { return; }
-            if (storesUids.isEmpty()) {
-                set.forEach(store -> { storesUids.add(store.getUid()); });
-                storesUids.forEach(sUid -> taskTracker.put(sUid, false));
-                storesUids.forEach(sUid -> {
-                    cascadedStoreRemoval(sUid).observeForever(complete -> {
-                        if (complete) {
-                            taskTracker.replace(sUid, true);
-                            if (isTasksComplete(taskTracker.values())) { isComplete.postValue(true); }
-                        }
-                    });
+            Log.d(TASK_TAG, String.format("attempting to remove %d stores...", set.size()));
+
+            // create a task to remove each product
+            int count = 0;
+            for (Store store : set) {
+                if (removed.contains(store.getUid())) { continue; }
+                count++;
+                Log.d(TASK_TAG, "scheduling task to remove products of store...");
+                removeProductsOfStore(count, store.getUid());
+                Log.d(TASK_TAG, "scheduled task for removing store " + store.getUid());
+                storeFireBaseService.deleteFromDatabase(store.getUid()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(String.format("%s:%s:", TASK_TAG, store.getUid()), "removal task completed;");
+                        removed.add(store.getUid());
+                    }
                 });
             }
         });
-
-        return isComplete;
     }
 
-    private MutableLiveData<Boolean> cascadedStoreRemoval(String storeUid) {
-        MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
+    public void removeProductsOfStore(final int TASK_ID, final String storeUid) {
+        final String TASK_TAG = String.format("REMOVEALL_PRODUCTS#%d", TASK_ID);
+        final List<String> removed = new ArrayList<>();
 
-        storeFireBaseService.deleteFromDatabase(storeUid).addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                String msg = task.getException() == null ? "" : task.getException().getMessage();
-                Log.e(TAG, "failed to remove store " + storeUid + "from database: " + msg);
-            } else {
-                removeProductsFromDatabase(storeUid).observeForever(complete -> {
-                    if (complete) { isComplete.postValue(true); }
-                });
-            }
-        });
-
-        return isComplete;
-    }
-
-    private MutableLiveData<Boolean> removeProductsFromDatabase(String storeUid) {
-        final Set<String> productUids = new HashSet<>();
-        final MutableLiveData<Set<Product>> productsSet = productFireBaseService.getAllMatchingField("storeUid", storeUid);
-        final Map<String, Boolean> taskTracker = new HashMap<>();
-        final MutableLiveData<Boolean> isComplete = new MutableLiveData<>(false);
-
-        productsSet.observeForever(set -> {
+        Log.d(TASK_TAG, "awaiting product data.");
+        productFireBaseService.getAllMatchingField("storeUid", storeUid).observeForever(set -> {
             if (set == null) { return; }
-            if (productUids.isEmpty()) {
-                set.forEach(product -> { productUids.add(product.getUid()); });
-                productUids.forEach(pUid -> taskTracker.put(pUid, false));
-                productUids.forEach(pUid -> {
-                    productFireBaseService.deleteFromDatabase(pUid).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            taskTracker.replace(pUid, true);
-                            if (isTasksComplete(taskTracker.values())) {isComplete.postValue(true);}
-                        } else {
-                            String msg = task.getException() == null ? "" : task.getException().getMessage();
-                            Log.e(TAG, "failed to remove product " + pUid + "from database: " + msg);
-                        }
-                    });
+            Log.d(TASK_TAG, String.format("attempting to remove %d products...", set.size()));
+
+            // create a task to remove each product
+            for (Product product : set) {
+                if (removed.contains(product.getUid())) { continue; }
+                Log.d(TASK_TAG, "scheduled task for removing product " + product.getUid());
+                productFireBaseService.deleteFromDatabase(product.getUid()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Log.d(String.format("%s:%s:", TASK_TAG, product.getUid()), "removal task completed;");
+                        removed.add(product.getUid());
+                    }
                 });
             }
         });
-
-        return isComplete;
     }
 
-    /** Internal method for seeing if a set of tasks is completed, assuming those tasks set their
-     * boolean in the provided collection to true if completed. */
-    private boolean isTasksComplete(Collection<Boolean> booleans) {
+    private Boolean allComplete(Collection<Boolean> booleans) {
         boolean r = true;
         for (boolean b : booleans) { r = r && b; }
         return r;
     }
-
-
 }
