@@ -10,10 +10,6 @@
                 android:id="@+id/navto_home"
                 android:icon="@drawable/ic_baseline_bug_report_24"/>
             <item
-                android:title="My Store"
-                android:id="@+id/navto_mystore"
-                android:icon="@drawable/ic_baseline_bug_report_24"/>
-            <item
                 android:title="Reservations"
                 android:id="@+id/navto_reservations"
                 android:icon="@drawable/ic_baseline_bug_report_24"/>

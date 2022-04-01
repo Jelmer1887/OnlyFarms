@@ -96,7 +96,7 @@
                                 android:id="@+id/storeGeneral_address"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/address"
+                                android:text="@string/address2"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/storeGeneral_store_name" />
 

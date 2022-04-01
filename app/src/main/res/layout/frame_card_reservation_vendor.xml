@@ -25,18 +25,9 @@
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Items Ordered: 5"
+                android:text="@string/orderedItems"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/store_name" />
-
-            <TextView
-                android:id="@+id/randomText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:text="This is some temp text" />
 
             <TextView
                 android:id="@+id/store_name"
@@ -46,31 +37,6 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/declinebutton"
-                android:layout_width="45dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="5dp"
-                app:icon="@android:drawable/ic_delete"
-                app:iconGravity="top"
-                app:iconTint="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/acceptbutton"
-                android:layout_width="45dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="3dp"
-                app:icon="@drawable/baseline_done_24"
-                app:iconGravity="top"
-                app:iconTint="@color/white"
-                app:layout_constraintEnd_toStartOf="@+id/declinebutton"
-                app:layout_constraintTop_toTopOf="parent" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
