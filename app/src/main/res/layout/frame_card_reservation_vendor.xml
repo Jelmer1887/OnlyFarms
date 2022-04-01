@@ -65,9 +65,9 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="3dp"
-                app:icon="@drawable/accept_icon_svg_gray_world_of_warcraft_transparent_png_1464102"
+                app:icon="@drawable/baseline_done_24"
                 app:iconGravity="top"
-                app:iconTint="#F10505"
+                app:iconTint="@color/white"
                 app:layout_constraintEnd_toStartOf="@+id/declinebutton"
                 app:layout_constraintTop_toTopOf="parent" />
 
