@@ -17,6 +17,7 @@ import nl.tue.onlyfarms.view.addStore;
 import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.view.client.ReservationsClient;
 import nl.tue.onlyfarms.view.vendor.HomeVendor;
+import nl.tue.onlyfarms.view.vendor.ReservationsVendor;
 
 public class Navigation {
     private static Navigation instance;
@@ -32,9 +33,8 @@ public class Navigation {
         if (instance == null) {
             instance = new Navigation();
             instance.new NavTarget<Boolean>(R.id.navto_home, isClient -> isClient ? new Home() : new HomeVendor());
-            instance.new NavTarget<Boolean>(true, true, R.id.navto_mystore, new addStore());
             instance.new NavTarget<Boolean>(R.id.navto_myaccount, new Account());
-            instance.new NavTarget<Boolean>(true, false, R.id.navto_reservations, new ReservationsClient());
+            instance.new NavTarget<Boolean>(R.id.navto_reservations, isClient -> isClient ? new ReservationsClient() : new ReservationsVendor());
             instance.new NavTarget<Boolean>(R.id.navto_settings, new Settings());
         }
 
