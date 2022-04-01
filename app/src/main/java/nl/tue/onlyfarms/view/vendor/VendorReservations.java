@@ -22,6 +22,8 @@ public class VendorReservations extends AppCompatActivity {
         ArrayList<String> clientNames = new ArrayList<>();
         clientNames.add("Isabel Client");
         clientNames.add("Jan Janssen");
+        clientNames.add("Esther de Boer");
+
 
         RecyclerView recyclerView = findViewById(R.id.rvReservationvendors);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
