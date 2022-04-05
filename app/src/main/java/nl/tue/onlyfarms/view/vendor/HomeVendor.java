@@ -26,6 +26,7 @@ import nl.tue.onlyfarms.databinding.FragmentHomeVendorBinding;
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.MyStore;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
+import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.view.client.MapView;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
@@ -106,9 +107,7 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), MyStore.class);
-                intent.putExtra("mode", "add");
-                startActivity(intent);
+                startActivity(new Intent(getContext(), MyStore.class));
             }
         });
 
@@ -149,8 +148,11 @@ public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickLi
 
     @Override
     public void onItemClick(View view, int position) {
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.replaceElement, new Account())
-                .commitNow();
+        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
+        Intent intent = new Intent(getContext(), StoreGeneral.class);
+        intent.putExtra("store", adapter.getItem(position));
+        intent.putExtra("isClient", true);
+        Log.d(TAG, "creating StoreGeneral activity with intent: " + intent);
+        startActivity(intent);
     }
 }

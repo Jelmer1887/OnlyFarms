@@ -36,7 +36,7 @@ public class Base extends AppCompatActivity {
     private Navigation navLogic = Navigation.getInstance();
     private ActivityBaseBinding binding;
     private HomeViewModel model;
-    private boolean isClient;
+    public boolean isClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

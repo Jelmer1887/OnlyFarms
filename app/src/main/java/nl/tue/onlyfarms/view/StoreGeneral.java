@@ -194,5 +194,15 @@ public class StoreGeneral extends AppCompatActivity {
                 }
             });
         });
+
+        // Change stuff here if vendor
+        if (getIntent().hasExtra("isClient")) {
+            TextView seeMore = findViewById(R.id.storeGeneral_see_more);
+            seeMore.setText(R.string.editStore);
+
+            seeMore.setOnClickListener(view -> {
+                startActivity(new Intent(this, MyStore.class).putExtra("store", store));
+            });
+        }
     }
 }

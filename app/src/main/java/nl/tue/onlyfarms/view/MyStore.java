@@ -4,47 +4,78 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Locale;
+import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.viewmodel.vendor.MystoreViewModel;
 
-public class MyStore extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MyStore extends AppCompatActivity {
 
-    String mode;
-    final String TAG = "MyStore";
+    private final String TAG = "MyStore";
+    private Store store;
+    private ArrayAdapter<CharSequence> adapter;
+    private MystoreViewModel model;
+
+    // input fields
+    private EditText storeName;
+    private EditText description;
+    private EditText address;
+    private Spinner fromSpinner;
+    private Spinner untilSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mystore);
 
-        mode = (String) getIntent().getExtras().getSerializable("mode");
+        model = new ViewModelProvider(this).get(MystoreViewModel.class);
+        store = new Store(
+                UUID.randomUUID().toString(),
+                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                "",
+                "",
+                ""
+                );
 
-        if (mode.equals("edit")) {
+        storeName = findViewById(R.id.storeName);
+        description = findViewById(R.id.description);
+        address = findViewById(R.id.address);
+        fromSpinner = findViewById(R.id.spinner);
+        untilSpinner = findViewById(R.id.spinner2);
+
+        adapter = ArrayAdapter.createFromResource(this, R.array.hours, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        fromSpinner.setAdapter(adapter);
+        untilSpinner.setAdapter(adapter);
+
+        if (getIntent().hasExtra("store")) {
             ((TextView)findViewById(R.id.addStore)).setText(R.string.editStore);
             ((MaterialToolbar)findViewById(R.id.topBar)).setTitle(R.string.editStore);
+            store = (Store) getIntent().getExtras().getSerializable("store");
             prefillFields();
         }
 
-        Spinner spinner = findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.hours, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
-        Spinner spinner2 = findViewById(R.id.spinner2);
-        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this, R.array.hours, android.R.layout.simple_spinner_item);
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner2.setAdapter(adapter2);
-        spinner2.setOnItemSelectedListener(this);
+        findViewById(R.id.confirm_store).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSubmit();
+            }
+        });
 
         // Enabled action bar back to Base activity
         setSupportActionBar(findViewById(R.id.topBar));
@@ -56,21 +87,25 @@ public class MyStore extends AppCompatActivity implements AdapterView.OnItemSele
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        String text = adapterView.getItemAtPosition(i).toString();
-        Toast.makeText(adapterView.getContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
+    private void onSubmit() {
+        store.setName(storeName.getText().toString());
+        store.setDescription(description.getText().toString());
+        store.setPhysicalAddress(address.getText().toString());
+//        store.setOpeningTime(fromSpinner.getSelectedItem().toString());
+//        store.setClosingTime(untilSpinner.getSelectedItem().toString());
+        model.updateStores(store);
+        finish();
     }
 
     private void prefillFields() {
-        //TODO: Prefill fields
+        storeName.setText(store.getName());
+        description.setText(store.getDescription());
+        address.setText(store.getPhysicalAddress());
+//        fromSpinner.setSelection(adapter.getPosition(store.getOpeningTime()));
+//        untilSpinner.setSelection(adapter.getPosition(store.getClosingTime()));
     }
 
+    // for back button
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
