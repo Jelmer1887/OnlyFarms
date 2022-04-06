@@ -29,6 +29,7 @@ public class MyStore extends AppCompatActivity {
     private Store store;
     private ArrayAdapter<CharSequence> adapter;
     private MystoreViewModel model;
+    private String toast = "Store Created!";
 
     // input fields
     private EditText storeName;
@@ -64,6 +65,7 @@ public class MyStore extends AppCompatActivity {
         untilSpinner.setAdapter(adapter);
 
         if (getIntent().hasExtra("store")) {
+            toast = "Store Updated!";
             ((TextView)findViewById(R.id.addStore)).setText(R.string.editStore);
             ((MaterialToolbar)findViewById(R.id.topBar)).setTitle(R.string.editStore);
             store = (Store) getIntent().getExtras().getSerializable("store");
@@ -94,6 +96,7 @@ public class MyStore extends AppCompatActivity {
 //        store.setOpeningTime(fromSpinner.getSelectedItem().toString());
 //        store.setClosingTime(untilSpinner.getSelectedItem().toString());
         model.updateStores(store);
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         finish();
     }
 
