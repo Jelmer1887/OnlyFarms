@@ -1,9 +1,5 @@
 package nl.tue.onlyfarms.view;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,9 +8,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
@@ -62,6 +58,7 @@ public class LoginView extends AppCompatActivity {
         String email = emailElement.getText().toString().trim();
         String password = passwordElement.getText().toString().trim();
 
+        // authenticate user
         model.login(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(LoginView.this, "Logged in!", Toast.LENGTH_LONG).show();

@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.ReservationMakingClient">
+    tools:context=".view.client.ConfirmReservationClient">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -46,20 +46,21 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginBottom="24dp">
+            app:layout_constraintStart_toStartOf="parent">
 
             <Button
-                android:id="@+id/cancel"
+                android:id="@+id/clear"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:backgroundTint="#911111"
-                android:text="@string/cancel"
+                android:text="@string/clear"
                 app:layout_constraintStart_toEndOf="@+id/reserve"
                 app:layout_constraintTop_toTopOf="parent" />
 

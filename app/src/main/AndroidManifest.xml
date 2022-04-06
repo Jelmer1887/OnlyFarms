@@ -27,7 +27,7 @@
             android:name=".view.RegisterView"
             android:exported="false" />
         <activity
-            android:name=".view.ReservationMakingClient"
+            android:name=".view.client.ConfirmReservationClient"
             android:exported="true"
             android:parentActivityName=".view.StoreGeneral" />
         <activity

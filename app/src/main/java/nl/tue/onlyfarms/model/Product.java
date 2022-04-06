@@ -1,13 +1,12 @@
 package nl.tue.onlyfarms.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import com.google.firebase.database.IgnoreExtraProperties;
 
-public class Product implements Model{
+import java.io.Serializable;
+import java.util.List;
+
+@IgnoreExtraProperties
+public class Product implements Model, Serializable {
     private String uid;
     private String storeUid;
     private String name;
@@ -18,6 +17,7 @@ public class Product implements Model{
     // might need to be changed to a single tag idk
     private List<String> tags;
     // TODO: add images
+    private int quantityInCart = 0;
 
     public Product() {}
 
@@ -89,4 +89,10 @@ public class Product implements Model{
     }
 
     public void setTags(List<String> tags) { this.tags = tags; }
+
+    public int whatIsInCart() { return this.quantityInCart; }
+
+    public void changeBy(int x) {
+        this.quantityInCart += x;
+    }
 }

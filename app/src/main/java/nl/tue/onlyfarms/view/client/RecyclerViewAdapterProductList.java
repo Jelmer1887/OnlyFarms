@@ -74,9 +74,10 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         holder.getQuantityField().setText(quantity);
         holder.getPriceField().setText(priceString);
         holder.setMaxQuantity(product.getQuantity());
+        holder.setProduct(product);
     }
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder{
+    protected static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView nameField;
         private final TextView priceField;
         private final TextView quantityField;
@@ -86,7 +87,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         private final Button increaseButton;
         private final Button decreaseButton;
 
-        private int selectedQuantity;
+        private Product product;
         private int maxQuantity;
 
         public ViewHolder(@NonNull View itemView) {
@@ -104,19 +105,18 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
             quantitySelectedField.setText(String.valueOf(0));
 
             // listeners required for responding to buttons
-            increaseButton.setOnClickListener(v -> setQuantitySelectedField(1));
-            decreaseButton.setOnClickListener(v -> setQuantitySelectedField(-1));
+            increaseButton.setOnClickListener(v -> changeByQuantitySelectedField(1));
+            decreaseButton.setOnClickListener(v -> changeByQuantitySelectedField(-1));
         }
 
-        private void setQuantitySelectedField(int val) {
-            selectedQuantity = Integer.parseInt((String) quantitySelectedField.getText());
-
-            if (selectedQuantity + val < 0 || selectedQuantity + val > maxQuantity) {
+        private void changeByQuantitySelectedField(int val) {
+            if (product.whatIsInCart() + val < 0 || product.whatIsInCart() + val > maxQuantity) {
                 return;
             }
 
             //TODO: pass new value to other views here!
-            quantitySelectedField.setText(String.valueOf(selectedQuantity + val));
+            product.changeBy(val);
+            quantitySelectedField.setText(String.valueOf(product.whatIsInCart()));
         }
 
         private void setQuantitySelectedField() {
@@ -151,6 +151,11 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
 
         protected Button getIncreaseButton() {
             return increaseButton;
+        }
+
+        protected void setProduct(Product product) {
+            this.product = product;
+            quantitySelectedField.setText(String.valueOf(product.whatIsInCart()));
         }
     }
 }

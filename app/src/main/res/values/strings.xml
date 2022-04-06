@@ -105,6 +105,8 @@
 
     <string name="your_stores">Your Stores</string>
     <string name="addStore">Add store</string>
+    <string name="item_name">Item Name</string>
+    <string name="clear">Clear</string>
 
     <string name="per_unit">Per Unit</string>
     <string name="price">Price</string>

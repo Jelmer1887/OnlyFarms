@@ -8,27 +8,19 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.io.Serializable;
 import java.util.Locale;
 import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
 
-import nl.tue.onlyfarms.DebugVals;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityStoreGeneralBinding;
-import nl.tue.onlyfarms.model.Product;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.view.client.ConfirmReservationClient;
 import nl.tue.onlyfarms.view.client.RecyclerViewAdapterProductList;
 import nl.tue.onlyfarms.viewmodel.ProductViewModel;
 
@@ -164,7 +156,7 @@ public class StoreGeneral extends AppCompatActivity {
         });
 
         // 'make this reservation' button listener -> create a new product
-        findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
+        /*findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
             //TODO: instead of creating a new product, this button should go to make-reservation-ish screen.
             //Create new random product with random quantity
             String[] tags = new String[]{"spicey", "disgusting", "'chicken'"};
@@ -193,6 +185,11 @@ public class StoreGeneral extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "failed to create product! :(", Toast.LENGTH_SHORT).show();
                 }
             });
+        });*/
+        findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), ConfirmReservationClient.class);
+            intent.putExtra("products", (Serializable) model.getFilteredProductData().getValue());
+            startActivity(intent);
         });
 
         // Change stuff here if vendor

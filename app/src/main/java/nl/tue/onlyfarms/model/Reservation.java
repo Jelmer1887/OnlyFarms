@@ -1,10 +1,11 @@
 package nl.tue.onlyfarms.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reservation implements Model{
+public class Reservation implements Model, Serializable {
     private String uid;
     private String storeUid;
     private String userUid;

@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,9 +122,7 @@ public class ReservationClientViewModel extends ViewModel {
      * NOTE2: this method does NOT trigger the MutableLiveData object's observers unless no
      *                               unconfirmed reservation was present.
      * */
-    public void updateUnconfirmedReservation(Product product, int quantity) {
-        if (this.client.getValue() == null) {throw new IllegalStateException("client is not set!");}
-
+    public void updateUnconfirmedReservation(Product product) {
         Calendar calendar = Calendar.getInstance();
         Reservation reservation = this.unconfirmedReservation.getValue();
 
@@ -132,9 +131,9 @@ public class ReservationClientViewModel extends ViewModel {
         if (reservation.getUid() == null) {reservation.setUid(UUID.randomUUID().toString());}
         if (reservation.getProducts() == null) {reservation.setProducts(new HashMap<>());}
         if (reservation.getStoreUid() == null) { reservation.setStoreUid(product.getStoreUid()); }
-        if (reservation.getUserUid() == null) {reservation.setUserUid(client.getValue().getUid());}
+        if (reservation.getUserUid() == null) {reservation.setUserUid(FirebaseAuth.getInstance().getUid());}
 
-        reservation.getProducts().put(product.getUid(), quantity);
+        reservation.getProducts().put(product.getUid(), product.whatIsInCart());
 
         // products with a quantity <= 0 are added to a removal list, as the reservation cannot be
         // read and edited at the same time (Iterator design pattern property)
@@ -143,6 +142,7 @@ public class ReservationClientViewModel extends ViewModel {
             if (amount <= 0) { removalList.add(uid); }
         });
         for (String uid : removalList) { reservation.getProducts().remove(uid); }
+        this.unconfirmedReservation.setValue(reservation);
     }
 
     /**
@@ -156,7 +156,9 @@ public class ReservationClientViewModel extends ViewModel {
      * maintained, and the {@link Task<Void>} is failed with some feedback.
      * Implementing a response to the task is considered the responsibility of the associated view.
      * */
-    public Task<Void> confirmReservation() {return null;}
+    public Task<Void> confirmReservation() {
+        return UploadReservation(this.unconfirmedReservation.getValue());
+    }
 
     public Task<Void> UploadReservation(Reservation r) {
         return reservationFireBaseService.updateToDatabase(r, r.getUid());
