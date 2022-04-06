@@ -64,6 +64,7 @@
     <string name="opening_hours_placeholder">This is where the detailed/fromatted opening hours should go...</string>
 
     <string name="editStore">Edit store</string>
+    <string name="editProduct">Edit product</string>
 
     <string-array name="hours">
         <item>6:00</item>

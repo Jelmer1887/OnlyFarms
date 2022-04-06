@@ -1,5 +1,7 @@
 package nl.tue.onlyfarms.model;
 
+import android.text.Editable;
+
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
@@ -68,8 +70,9 @@ public class Product implements Model, Serializable {
         return price;
     }
 
-    public void setPrice(double price) {
+    public double setPrice(double price) {
         this.price = price;
+        return 0;
     }
 
     public int getQuantity() { return this.quantity; }
