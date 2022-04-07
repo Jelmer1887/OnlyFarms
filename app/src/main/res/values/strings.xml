@@ -49,7 +49,7 @@
     <string name="Reservations">Reservations</string>
     <string name="clientName">Client name:</string>
     <string name="orderedItems">Items ordered:</string>
-    <string name="MakeReservation">Make this reservation</string>
+    <string name="MakeReservation">Go To Cart</string>
     <string name="seeMore">See more...</string>
 
     <string name="productName">Product name</string>
