@@ -123,7 +123,7 @@
                 android:id="@+id/priceInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="number|numberDecimal"
                 app:layout_constraintTop_toBottomOf="@id/price" />
 
             <TextView
