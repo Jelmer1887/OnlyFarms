@@ -67,8 +67,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
         // build strings required as values in the UI fields
-        double price = ((double)((int)(product.getPrice() *100.0)))/100.0;
-        String priceString = "€ " + price;
+        String priceString = "€ " + String.format("%.2f", product.getPrice());
 
         holder.getNameField().setText(product.getName());
         holder.getDescriptionField().setText(product.getDescription());

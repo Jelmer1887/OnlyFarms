@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
@@ -98,7 +99,7 @@ public class AddProduct extends AppCompatActivity {
     private void prefillFields() {
         productNameInput.setText(product.getName());
         descriptionInput.setText(product.getDescription());
-        priceInput.setText(String.valueOf(product.getPrice()));
+        priceInput.setText(String.format(Locale.ROOT,"%.2f", product.getPrice()));
         perUnitInput.setText(product.getUnit());
     }
 
