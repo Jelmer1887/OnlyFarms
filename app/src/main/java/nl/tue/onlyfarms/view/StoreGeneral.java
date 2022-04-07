@@ -167,6 +167,8 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
         if (getIntent().hasExtra("isClient")) {
             // make cards clickable to edit product
             adapter.setClickListener(this);
+            adapter.setIsClient(true);
+            adapter.notifyDataSetChanged();
 
             // change see more to edit store
             TextView seeMore = findViewById(R.id.storeGeneral_see_more);

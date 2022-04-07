@@ -24,6 +24,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     private static final String TAG = "RecyclerViewAdapterProductList";
     private final List<Product> products = new ArrayList<>();
     private RecyclerViewAdapterProductList.ItemClickListener itemClickListener;
+    private boolean isClient;
 
     public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         // when product data changes, (re)build the list of products
@@ -80,6 +81,16 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         holder.getQuantityField().setText(product.getUnit());
         holder.getPriceField().setText(priceString);
         holder.setProduct(product);
+
+        if (isClient) {
+            holder.getIncreaseButton().setVisibility(View.GONE);
+            holder.getDecreaseButton().setVisibility(View.GONE);
+            holder.getQuantitySelectedField().setVisibility(View.GONE);
+        }
+    }
+
+    public void setIsClient(boolean isClient) {
+        this.isClient = isClient;
     }
 
     protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
