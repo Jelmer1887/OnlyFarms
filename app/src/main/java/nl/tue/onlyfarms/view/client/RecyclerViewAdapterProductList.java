@@ -67,14 +67,13 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
         // build strings required as values in the UI fields
-        String quantity = String.format(Locale.ENGLISH, "%d %s", product.getQuantity(),product.getUnit());
-        String priceString = "€ " + product.getPrice();
+        double price = ((double)((int)(product.getPrice() *100.0)))/100.0;
+        String priceString = "€ " + price;
 
         holder.getNameField().setText(product.getName());
         holder.getDescriptionField().setText(product.getDescription());
-        holder.getQuantityField().setText(quantity);
+        holder.getQuantityField().setText(product.getUnit());
         holder.getPriceField().setText(priceString);
-        holder.setMaxQuantity(product.getQuantity());
         holder.setProduct(product);
     }
 
@@ -89,7 +88,6 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         private final Button decreaseButton;
 
         private Product product;
-        private int maxQuantity;
 
         private RecyclerViewAdapterProductList.ItemClickListener listener;
 
@@ -117,10 +115,6 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         }
 
         private void changeByQuantitySelectedField(int val) {
-            if (product.whatIsInCart() + val < 0 || product.whatIsInCart() + val > maxQuantity) {
-                return;
-            }
-
             //TODO: pass new value to other views here!
             product.changeBy(val);
             quantitySelectedField.setText(String.valueOf(product.whatIsInCart()));
@@ -129,8 +123,6 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         private void setQuantitySelectedField() {
             quantitySelectedField.setText(String.valueOf(0));
         }
-
-        protected void setMaxQuantity(int max) { this.maxQuantity = max; }
 
         protected TextView getNameField() {
             return nameField;
