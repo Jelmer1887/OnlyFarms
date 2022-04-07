@@ -70,12 +70,8 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         String quantity = String.format(Locale.ENGLISH, "%d %s", product.getQuantity(),product.getUnit());
         String priceString = "€ " + product.getPrice();
 
-        StringBuilder description = new StringBuilder();
-        product.getTags().forEach(tag -> description.append(tag).append(" "));
-        description.append("\n").append(product.getDescription());
-
         holder.getNameField().setText(product.getName());
-        holder.getDescriptionField().setText(description.toString());
+        holder.getDescriptionField().setText(product.getDescription());
         holder.getQuantityField().setText(quantity);
         holder.getPriceField().setText(priceString);
         holder.setMaxQuantity(product.getQuantity());
@@ -171,9 +167,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
 
         @Override
         public void onClick(View v) {
-            Log.d(TAG, "onClick: product card has been clicked");
             if (this.listener != null) {
-                Log.d(TAG, "onClick: product card has a listener");
                 listener.onItemClick(v, getAdapterPosition());
             }
         }

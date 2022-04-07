@@ -37,10 +37,12 @@ public class AddProduct extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addproduct);
 
+        String uid = getIntent().getStringExtra("storeUid");
+
         model = new ViewModelProvider(this).get(ProductViewModel.class);
         product = new Product(
                 UUID.randomUUID().toString(),
-                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                uid,
                 "",
                 "",
                 5,

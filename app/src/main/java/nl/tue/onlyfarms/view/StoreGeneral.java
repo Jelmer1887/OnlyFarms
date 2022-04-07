@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -203,6 +204,12 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
 
             seeMore.setOnClickListener(view -> {
                 startActivity(new Intent(this, MyStore.class).putExtra("store", store));
+            });
+
+            Button makeReservation = findViewById(R.id.storeGeneral_reserve);
+            makeReservation.setText(R.string.addProduct);
+            makeReservation.setOnClickListener(view -> {
+                startActivity(new Intent(this, AddProduct.class).putExtra("storeUid", store.getUid()));
             });
         }
     }
