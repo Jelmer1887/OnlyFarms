@@ -23,6 +23,7 @@ import nl.tue.onlyfarms.model.Product;
 public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<RecyclerViewAdapterProductList.ViewHolder> {
     private static final String TAG = "RecyclerViewAdapterProductList";
     private final List<Product> products = new ArrayList<>();
+    private RecyclerViewAdapterProductList.ItemClickListener itemClickListener;
 
     public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         // when product data changes, (re)build the list of products
@@ -43,7 +44,8 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.frame_card_product, parent, false);
-        return new ViewHolder(view);
+        Log.d(TAG, "onCreateViewHolder: Viewholder being created");
+        return new ViewHolder(view, itemClickListener);
     }
 
     @Override
@@ -58,6 +60,9 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         Log.d(TAG, "products in list: " + products.size());
         return products.size();
     }
+
+    // method to retrieve store of clicked card
+    public Product getItem(int id) { return products.get(id); }
 
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
@@ -77,7 +82,7 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         holder.setProduct(product);
     }
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder {
+    protected static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView nameField;
         private final TextView priceField;
         private final TextView quantityField;
@@ -90,7 +95,9 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         private Product product;
         private int maxQuantity;
 
-        public ViewHolder(@NonNull View itemView) {
+        private RecyclerViewAdapterProductList.ItemClickListener listener;
+
+        public ViewHolder(@NonNull View itemView, ItemClickListener l) {
             super(itemView);
 
             nameField = itemView.findViewById(R.id.productCard_product_name);
@@ -107,6 +114,10 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
             // listeners required for responding to buttons
             increaseButton.setOnClickListener(v -> changeByQuantitySelectedField(1));
             decreaseButton.setOnClickListener(v -> changeByQuantitySelectedField(-1));
+
+            listener = l;
+            itemView.setOnClickListener(this);
+            Log.d(TAG, "ViewHolder: listener has been set");
         }
 
         private void changeByQuantitySelectedField(int val) {
@@ -157,5 +168,22 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
             this.product = product;
             quantitySelectedField.setText(String.valueOf(product.whatIsInCart()));
         }
+
+        @Override
+        public void onClick(View v) {
+            Log.d(TAG, "onClick: product card has been clicked");
+            if (this.listener != null) {
+                Log.d(TAG, "onClick: product card has a listener");
+                listener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public void setClickListener(RecyclerViewAdapterProductList.ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener{
+        void onItemClick(View view, int position);
     }
 }

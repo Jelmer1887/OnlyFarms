@@ -11,6 +11,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -22,9 +23,10 @@ import nl.tue.onlyfarms.databinding.ActivityStoreGeneralBinding;
 import nl.tue.onlyfarms.model.Store;
 import nl.tue.onlyfarms.view.client.ConfirmReservationClient;
 import nl.tue.onlyfarms.view.client.RecyclerViewAdapterProductList;
+import nl.tue.onlyfarms.view.vendor.AddProduct;
 import nl.tue.onlyfarms.viewmodel.ProductViewModel;
 
-public class StoreGeneral extends AppCompatActivity {
+public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapterProductList.ItemClickListener {
     private static final String TAG = "StoreGeneral";
 
     private Store store;
@@ -138,6 +140,8 @@ public class StoreGeneral extends AppCompatActivity {
                 debug1.append(true).append(" -> swapping adapter from ")
                         .append(adapter).append(" to ProductListAdapter");
                 adapter = new RecyclerViewAdapterProductList(this, model.getFilteredProductData());
+                Log.d(TAG, "onCreate: activity becomes listener");
+                adapter.setClickListener(this);
                 model.getFilteredProductData().observe(this, s -> adapter.notifyDataSetChanged());
                 productListView.swapAdapter(adapter, true);
             } else {
@@ -200,6 +204,20 @@ public class StoreGeneral extends AppCompatActivity {
             seeMore.setOnClickListener(view -> {
                 startActivity(new Intent(this, MyStore.class).putExtra("store", store));
             });
+        }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Log.d(TAG, "onItemClick: We got this far");
+        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
+        // if vendor add link to edit products
+        if (getIntent().hasExtra("isClient")) {
+            Intent intent = new Intent(this, AddProduct.class);
+            intent.putExtra("product", adapter.getItem(position));
+            intent.putExtra("edit", true);
+            Log.d(TAG, "Going to AddProduct with intent: " + intent);
+            startActivity(intent);
         }
     }
 }

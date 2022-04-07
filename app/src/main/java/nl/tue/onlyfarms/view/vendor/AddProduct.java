@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -52,6 +53,11 @@ public class AddProduct extends AppCompatActivity {
         descriptionInput = findViewById(R.id.descriptionInput);
         priceInput = findViewById(R.id.priceInput);
         perUnitInput = findViewById(R.id.perUnitInput);
+
+        if (getIntent().hasExtra("edit")) {
+            Button button = findViewById(R.id.addProductButton);
+            button.setText(R.string.editProduct);
+        }
 
         if (getIntent().hasExtra("product")) {
             ((TextView)findViewById(R.id.addProduct)).setText(R.string.editProduct);
