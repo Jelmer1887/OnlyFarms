@@ -1,7 +1,6 @@
 package nl.tue.onlyfarms.view;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,9 +10,7 @@ import android.widget.TextView;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityStoreDetailBinding;
-import nl.tue.onlyfarms.databinding.ActivityStoreGeneralBinding;
 import nl.tue.onlyfarms.model.Store;
-import nl.tue.onlyfarms.viewmodel.ProductViewModel;
 
 public class StoreDetail extends AppCompatActivity {
     private static final String TAG = "StoreDetails";
@@ -22,7 +19,7 @@ public class StoreDetail extends AppCompatActivity {
 
     private TextView nameField;
     private TextView descriptionField;
-    private TextView adressField;
+    private TextView addressField;
     private TextView openField;
 
     @SuppressLint("SetTextI18n")
@@ -43,15 +40,15 @@ public class StoreDetail extends AppCompatActivity {
 
         this.nameField = findViewById(R.id.storeDetail_store_name);
         this.descriptionField = findViewById(R.id.storeDetail_description_placeholder);
-        this.adressField = findViewById(R.id.storeDetail_address);
-        this.openField = findViewById(R.id.opening_hours_placeholder);
+        this.addressField = findViewById(R.id.storeDetail_address);
+        this.openField = findViewById(R.id.storeDetail_open);
 
         StringBuilder description = new StringBuilder();
         StringBuilder address = new StringBuilder("address:\n\t");
 
         nameField.setText(store.getName());
         descriptionField.setText(description.append(store.getDescription()));
-        adressField.setText(address.append(store.getPhysicalAddress()));
+        addressField.setText(address.append(store.getPhysicalAddress()));
         openField.setText("open from 13am to -42pm\n(replace if openingsHours are decided to be stored.)");
 
         // Enabled action bar back to Base activity

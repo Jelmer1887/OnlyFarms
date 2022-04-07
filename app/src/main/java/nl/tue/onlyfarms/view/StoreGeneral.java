@@ -38,8 +38,7 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
     private TextView storeNameField;
     private TextView storeAddressField;
     private TextView storeOpeningHoursField;
-    private TextView storeRatingField;
-    private TextView storeTagsField;
+    private TextView storeDescriptionField;
 
     private RecyclerView productListView;
     private RecyclerViewAdapterProductList adapter;
@@ -103,14 +102,13 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
         this.storeNameField = findViewById(R.id.storeGeneral_store_name);
         this.storeAddressField = findViewById(R.id.storeGeneral_address);
         this.storeOpeningHoursField = findViewById(R.id.storeGeneral_opening_hours);
-        this.storeRatingField = findViewById(R.id.storeGeneral_rating);
-        this.storeTagsField = findViewById(R.id.storeGeneral_tags);
+        this.storeDescriptionField = findViewById(R.id.storeGeneral_description);
 
         storeNameField.setText(store.getName());
         storeAddressField.setText(store.getPhysicalAddress());
         storeOpeningHoursField.setText("No data stored!");
-        storeRatingField.setText("ratings coming soon! (tm)");
-        storeTagsField.setText("tags no");
+        storeDescriptionField.setText(store.getDescription());
+
 
         // ensure store is set in model (required to get product data from database)
         if (model.getStore().getValue() == null) {

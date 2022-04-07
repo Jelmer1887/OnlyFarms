@@ -49,22 +49,6 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/storeDetail_tags"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Tags"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_rating" />
-
-                <TextView
-                    android:id="@+id/storeDetail_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Rating"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_open" />
-
-                <TextView
                     android:id="@+id/storeDetail_open"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -97,7 +81,7 @@
                     android:textStyle="bold"
                     android:layout_marginTop="24dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_tags" />
+                    app:layout_constraintTop_toBottomOf="@id/storeDetail_open" />
 
                 <TextView
                     android:id="@+id/storeDetail_description_placeholder"
@@ -106,24 +90,6 @@
                     android:text="@string/description_placeholder"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/storeDetail_description" />
-
-                <TextView
-                    android:id="@+id/storeDetail_opening_hours"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/Opening_hours"
-                    android:textStyle="bold"
-                    android:layout_marginTop="24dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_description_placeholder" />
-
-                <TextView
-                    android:id="@+id/opening_hours_placeholder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/description_placeholder"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/storeDetail_opening_hours" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -22,22 +22,6 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/storeCard_TagsField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Tags"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeCard_RatingField" />
-
-            <TextView
-                android:id="@+id/storeCard_RatingField"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/Rating"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/storeCard_OpeningHoursField" />
-
-            <TextView
                 android:id="@+id/storeCard_OpeningHoursField"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

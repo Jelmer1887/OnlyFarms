@@ -17,8 +17,6 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder implements V
     private TextView nameField;
     private TextView addressField;
     private TextView openingsHoursField;
-    private TextView ratingField;
-    private TextView tagsField;
     private ImageView imageField;
 
     private StoreCardAdapter.ItemClickListener listener;
@@ -29,8 +27,6 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder implements V
         nameField = itemView.findViewById(R.id.storeCard_nameAndDistanceField);
         addressField = itemView.findViewById(R.id.storeCard_addressField);
         openingsHoursField = itemView.findViewById(R.id.storeCard_OpeningHoursField);
-        ratingField = itemView.findViewById(R.id.storeCard_RatingField);
-        tagsField = itemView.findViewById(R.id.storeCard_TagsField);
         imageField = itemView.findViewById(R.id.storeCard_imageView);
 
         itemView.setOnClickListener(this);
@@ -41,10 +37,6 @@ public class HomeRecyclerViewHolder extends RecyclerView.ViewHolder implements V
     public TextView getAddressField() { return addressField; }
 
     public TextView getOpeningsHoursField() {return openingsHoursField; }
-
-    public TextView getRatingField() { return ratingField; }
-
-    public TextView getTagsField() { return tagsField; }
 
     public ImageView getImageField() { return imageField; }
 

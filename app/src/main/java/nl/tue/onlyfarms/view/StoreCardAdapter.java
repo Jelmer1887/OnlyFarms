@@ -87,8 +87,6 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         holder.getNameField().setText(store.getName());
         holder.getAddressField().setText(store.getPhysicalAddress());
         holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
-        holder.getRatingField().setText("Ratings coming soon (tm)");
         holder.getOpeningsHoursField().setText("OpeningHours coming soon (tm)");
-        holder.getTagsField().setText("Tags coming soon (tm)");
     }
 }
