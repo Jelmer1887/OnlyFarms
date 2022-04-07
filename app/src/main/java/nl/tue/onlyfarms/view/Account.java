@@ -2,6 +2,7 @@
 
 package nl.tue.onlyfarms.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,10 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
@@ -38,6 +36,7 @@ public class Account extends Fragment {
     private EditText newPassWordField;
     private Button confirmButton;
     private Button removeButton;
+    private Context context;
 
 
     public static Account newInstance() {
@@ -64,8 +63,8 @@ public class Account extends Fragment {
         lastNameField = fragmentView.findViewById(R.id.myAccount_lastName);
         userNameField = fragmentView.findViewById(R.id.myAccount_userName);
         emailField = fragmentView.findViewById(R.id.myAccount_email);
-        confirmButton = fragmentView.findViewById(R.id.myAccount_confirmButton);
-        removeButton = fragmentView.findViewById(R.id.myAccount_REMOVE);
+        confirmButton = view.findViewById(R.id.myAccount_confirmButton);
+        removeButton = view.findViewById(R.id.myAccount_REMOVE);
 
         // Fill fields with current data (when the data is retrieved)
         model.getUser().observe(getViewLifecycleOwner(), user -> {
@@ -79,27 +78,26 @@ public class Account extends Fragment {
             emailField.setText(user.getEmailAddress());
         });
 
-
         confirmButton.setOnClickListener(v -> {
             Log.d(TAG, "submitting new account data to viewModel...");
             if (model.getUser().getValue() == null) {
-                Toast.makeText(getActivity(), "user couldn't be determined: was null!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "user couldn't be determined: was null!", Toast.LENGTH_SHORT).show();
                 throw new NullPointerException("failed to determine user, user is null!");
             }
             User newUser = new User(
-                model.getUser().getValue().getUid(),
-                userNameField.getText().toString().trim(),
-                firstNameField.getText().toString().trim(),
-                lastNameField.getText().toString().trim(),
-                emailField.getText().toString().trim(),
-                model.getUser().getValue().getStatus()
+                    model.getUser().getValue().getUid(),
+                    userNameField.getText().toString().trim(),
+                    firstNameField.getText().toString().trim(),
+                    lastNameField.getText().toString().trim(),
+                    emailField.getText().toString().trim(),
+                    model.getUser().getValue().getStatus()
             );
             model.uploadUser(newUser).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getActivity(), "account updated!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "account updated!", Toast.LENGTH_SHORT).show();
                 } else {
                     String msg = "something went wrong!";
-                    Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
                 }
             });
         });
@@ -116,12 +114,19 @@ public class Account extends Fragment {
                 Log.d(TAG, "removalProcessMonitor: complete = " + complete);
                 String msg = "Your account was removed!";
                 if (complete) {
-                    Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
                     Log.d(TAG, "starting log-in activity and finishing Base");
                     startActivity(new Intent(getContext(), LoginView.class));
                     getActivity().finish();
                 }
             });
         });
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        // stupid fix for getActivity() == null
+        this.context = context;
     }
 }
