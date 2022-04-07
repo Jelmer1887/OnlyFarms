@@ -93,8 +93,8 @@ public class MyStore extends AppCompatActivity {
         store.setName(storeName.getText().toString());
         store.setDescription(description.getText().toString());
         store.setPhysicalAddress(address.getText().toString());
-//        store.setOpeningTime(fromSpinner.getSelectedItem().toString());
-//        store.setClosingTime(untilSpinner.getSelectedItem().toString());
+        store.setOpeningTime(fromSpinner.getSelectedItem().toString());
+        store.setClosingTime(untilSpinner.getSelectedItem().toString());
         model.updateStores(store);
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         finish();
@@ -104,8 +104,8 @@ public class MyStore extends AppCompatActivity {
         storeName.setText(store.getName());
         description.setText(store.getDescription());
         address.setText(store.getPhysicalAddress());
-//        fromSpinner.setSelection(adapter.getPosition(store.getOpeningTime()));
-//        untilSpinner.setSelection(adapter.getPosition(store.getClosingTime()));
+        fromSpinner.setSelection(adapter.getPosition(store.getOpeningTime()));
+        untilSpinner.setSelection(adapter.getPosition(store.getClosingTime()));
     }
 
     // for back button

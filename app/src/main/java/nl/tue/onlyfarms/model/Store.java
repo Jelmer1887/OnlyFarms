@@ -13,6 +13,8 @@ public class Store implements Serializable, Model {
     private GeoPoint coordinates;
     private String emailAddress;
     private String phoneNumber;
+    private String openingTime;
+    private String closingTime;
     // TODO: add images (could)
 
     // mandatory empty constructor
@@ -88,5 +90,21 @@ public class Store implements Serializable, Model {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getOpeningTime() {
+        return openingTime;
+    }
+
+    public void setOpeningTime(String openingTime) {
+        this.openingTime = openingTime;
+    }
+
+    public String getClosingTime() {
+        return closingTime;
+    }
+
+    public void setClosingTime(String closingTime) {
+        this.closingTime = closingTime;
     }
 }

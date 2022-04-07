@@ -105,8 +105,8 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
         this.storeDescriptionField = findViewById(R.id.storeGeneral_description);
 
         storeNameField.setText(store.getName());
-        storeAddressField.setText(store.getPhysicalAddress());
-        storeOpeningHoursField.setText("No data stored!");
+        storeAddressField.append(" " + store.getPhysicalAddress());
+        storeOpeningHoursField.append(String.format(Locale.ROOT, " %s - %s", store.getOpeningTime(), store.getClosingTime()));
         storeDescriptionField.setText(store.getDescription());
 
 

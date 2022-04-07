@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.ActivityStoreDetailBinding;
 import nl.tue.onlyfarms.model.Store;
@@ -49,7 +51,7 @@ public class StoreDetail extends AppCompatActivity {
         nameField.setText(store.getName());
         descriptionField.setText(description.append(store.getDescription()));
         addressField.setText(address.append(store.getPhysicalAddress()));
-        openField.setText("open from 13am to -42pm\n(replace if openingsHours are decided to be stored.)");
+        openField.append(String.format(Locale.ROOT, " %s - %s", store.getOpeningTime(), store.getClosingTime()));
 
         // Enabled action bar back to Base activity
         setSupportActionBar(findViewById(R.id.storeDetail_topBar));
