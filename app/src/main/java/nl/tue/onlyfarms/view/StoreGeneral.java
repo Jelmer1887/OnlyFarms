@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.Random;
@@ -41,7 +43,7 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
     private TextView storeDescriptionField;
 
     private RecyclerView productListView;
-    private RecyclerViewAdapterProductList adapter;
+    private RecyclerViewAdapterProductList adapter = new RecyclerViewAdapterProductList();
 
     private ProductViewModel model;
     private ActivityStoreGeneralBinding binding;
@@ -98,12 +100,12 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
         });
 
         // retrieve and set store-fields of the ui to their values.
-        // TODO: set these ID's to the correct fields (currently overwriting labels)
         this.storeNameField = findViewById(R.id.storeGeneral_store_name);
         this.storeAddressField = findViewById(R.id.storeGeneral_address);
         this.storeOpeningHoursField = findViewById(R.id.storeGeneral_opening_hours);
         this.storeDescriptionField = findViewById(R.id.storeGeneral_description);
 
+        ((MaterialToolbar)findViewById(R.id.topBar)).setTitle(store.getName());
         storeNameField.setText(store.getName());
         storeAddressField.append(" " + store.getPhysicalAddress());
         storeOpeningHoursField.append(String.format(Locale.ROOT, " %s - %s", store.getOpeningTime(), store.getClosingTime()));
@@ -126,7 +128,7 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
 
         // Product list initial creation
         Log.d(TAG, "Expecting data to be unavailable ( which is actually "+ (!model.getAllDataReceived().getValue()) +"). Using empty adapter");
-        productListView.setAdapter(new RecyclerViewAdapterEmpty());
+        productListView.setAdapter(adapter);
 
 
         // Listeners -------------
@@ -135,19 +137,15 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
         // required to update productList when data is changed or not received yet.
         model.getAllDataReceived().observe(this, receivedData -> {
             StringBuilder debug1 = new StringBuilder("State of receivedData changed to ");
+
             if (receivedData) {
                 debug1.append(true).append(" -> swapping adapter from ")
                         .append(adapter).append(" to ProductListAdapter");
-                adapter = new RecyclerViewAdapterProductList(this, model.getFilteredProductData());
+                adapter.setData(this, model.getFilteredProductData());
                 Log.d(TAG, "onCreate: activity becomes listener");
-                adapter.setClickListener(this);
                 model.getFilteredProductData().observe(this, s -> adapter.notifyDataSetChanged());
-                productListView.swapAdapter(adapter, true);
-            } else {
-                debug1.append(false).append(" -> swapping adapter from ")
-                        .append(adapter).append(" to emptyAdapter");
-                productListView.swapAdapter(new RecyclerViewAdapterEmpty(), true);
             }
+
             Log.d(TAG, debug1.toString());
         });
 
@@ -158,37 +156,7 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
             startActivity(intent);
         });
 
-        // 'make this reservation' button listener -> create a new product
-        /*findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
-            //TODO: instead of creating a new product, this button should go to make-reservation-ish screen.
-            //Create new random product with random quantity
-            String[] tags = new String[]{"spicey", "disgusting", "'chicken'"};
-            Set<String> chosenTags = new HashSet<>();
-            chosenTags.add(tags[generator.nextInt(3)]);
-            chosenTags.add(tags[generator.nextInt(3)]);
-            double price = generator.nextDouble() % 50.00;
-            Log.d(TAG, "price is " + price);
-            price = ((double) ((int) (price * 100)) ) / 100;
-            Log.d(TAG, "price is now " + price);
-            Product product = new Product(
-                    UUID.randomUUID().toString(),
-                    store.getUid(),
-                    DebugVals.getRandom(DebugVals.Type.PRODUCT),
-                    String.valueOf(new Random().nextLong()),
-                    price,
-                    (10 - generator.nextInt(5)),
-                    "Kg",
-                    new ArrayList<>(chosenTags)
-            );
-
-            model.UploadProduct(product).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "product added!", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(), "failed to create product! :(", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });*/
+        // 'go to cart' button listener -> goes to reservation confirmation
         findViewById(R.id.storeGeneral_reserve).setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), ConfirmReservationClient.class);
             intent.putExtra("products", (Serializable) model.getFilteredProductData().getValue());
@@ -197,13 +165,17 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
 
         // Change stuff here if vendor
         if (getIntent().hasExtra("isClient")) {
+            // make cards clickable to edit product
+            adapter.setClickListener(this);
+
+            // change see more to edit store
             TextView seeMore = findViewById(R.id.storeGeneral_see_more);
             seeMore.setText(R.string.editStore);
-
             seeMore.setOnClickListener(view -> {
                 startActivity(new Intent(this, MyStore.class).putExtra("store", store));
             });
 
+            // change make reservation to add product
             Button makeReservation = findViewById(R.id.storeGeneral_reserve);
             makeReservation.setText(R.string.addProduct);
             makeReservation.setOnClickListener(view -> {
@@ -215,14 +187,13 @@ public class StoreGeneral extends AppCompatActivity implements RecyclerViewAdapt
     @Override
     public void onItemClick(View view, int position) {
         Log.d(TAG, "onItemClick: We got this far");
-        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
-        // if vendor add link to edit products
-        if (getIntent().hasExtra("isClient")) {
-            Intent intent = new Intent(this, AddProduct.class);
-            intent.putExtra("product", adapter.getItem(position));
-            intent.putExtra("edit", true);
-            Log.d(TAG, "Going to AddProduct with intent: " + intent);
-            startActivity(intent);
+        if (adapter == null) {
+            throw new NullPointerException("adapter not set! (null)");
         }
+
+        Intent intent = new Intent(this, AddProduct.class);
+        intent.putExtra("product", adapter.getItem(position));
+        Log.d(TAG, "Going to AddProduct with intent: " + intent);
+        startActivity(intent);
     }
 }

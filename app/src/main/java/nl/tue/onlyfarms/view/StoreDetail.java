@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.MaterialToolbar;
+
 import java.util.Locale;
 
 import nl.tue.onlyfarms.R;
@@ -46,11 +48,11 @@ public class StoreDetail extends AppCompatActivity {
         this.openField = findViewById(R.id.storeDetail_open);
 
         StringBuilder description = new StringBuilder();
-        StringBuilder address = new StringBuilder("address:\n\t");
 
+        ((MaterialToolbar)findViewById(R.id.storeDetail_topBar)).setTitle(store.getName());
         nameField.setText(store.getName());
         descriptionField.setText(description.append(store.getDescription()));
-        addressField.setText(address.append(store.getPhysicalAddress()));
+        addressField.append(" " + store.getPhysicalAddress());
         openField.append(String.format(Locale.ROOT, " %s - %s", store.getOpeningTime(), store.getClosingTime()));
 
         // Enabled action bar back to Base activity

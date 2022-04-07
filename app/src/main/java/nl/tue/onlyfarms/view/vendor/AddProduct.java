@@ -57,12 +57,8 @@ public class AddProduct extends AppCompatActivity {
         priceInput = findViewById(R.id.priceInput);
         perUnitInput = findViewById(R.id.perUnitInput);
 
-        if (getIntent().hasExtra("edit")) {
-            Button button = findViewById(R.id.addProductButton);
-            button.setText(R.string.editProduct);
-        }
-
         if (getIntent().hasExtra("product")) {
+            ((Button)findViewById(R.id.addProductButton)).setText(R.string.editProduct);
             ((TextView)findViewById(R.id.addProduct)).setText(R.string.editProduct);
             ((MaterialToolbar)findViewById(R.id.topBar)).setTitle(R.string.editProduct);
             product = (Product) getIntent().getExtras().getSerializable("product");

@@ -27,6 +27,13 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
 
     public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         // when product data changes, (re)build the list of products
+        setData(lifecycleOwner, productData);
+        Log.d(TAG, "constructor called!");
+    }
+
+    public RecyclerViewAdapterProductList() {}
+
+    public void setData(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         productData.observe(lifecycleOwner, productSet -> {
             Log.d(TAG, "change in data detected! clearing product list...");
             products.clear();
@@ -34,7 +41,6 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
             products.addAll(productSet);
             Log.d(TAG, "added " + productSet + "to product list.");
         });
-        Log.d(TAG, "constructor called!");
     }
 
 
@@ -115,6 +121,11 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
 
         private void changeByQuantitySelectedField(int val) {
             //TODO: pass new value to other views here!
+
+            if (product.whatIsInCart() == 0 && val < 0) {
+                return;
+            }
+
             product.changeBy(val);
             quantitySelectedField.setText(String.valueOf(product.whatIsInCart()));
         }
