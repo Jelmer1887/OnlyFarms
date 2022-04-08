@@ -1,5 +1,6 @@
 package nl.tue.onlyfarms.view.client;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +65,13 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
             throw new NullPointerException("Attempted to launch homeClient-fragment without Activity!");
         }
 
+        // Request Permissions
+        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(getContext(), perms)) {
+            Log.d(TAG, "Permissions granted!");
+        } else {
+            EasyPermissions.requestPermissions(this, "blablabla", 1, perms);
+        }
         // Variable initialisation
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
@@ -156,5 +165,13 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
         intent.putExtra("store", adapter.getItem(position));
         Log.d("Home", "creating StoreGeneral activity with intent: " + intent);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 }

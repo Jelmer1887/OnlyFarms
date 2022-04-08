@@ -59,6 +59,8 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.4.1'
     implementation 'androidx.navigation:navigation-ui:2.4.1'
 
+    implementation 'pub.devrel:easypermissions:3.0.0'
+
     // Firebase dependencies
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-auth'
