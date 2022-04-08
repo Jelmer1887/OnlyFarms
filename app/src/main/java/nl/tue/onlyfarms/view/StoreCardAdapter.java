@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -36,6 +37,7 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
             if (stores == null) { return; }
             storeData.clear();
             storeData.addAll(stores);
+            //Collections.sort(storeData, /*COMPARITOR GOES HERE*/);
         };
         storeList.observe(lifecycleOwner, dataCopierListener);
     }
@@ -85,7 +87,7 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
 
     private void setFields(Store store, HomeRecyclerViewHolder holder) {
         Log.d(TAG, "setFields: updating cards");
-        holder.getNameField().setText(store.getName());
+        holder.getNameField().setText(String.format("%s (%.2fkm)", store.getName(), store.getDistance()));
         holder.getAddressField().setText(store.getPhysicalAddress());
         holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
         holder.getOpeningsHoursField().setText(String.format(Locale.ROOT, "open %s - %s", store.getOpeningTime(), store.getClosingTime()));

@@ -48,7 +48,7 @@ public class Settings extends Fragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 model.maxDistance.postValue((double) progress);
-                distance.setText(String.format("distance (%skm)", progress));
+                distance.setText(String.format("Distance (%skm)", progress));
             }
 
             @Override

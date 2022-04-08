@@ -122,7 +122,7 @@ public class Store implements Serializable, Model {
             return 98.02031;
         } else {
             Random gen = new Random();
-            return ((double) gen.nextInt(10000) / 10000.0)*150.0;
+            return 173.23526 + ((double) gen.nextInt(10000) / 10000.0)*1;
         }
     }
 }
