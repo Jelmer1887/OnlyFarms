@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
@@ -19,6 +20,7 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 public class Settings extends Fragment {
     private SeekBar seeker;
     private HomeViewModel model;
+    private TextView distance;
 
     @Override
     public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
@@ -40,11 +42,13 @@ public class Settings extends Fragment {
 
         model = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         seeker = getView().findViewById(R.id.seekBar);
+        distance = getView().findViewById(R.id.distance);
 
         seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                model.maxDistance = (progress);
+                model.maxDistance.postValue((double) progress);
+                distance.setText(String.format("distance (%skm)", progress));
             }
 
             @Override
@@ -57,6 +61,9 @@ public class Settings extends Fragment {
 
             }
         });
+
+
+
         super.onViewCreated(view, savedInstanceState);
     }
 }

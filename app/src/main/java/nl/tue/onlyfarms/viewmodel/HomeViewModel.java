@@ -44,7 +44,7 @@ public class HomeViewModel extends ViewModel {
     private final FireBaseService<Product> productFireBaseService;
     private final MutableLiveData<Boolean> allDataReceived;
 
-    public double maxDistance = 5.0;
+    public final MutableLiveData<Double> maxDistance = new MutableLiveData<>(150.0);
 
     // 'filters' is used to remove unwanted entries in the dataset, applyTo method is defined for this specific variable.
     private final Map<String, Function<Store, Boolean>> filters = new HashMap<>();
@@ -69,7 +69,9 @@ public class HomeViewModel extends ViewModel {
         this.filteredStores = new MutableLiveData<>(null);
         // 'stores' is set only by the queries on the database.
 
-        addFilter("distance", store -> store.getDistance() <= maxDistance );
+        assert maxDistance.getValue() != null;
+        addFilter("distance", store -> store.getDistance() <= maxDistance.getValue() );
+        maxDistance.observeForever(distance -> applyFilters());
 
         // debug observer reporting any changes in data availability
         this.allDataReceived.observeForever(bool -> {
