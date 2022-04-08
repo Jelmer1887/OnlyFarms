@@ -104,7 +104,7 @@ public class RegisterView extends AppCompatActivity {
                             spinnerElement.setVisibility(View.INVISIBLE);
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
-                            RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
+                            RegisterViewModel.createUser(task.getResult().getUser().getUid(), firstNameElement.getText().toString() + lastNameElement.getText().toString(), firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
                             startActivity(new Intent(getApplicationContext(), Base.class));
                             finish();
                         } else {
