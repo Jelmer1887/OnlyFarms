@@ -105,15 +105,6 @@ public class RegisterView extends AppCompatActivity {
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
                             RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
-                            if (status.get() == User.Status.VENDOR) {
-                                String uid = UUID.randomUUID().toString();
-                                new FireBaseService<Store>(Store.class, "stores").updateToDatabase(new Store(
-                                        uid,
-                                        task.getResult().getUser().getUid(),
-                                        "Your default store ",
-                                        "A random store we created for you " +  uid,
-                                        "Nowhere"), uid);
-                            }
                             startActivity(new Intent(getApplicationContext(), Base.class));
                             finish();
                         } else {
