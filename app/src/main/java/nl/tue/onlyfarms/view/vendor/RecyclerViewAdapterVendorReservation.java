@@ -92,6 +92,10 @@ public class RecyclerViewAdapterVendorReservation extends RecyclerView.Adapter<R
         this.mClickListener = itemClickListener;
     }
 
+    Reservation getItem (int position) {
+        return reservationData.get(position);
+    }
+
     // parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);

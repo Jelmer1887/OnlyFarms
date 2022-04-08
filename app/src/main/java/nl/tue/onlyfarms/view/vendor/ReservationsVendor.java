@@ -2,6 +2,7 @@ package nl.tue.onlyfarms.view.vendor;
 
 import static android.content.ContentValues.TAG;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.Serializable;
+
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.view.client.ConfirmReservationClient;
 import nl.tue.onlyfarms.view.client.RecyclerViewAdapterClientReservations;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 import nl.tue.onlyfarms.viewmodel.ReservationVendorViewModel;
@@ -58,6 +62,7 @@ public class ReservationsVendor extends Fragment implements RecyclerViewAdapterC
             if (isReceived) {
                 model.setStores(homeModel.getStores().getValue());
             }
+            makeAdapter();
         });
 
         model.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
@@ -74,18 +79,25 @@ public class ReservationsVendor extends Fragment implements RecyclerViewAdapterC
     }
 
     private void makeAdapter() {
-        if (!model.getAllDataReceived().getValue() || !model.getUsersReceived().getValue())
+        if (!model.getAllDataReceived().getValue() || !model.getUsersReceived().getValue() || !homeModel.getAllDataReceived().getValue())
             return;
         adapter = new RecyclerViewAdapterVendorReservation(getViewLifecycleOwner(), model.getFilteredReservations(), model.getUsers());
         adapter.setClickListener(this);
         recyclerView.swapAdapter(adapter, true);
         model.getFilteredReservations().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
         homeModel.getStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+        homeModel.getProducts().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
         model.getUsersReceived().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
     }
 
     @Override
     public void onItemClick(View view, int position) {
-
+        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
+        Intent intent = new Intent(getContext(), FulfillReservationVendor.class);
+        intent.putExtra("reservation", adapter.getItem(position));
+        intent.putExtra("productSet", (Serializable) homeModel.getProducts().getValue());
+        intent.putExtra("button", false);
+        Log.d("Home", "creating FulfillReservationVendor activity with intent: " + intent);
+        startActivity(intent);
     }
 }

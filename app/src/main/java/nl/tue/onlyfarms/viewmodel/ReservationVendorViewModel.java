@@ -111,4 +111,8 @@ public class ReservationVendorViewModel extends ViewModel {
     public MutableLiveData<Set<Reservation>> getFilteredReservations() {
         return reservations;
     }
+
+    public Task<Void> fulfillReservation(Reservation reservation) {
+        return reservationFireBaseService.deleteFromDatabase(reservation.getUid());
+    }
 }
