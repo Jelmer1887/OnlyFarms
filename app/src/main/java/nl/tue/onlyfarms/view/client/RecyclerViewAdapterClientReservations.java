@@ -1,56 +1,108 @@
 package nl.tue.onlyfarms.view.client;
 
-import android.content.Context;
+import static android.content.ContentValues.TAG;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.model.Reservation;
+import nl.tue.onlyfarms.model.Store;
 
 public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<RecyclerViewAdapterClientReservations.ViewHolder> {
 
-    private List<String> mData;
-    private LayoutInflater mInflater;
+    private List<Reservation> reservationData = new ArrayList<>();
+    private Map<String, Store> stores = new HashMap<>();
     private ItemClickListener mClickListener;
 
     // data is passed into the constructor
-    RecyclerViewAdapterClientReservations(Context context, List<String> data) {
-        this.mInflater = LayoutInflater.from(context);
-        this.mData = data;
+    RecyclerViewAdapterClientReservations(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Reservation>> reservationsSet, MutableLiveData<Set<Store>> storesSet) {
+        if (reservationsSet == null) {
+            String msg = "received null LifeData object as argument!";
+            throw new NullPointerException(msg);
+        }
+
+        Observer<Set<Reservation>> reservationObserver = reservations -> {
+            if (reservations == null) { return; }
+            reservationData.clear();
+            reservationData.addAll(reservations);
+        };
+        reservationsSet.observe(lifecycleOwner, reservationObserver);
+
+        Observer<Set<Store>> storeObserver = stores -> {
+            if (stores == null) { return; }
+            this.stores.clear();
+            for (Store store : stores) {
+                this.stores.put(store.getUid(), store);
+            }
+        };
+        storesSet.observe(lifecycleOwner, storeObserver);
+
+        Log.d(TAG, "RecyclerViewAdapterClientReservations: " + reservationData.size());
+    }
+
+    RecyclerViewAdapterClientReservations() {
+        this.reservationData.clear();
+        this.stores.clear();
     }
 
     // inflates the row layout from xml when needed
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.frame_card_reservation_client, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.frame_card_reservation_client, parent, false);
         return new ViewHolder(view);
     }
 
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String storeName = mData.get(position);
-        holder.myTextView.setText(storeName);
+        setValues(holder, reservationData.get(position));
+    }
+
+    private void setValues(ViewHolder holder, Reservation reservation) {
+        Store store = stores.get(reservation.getStoreUid());
+        holder.storeName.setText(store.getName());
+        holder.storeAddress.setText(store.getPhysicalAddress());
+        holder.storeOpen.setText("Open");
+        AtomicInteger quantity = new AtomicInteger();
+        reservation.getProducts().forEach((key, value) -> quantity.addAndGet(value));
+        holder.itemQuantity.setText(String.valueOf(quantity.get()));
     }
 
     // total number of rows
     @Override
     public int getItemCount() {
-        return mData.size();
+        return reservationData.size();
     }
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView storeName;
+        TextView storeAddress;
+        TextView storeOpen;
+        TextView itemQuantity;
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = itemView.findViewById(R.id.tvStoreName);
+            storeName = itemView.findViewById(R.id.tvStoreName);
+            storeAddress = itemView.findViewById(R.id.tvStoreAddress);
+            storeOpen = itemView.findViewById(R.id.tvOpen);
+            itemQuantity = itemView.findViewById(R.id.tvQuantity);
             itemView.setOnClickListener(this);
         }
 
@@ -61,8 +113,11 @@ public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<
     }
 
     // convenience method for getting data at click position
-    String getItem(int id) {
-        return mData.get(id);
+    Reservation getItem(int id) {
+        return reservationData.get(id);
+    }
+    Store getStore(int id) {
+        return stores.get(reservationData.get(id).getStoreUid());
     }
 
     // allows clicks events to be caught

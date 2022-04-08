@@ -27,18 +27,18 @@
                 android:layout_height="wrap_content"
                 android:text="@string/quantity_reserved"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/open" />
+                app:layout_constraintTop_toBottomOf="@+id/tvOpen" />
 
             <TextView
-                android:id="@+id/open"
+                android:id="@+id/tvOpen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/open_closed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/address" />
+                app:layout_constraintTop_toBottomOf="@+id/tvStoreAddress" />
 
             <TextView
-                android:id="@+id/address"
+                android:id="@+id/tvStoreAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/address2"
@@ -47,7 +47,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/resitem_quantity"
+                android:id="@+id/tvQuantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="#FFFFFF"

@@ -58,7 +58,6 @@ public class ConfirmReservationClient extends AppCompatActivity {
         if (this.products == null) {
             this.products = (Set<Product>) getIntent().getExtras().getSerializable("products");
             for (Product product : products) {
-                Log.d(TAG, "onCreate: " + product.whatIsInCart());
                 model.updateUnconfirmedReservation(product);
             }
         }
@@ -76,16 +75,10 @@ public class ConfirmReservationClient extends AppCompatActivity {
                    Toast.makeText(ConfirmReservationClient.this, "Reservation failed", Toast.LENGTH_SHORT).show();
                }
             });
-            final Intent intent = new Intent(getApplicationContext(), Base.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            goHome();
         });
         clearButton.setOnClickListener(v -> {
-            final Intent intent = new Intent(getApplicationContext(), Base.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            goHome();
         });
     }
 
@@ -96,5 +89,12 @@ public class ConfirmReservationClient extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goHome() {
+        final Intent intent = new Intent(getApplicationContext(), Base.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

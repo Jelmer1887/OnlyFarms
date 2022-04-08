@@ -1,25 +1,33 @@
 package nl.tue.onlyfarms.view.client;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
+import nl.tue.onlyfarms.viewmodel.HomeViewModel;
+import nl.tue.onlyfarms.viewmodel.ReservationClientViewModel;
 
 public class ReservationsClient extends Fragment implements RecyclerViewAdapterClientReservations.ItemClickListener {
 
-    RecyclerViewAdapterClientReservations adapter;
+    private RecyclerViewAdapterClientReservations adapter;
+    private ReservationClientViewModel model;
+    private HomeViewModel homeModel;
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -29,28 +37,59 @@ public class ReservationsClient extends Fragment implements RecyclerViewAdapterC
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-        Toast.makeText(getContext(), "You clicked " + adapter.getItem(position) + " on row number " + position, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // data to populate the RecyclerView with
-        ArrayList<String> animalNames = new ArrayList<>();
-        animalNames.add("Store 1");
-        animalNames.add("Store 2");
-        animalNames.add("Store 3");
-        animalNames.add("Store 4");
-        animalNames.add("Store 5");
+        recyclerView = getView().findViewById(R.id.rvReservationclients);
+
+        model = new ViewModelProvider(requireActivity()).get(ReservationClientViewModel.class);
+        model.setUserUid(FirebaseAuth.getInstance().getUid());
+
+        homeModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
 
         // set up the RecyclerView
-        RecyclerView recyclerView = getView().findViewById(R.id.rvReservationclients);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RecyclerViewAdapterClientReservations(getContext(), animalNames);
+
+        makeAdapter();
+
+        model.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
+            if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
+            Log.d(TAG, "Update to reservations data-state. Data-availability became " + isReceived);
+            makeAdapter();
+        });
+        homeModel.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
+            if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
+            Log.d(TAG, "Update to stores data-state. Data-availability became " + isReceived);
+            makeAdapter();
+        });
+    }
+
+    private void makeAdapter() {
+        if (model.getAllDataReceived().getValue() == null || homeModel.getAllDataReceived().getValue() == null)
+            return;
+        if (!model.getAllDataReceived().getValue() || !homeModel.getAllDataReceived().getValue()) {
+            adapter = new RecyclerViewAdapterClientReservations();
+            recyclerView.swapAdapter(adapter, true);
+            return;
+        }
+        Log.d(TAG, "makeAdapter: we have all the data for the adapter. create it.");
+        adapter = new RecyclerViewAdapterClientReservations(getViewLifecycleOwner(), model.getFilteredReservations(), homeModel.getStores());
         adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        recyclerView.swapAdapter(adapter, true);
+        model.getFilteredReservations().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+        homeModel.getStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
+        Intent intent = new Intent(getContext(), ConfirmReservationClient.class);
+        intent.putExtra("reservation", adapter.getItem(position));
+        intent.putExtra("store", adapter.getStore(position));
+        intent.putExtra("button", false);
+        Log.d("Home", "creating ReservationsClient activity with intent: " + intent);
+        //startActivity(intent);
     }
 }
 

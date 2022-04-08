@@ -29,7 +29,7 @@ import nl.tue.onlyfarms.model.User;
 public class ReservationClientViewModel extends ViewModel {
     private final static String TAG = "ReservationClientViewModel";
 
-    private final MutableLiveData<User> client;
+    private final MutableLiveData<String> userUid;
     private MutableLiveData<Reservation> unconfirmedReservation;
     private MutableLiveData<Set<Reservation>> reservations;
     private final FireBaseService<Reservation> reservationFireBaseService;
@@ -43,12 +43,12 @@ public class ReservationClientViewModel extends ViewModel {
     public ReservationClientViewModel() {
         this.reservationFireBaseService = new FireBaseService<>(Reservation.class, "reservations");
         this.allDataReceived = new MutableLiveData<>(false);
-        this.client = new MutableLiveData<>(null);
+        this.userUid = new MutableLiveData<>(null);
         this.unconfirmedReservation = new MutableLiveData<>(null);
         this.reservations = new MutableLiveData<>(null);
         this.activeReservationObservers = new ArrayList<>();
 
-        client.observeForever(client -> {
+        userUid.observeForever(client -> {
             // Old reservation data is removed when user changes
             Log.d(TAG, "user changed -> removing old data/observers");
             this.activeReservationObservers.forEach( observer -> this.reservations.removeObserver(observer));
@@ -56,18 +56,20 @@ public class ReservationClientViewModel extends ViewModel {
             this.allDataReceived.postValue(false);
 
             if (client == null) { return; }
-            this.reservations = reservationFireBaseService.getAllMatchingField("userUid", client.getUid());
+            this.reservations = reservationFireBaseService.getAllMatchingField("userUid", client);
 
             Observer<Set<Reservation>> reservationObserver = data -> {
                 if (data == null) { return; }
                 Log.d(TAG, "reservation data received!");
-                data.removeIf(reservation -> {
-                    for (Function<Reservation, Boolean> filter : this.filters.values()) {
-                        if (!filter.apply(reservation)) { return false; }
-                    }
-                    return true;
-                });
+
+//                data.removeIf(reservation -> {
+//                    for (Function<Reservation, Boolean> filter : this.filters.values()) {
+//                        if (!filter.apply(reservation)) { return false; }
+//                    }
+//                    return true;
+//                });
                 this.allDataReceived.postValue(true);
+                Log.d(TAG, "data: " + data.size());
             };
 
             this.reservations.observeForever(reservationObserver);
@@ -78,10 +80,10 @@ public class ReservationClientViewModel extends ViewModel {
     /**
      * Give the viewModel the client data. Required for operation of this viewModel
      * until this method is called, this viewModel will not do anything.
-     * @param user {@link User} object to provide to the viewModel.
+     * @param userUid {@link String} object to provide to the viewModel.
      * */
-    public void setClient(User user) {
-        this.client.postValue(user);
+    public void setUserUid(String userUid) {
+        this.userUid.postValue(userUid);
     }
 
     /**
@@ -169,7 +171,7 @@ public class ReservationClientViewModel extends ViewModel {
      * @return the {@link MutableLiveData<User>} object which contain the user value the data is
      * retrieved for in this viewModel
      * */
-    public MutableLiveData<User> getClient() { return this.client; }
+    public MutableLiveData<String> getUserUid() { return this.userUid; }
 
     /**
      * Gets a representation of whether the model is safe to be used
@@ -178,4 +180,12 @@ public class ReservationClientViewModel extends ViewModel {
      * (e.g. no client is provided yet (use setClient first!)).
      * */
     public MutableLiveData<Boolean> getAllDataReceived() { return allDataReceived; }
+
+    /**
+     * Gets the filtered list of reservations
+     * @return {@link MutableLiveData<Set<Reservation>>} with the filtered list of reservations
+     */
+    public MutableLiveData<Set<Reservation>> getFilteredReservations() {
+        return reservations;
+    }
 }

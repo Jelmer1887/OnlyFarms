@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Locale;
 import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
@@ -54,7 +53,7 @@ public class MyStore extends AppCompatActivity {
 
         storeName = findViewById(R.id.storeName);
         description = findViewById(R.id.description);
-        address = findViewById(R.id.address);
+        address = findViewById(R.id.tvStoreAddress);
         fromSpinner = findViewById(R.id.spinner);
         untilSpinner = findViewById(R.id.spinner2);
 
