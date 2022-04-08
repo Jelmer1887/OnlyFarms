@@ -74,4 +74,8 @@ public class User implements Model {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
 }

@@ -33,8 +33,11 @@ public class ReservationVendorViewModel extends ViewModel {
 
     private MutableLiveData<Set<Reservation>> reservations;
     private final FireBaseService<Reservation> reservationFireBaseService;
+    private final FireBaseService<User> usersFireBaseService;
     private final MutableLiveData<Boolean> allDataReceived;
+    private final MutableLiveData<Boolean> usersReceived;
     private final MutableLiveData<Set<Store>> stores;
+    private final MutableLiveData<Set<User>> users;
     private final List<Observer<Set<Reservation>>> activeReservationObservers;
     private final Map<String, Function<Reservation, Boolean>> filters = new HashMap<>();
 
@@ -43,14 +46,24 @@ public class ReservationVendorViewModel extends ViewModel {
      * */
     public ReservationVendorViewModel() {
         this.reservationFireBaseService = new FireBaseService<>(Reservation.class, "reservations");
+        this.usersFireBaseService = new FireBaseService<>(User.class, "users");
         this.allDataReceived = new MutableLiveData<>(false);
+        this.usersReceived = new MutableLiveData<>(false);
         this.reservations = new MutableLiveData<>(null);
         this.stores = new MutableLiveData<>(null);
         this.activeReservationObservers = new ArrayList<>();
 
+        this.users = usersFireBaseService.getAllAtReference();
+
+        users.observeForever(users -> {
+            if (users != null) {
+                usersReceived.postValue(true);
+            }
+        });
+
         stores.observeForever(storeList -> {
             // Old reservation data is removed when user changes
-            Log.d(TAG, "user changed -> removing old data/observers");
+            Log.d(TAG, "stores changed -> removing old data/observers");
             this.activeReservationObservers.forEach( observer -> this.reservations.removeObserver(observer));
             this.activeReservationObservers.clear();
             this.allDataReceived.postValue(false);
@@ -66,12 +79,6 @@ public class ReservationVendorViewModel extends ViewModel {
                 if (data == null) { return; }
                 Log.d(TAG, "reservation data received!");
                 data.removeIf(reservation -> !storeSet.contains(reservation.getStoreUid()));
-//                data.removeIf(reservation -> {
-//                    for (Function<Reservation, Boolean> filter : this.filters.values()) {
-//                        if (!filter.apply(reservation)) { return false; }
-//                    }
-//                    return true;
-//                });
                 this.allDataReceived.postValue(true);
                 Log.d(TAG, "data: " + data.size());
             };
@@ -92,6 +99,10 @@ public class ReservationVendorViewModel extends ViewModel {
      * (e.g. no client is provided yet (use setClient first!)).
      * */
     public MutableLiveData<Boolean> getAllDataReceived() { return allDataReceived; }
+
+    public MutableLiveData<Boolean> getUsersReceived() { return usersReceived; }
+
+    public MutableLiveData<Set<User>> getUsers() { return users; }
 
     /**
      * Gets the filtered list of reservations

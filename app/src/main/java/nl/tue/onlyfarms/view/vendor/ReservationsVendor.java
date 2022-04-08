@@ -64,12 +64,24 @@ public class ReservationsVendor extends Fragment implements RecyclerViewAdapterC
             if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
             Log.d(TAG, "Update to reservations data-state. Data-availability became " + isReceived);
 
-            adapter = new RecyclerViewAdapterVendorReservation(getViewLifecycleOwner(), model.getFilteredReservations());
-            adapter.setClickListener(this);
-            recyclerView.swapAdapter(adapter, true);
-            model.getFilteredReservations().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
-            homeModel.getStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+            makeAdapter();
         });
+
+        model.getUsersReceived().observe(getViewLifecycleOwner(), isReceived -> {
+            Log.d(TAG, "Update to users data-state. Data-availability became " + isReceived);
+           makeAdapter();
+        });
+    }
+
+    private void makeAdapter() {
+        if (!model.getAllDataReceived().getValue() || !model.getUsersReceived().getValue())
+            return;
+        adapter = new RecyclerViewAdapterVendorReservation(getViewLifecycleOwner(), model.getFilteredReservations(), model.getUsers());
+        adapter.setClickListener(this);
+        recyclerView.swapAdapter(adapter, true);
+        model.getFilteredReservations().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+        homeModel.getStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+        model.getUsersReceived().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
     }
 
     @Override
