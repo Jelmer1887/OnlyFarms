@@ -88,6 +88,6 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         holder.getNameField().setText(store.getName());
         holder.getAddressField().setText(store.getPhysicalAddress());
         holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
-        holder.getOpeningsHoursField().append(String.format(Locale.ROOT, " %s - %s", store.getOpeningTime(), store.getClosingTime()));
+        holder.getOpeningsHoursField().setText(String.format(Locale.ROOT, "open %s - %s", store.getOpeningTime(), store.getClosingTime()));
     }
 }
