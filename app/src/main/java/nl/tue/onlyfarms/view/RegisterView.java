@@ -104,7 +104,7 @@ public class RegisterView extends AppCompatActivity {
                             spinnerElement.setVisibility(View.INVISIBLE);
                             Toast.makeText(RegisterView.this, "Account created!", Toast.LENGTH_LONG).show();
                             // Make user with the data
-                            RegisterViewModel.createUser(task.getResult().getUser().getUid(), "rip", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
+                            RegisterViewModel.createUser(task.getResult().getUser().getUid(), "User Name", firstNameElement.getText().toString(), lastNameElement.getText().toString(), eMailElement.getText().toString(), status.get());
                             if (status.get() == User.Status.VENDOR) {
                                 String uid = UUID.randomUUID().toString();
                                 new FireBaseService<Store>(Store.class, "stores").updateToDatabase(new Store(
