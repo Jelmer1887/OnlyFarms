@@ -65,13 +65,6 @@ public class Home extends Fragment implements StoreCardAdapter.ItemClickListener
             throw new NullPointerException("Attempted to launch homeClient-fragment without Activity!");
         }
 
-        // Request Permissions
-        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
-        if (EasyPermissions.hasPermissions(getContext(), perms)) {
-            Log.d(TAG, "Permissions granted!");
-        } else {
-            EasyPermissions.requestPermissions(this, "blablabla", 1, perms);
-        }
         // Variable initialisation
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);

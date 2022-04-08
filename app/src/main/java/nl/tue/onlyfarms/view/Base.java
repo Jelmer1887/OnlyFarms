@@ -6,6 +6,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,6 +25,7 @@ import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.view.vendor.HomeVendor;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class Base extends AppCompatActivity {
 
@@ -96,6 +98,14 @@ public class Base extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Request Permissions
+        String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            Log.d(TAG, "Permissions granted!");
+        } else {
+            EasyPermissions.requestPermissions(this, "hey", 1, perms);
+        }
     }
 
     //PRE: User cannot be null && allDataReceived should be true!

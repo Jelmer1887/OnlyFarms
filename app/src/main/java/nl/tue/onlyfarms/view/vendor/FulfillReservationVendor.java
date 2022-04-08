@@ -75,7 +75,15 @@ public class FulfillReservationVendor extends AppCompatActivity {
             });
             goHome();
         });
+
         clearButton.setOnClickListener(v -> {
+            model.fulfillReservation(reservation).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(FulfillReservationVendor.this, "Reservation cleared", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(FulfillReservationVendor.this, "Reservation not cleared", Toast.LENGTH_SHORT).show();
+                }
+            });
             goHome();
         });
     }
