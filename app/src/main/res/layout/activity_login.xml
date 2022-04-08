@@ -25,7 +25,7 @@
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_password" />
+            app:layout_constraintTop_toBottomOf="@id/login_title" />
 
         <EditText
             android:id="@+id/login_password"
@@ -38,7 +38,7 @@
             android:minHeight="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/login_title" />
+            app:layout_constraintTop_toBottomOf="@+id/login_email" />
 
         <Button
             android:id="@+id/login_submit"
@@ -49,7 +49,7 @@
             android:text="@string/signIn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_email" />
+            app:layout_constraintTop_toBottomOf="@+id/login_password" />
 
         <TextView
             android:id="@+id/login_text_toRegister"
