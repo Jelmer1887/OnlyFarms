@@ -112,5 +112,6 @@
 
     <string name="per_unit">Per Unit</string>
     <string name="price">Price</string>
+    <string name="distance">Distance</string>
 
 </resources>
