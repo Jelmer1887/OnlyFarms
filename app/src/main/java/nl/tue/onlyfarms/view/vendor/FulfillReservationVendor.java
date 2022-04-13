@@ -17,11 +17,12 @@ import java.util.Set;
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Product;
 import nl.tue.onlyfarms.model.Reservation;
+import nl.tue.onlyfarms.view.AbstractReservationView;
 import nl.tue.onlyfarms.view.Base;
 import nl.tue.onlyfarms.view.client.RecycleViewAdapterConfirmReservation;
 import nl.tue.onlyfarms.viewmodel.ReservationVendorViewModel;
 
-public class FulfillReservationVendor extends AppCompatActivity {
+public class FulfillReservationVendor extends AbstractReservationView {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -86,21 +87,5 @@ public class FulfillReservationVendor extends AppCompatActivity {
             });
             goHome();
         });
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // close current activity and return to previous
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void goHome() {
-        final Intent intent = new Intent(getApplicationContext(), Base.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
     }
 }

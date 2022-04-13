@@ -23,11 +23,12 @@ import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Product;
+import nl.tue.onlyfarms.view.AbstractReservationView;
 import nl.tue.onlyfarms.view.Base;
 import nl.tue.onlyfarms.view.Reservation;
 import nl.tue.onlyfarms.viewmodel.ReservationClientViewModel;
 
-public class ConfirmReservationClient extends AppCompatActivity {
+public class ConfirmReservationClient extends AbstractReservationView {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -80,21 +81,5 @@ public class ConfirmReservationClient extends AppCompatActivity {
         clearButton.setOnClickListener(v -> {
             goHome();
         });
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // close current activity and return to previous
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void goHome() {
-        final Intent intent = new Intent(getApplicationContext(), Base.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish();
     }
 }
