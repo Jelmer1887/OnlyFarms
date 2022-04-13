@@ -101,16 +101,22 @@ public class ProductViewModel extends ViewModel {
         if (productData == null) {return;}
         if (productData.getValue() == null) {return;}
 
-        final Set<Product> removals = new HashSet<>();
-        final Set<Product> filtered = new HashSet<>(productData.getValue());
+        final Set<Product> removal = new HashSet<>();
 
         // removes values of received data based on filters in 'filters'
         productData.getValue().forEach((product -> {
             filters.forEach((name, filter) -> {
                 Log.d(TAG, String.format("Applying '%s' to %s", name, product.getName()));
-                if (!filter.apply(product)) { removals.add(product); }
+                if (!filter.apply(product)) { removal.add(product); }
             });
         }));
+        builder();
+    }
+
+    private void builder() {
+        final Set<Product> removals = new HashSet<>();
+        final Set<Product> filtered = new HashSet<>(productData.getValue());
+
         StringBuilder s = new StringBuilder();
         for (Product p : removals) { s.append(p.getName()).append(" "); }
         Log.d(TAG, s.append("will be removed.").toString());
@@ -124,19 +130,14 @@ public class ProductViewModel extends ViewModel {
         Function<Product, Boolean> filter = filters.get(name);
         if (filter == null) { Log.e(TAG, "filter not found!"); return; }
 
-        final Set<Product> removals = new HashSet<>();
-        final Set<Product> filtered = new HashSet<>(productData.getValue());
+        final Set<Product> removal = new HashSet<>();
 
         // removes values of received data based on filters in 'filters'
         productData.getValue().forEach((product -> {
             Log.d(TAG, String.format("Applying '%s' to %s", name, product.getName()));
-            if (!filter.apply(product)) { removals.add(product); }
+            if (!filter.apply(product)) { removal.add(product); }
         }));
-        StringBuilder s = new StringBuilder();
-        for (Product p : removals) { s.append(p.getName()).append(" "); }
-        Log.d(TAG, s.append("will be removed.").toString());
-        filtered.removeAll(removals);
-        this.filteredProductData.postValue(filtered);
+        builder();
     }
 
     public MutableLiveData<Set<Product>> getFilteredProductData() { return this.filteredProductData; }
