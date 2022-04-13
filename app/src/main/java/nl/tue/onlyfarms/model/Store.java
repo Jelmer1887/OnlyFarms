@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class Store extends AbstractStoreModel {
+public class Store extends AbstractNamedModel {
     private String userUid;
     private String physicalAddress;
     private String emailAddress;

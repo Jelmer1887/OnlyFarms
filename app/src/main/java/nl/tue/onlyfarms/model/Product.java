@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @IgnoreExtraProperties
-public class Product extends AbstractStoreModel {
+public class Product extends AbstractNamedModel {
     private String storeUid;
     private double price;
     private int quantity;

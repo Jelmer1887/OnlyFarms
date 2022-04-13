@@ -3,7 +3,10 @@ package nl.tue.onlyfarms.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class AbstractStoreModel implements Model, Serializable {
+/*
+* This class generalises stores and products
+* */
+public class AbstractNamedModel implements Model, Serializable {
     protected String uid;
     protected String name;
     protected String description;
