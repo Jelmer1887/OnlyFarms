@@ -16,3 +16,5 @@
 local.properties
 debug.jks
 .idea/deploymentTargetDropDown.xml
+app/src/src.und/settings.xml
+app/src/src.und/id.txt
