@@ -17,23 +17,12 @@ import nl.tue.onlyfarms.view.LoginView;
 public class LoginViewModel extends ViewModel {
     private final FirebaseAuth auth;
 
-    private boolean checkEmpty(String val){
-        return TextUtils.isEmpty(val);
-    }
+    //private boolean checkEmpty(String val){
+        //return TextUtils.isEmpty(val);
+    //}
 
     public boolean checkFields(EditText[] fields){
-        boolean valid = true;
-        for (EditText f : fields) {
-            String fieldValue = f.getText().toString().trim();
-            if (!checkEmpty(fieldValue)) {
-                continue;   // guard: skip non-empty fields
-            }
-            f.setText("");
-            f.setError(f.getHint() + " must be filled in!");
-            valid = false;
-        }
-
-        return valid;
+        return AbstractLoginViewModel.check(fields);
     }
 
     public LoginViewModel() {
