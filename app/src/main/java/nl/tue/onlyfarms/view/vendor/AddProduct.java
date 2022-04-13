@@ -21,7 +21,7 @@ import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Product;
 import nl.tue.onlyfarms.viewmodel.ProductViewModel;
 
-public class AddProduct extends AppCompatActivity {
+public class AddProduct extends AbstractBackActivity {
 
     private final String TAG = "AddProduct";
     private Product product;
@@ -65,20 +65,7 @@ public class AddProduct extends AppCompatActivity {
             prefillFields();
         }
 
-        findViewById(R.id.addProductButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSubmit();
-            }
-        });
-
-        // Enabled action bar back to Base activity
-        setSupportActionBar(findViewById(R.id.topBar));
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } else {
-            Log.e(TAG, "getSupportActionBar() returned null after 'findViewById(...)' call! -> skipping 'setDisplayHomeAsUpEnabled(true)'");
-        }
+        findViewById(R.id.addProductButton).setOnClickListener(v -> onSubmit());
 
     }
 
@@ -97,16 +84,5 @@ public class AddProduct extends AppCompatActivity {
         descriptionInput.setText(product.getDescription());
         priceInput.setText(String.format(Locale.ROOT,"%.2f", product.getPrice()));
         perUnitInput.setText(product.getUnit());
-    }
-
-    // for back button
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // close current activity and return to previous
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

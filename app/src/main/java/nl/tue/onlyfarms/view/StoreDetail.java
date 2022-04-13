@@ -13,13 +13,12 @@ import com.google.android.material.appbar.MaterialToolbar;
 import java.util.Locale;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.ActivityStoreDetailBinding;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.view.vendor.AbstractBackActivity;
 
-public class StoreDetail extends AppCompatActivity {
+public class StoreDetail extends AbstractBackActivity {
     private static final String TAG = "StoreDetails";
     private Store store;
-    private ActivityStoreDetailBinding binding;
 
     private TextView nameField;
     private TextView descriptionField;
@@ -31,7 +30,6 @@ public class StoreDetail extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "(re)creating Activity");
         super.onCreate(savedInstanceState);
-        binding = ActivityStoreDetailBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_store_detail);
 
         // check if state important variables were restored (!= null) by savedInstanceState.
@@ -40,7 +38,7 @@ public class StoreDetail extends AppCompatActivity {
             this.store = (Store) getIntent().getExtras().getSerializable("store");
         }
 
-        setContentView(R.layout.activity_store_detail);
+        setContentView(R.layout.activity_store_detail); // set the layout
 
         this.nameField = findViewById(R.id.storeDetail_store_name);
         this.descriptionField = findViewById(R.id.storeDetail_description_placeholder);
@@ -63,15 +61,5 @@ public class StoreDetail extends AppCompatActivity {
             Log.e(TAG, "getSupportActionBar() returned null after 'findViewById(...)' call! -> skipping 'setDisplayHomeAsUpEnabled(true)'");
         }
 
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // close current activity and return to previous
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }

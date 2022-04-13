@@ -28,9 +28,10 @@ import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Store;
+import nl.tue.onlyfarms.view.vendor.AbstractBackActivity;
 import nl.tue.onlyfarms.viewmodel.vendor.MystoreViewModel;
 
-public class MyStore extends AppCompatActivity {
+public class MyStore extends AbstractBackActivity {
 
     private final String TAG = "MyStore";
     private Store store;
@@ -85,20 +86,14 @@ public class MyStore extends AppCompatActivity {
             prefillFields();
         }
 
+        findViewById(R.id.confirm_store).setOnClickListener(v -> onSubmit());
+
         findViewById(R.id.confirm_store).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSubmit();
             }
         });
-
-        // Enabled action bar back to Base activity
-        setSupportActionBar(findViewById(R.id.topBar));
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } else {
-            Log.e(TAG, "getSupportActionBar() returned null after 'findViewById(...)' call! -> skipping 'setDisplayHomeAsUpEnabled(true)'");
-        }
 
     }
 
@@ -137,17 +132,6 @@ public class MyStore extends AppCompatActivity {
         address.setText(store.getPhysicalAddress());
         fromSpinner.setSelection(adapter.getPosition(store.getOpeningTime()));
         untilSpinner.setSelection(adapter.getPosition(store.getClosingTime()));
-    }
-
-    // for back button
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // close current activity and return to previous
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
 }
