@@ -1,8 +1,9 @@
 package nl.tue.onlyfarms.model;
 
 
-import org.osmdroid.util.GeoPoint;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -12,11 +13,12 @@ public class Store implements Serializable, Model {
     private String name;
     private String description;
     private String physicalAddress;
-    private GeoPoint coordinates;
     private String emailAddress;
     private String phoneNumber;
     private String openingTime;
     private String closingTime;
+    private double longitude;
+    private double latitude;
     // TODO: add images (could)
 
     // mandatory empty constructor
@@ -70,12 +72,16 @@ public class Store implements Serializable, Model {
         this.physicalAddress = physicalAddress;
     }
 
-    public GeoPoint getCoordinates() {
-        return coordinates;
+    public List<Double> getCoordinates() {
+        List<Double> coords = new ArrayList<Double>();
+        coords.add(latitude);
+        coords.add(longitude);
+        return coords;
     }
 
-    public void setCoordinates(double[] coordinates) {
-        this.coordinates = new GeoPoint(coordinates[0], coordinates[1]);
+    public void setCoordinates(double latitude, double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getEmailAddress() {

@@ -1,6 +1,9 @@
 package nl.tue.onlyfarms.view;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,9 +16,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
+
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import nl.tue.onlyfarms.R;
@@ -29,6 +37,7 @@ public class MyStore extends AppCompatActivity {
     private ArrayAdapter<CharSequence> adapter;
     private MystoreViewModel model;
     private String toast = "Store Created!";
+    private GeocoderNominatim geocoder;
 
     // input fields
     private EditText storeName;
@@ -41,6 +50,9 @@ public class MyStore extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mystore);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         model = new ViewModelProvider(this).get(MystoreViewModel.class);
         store = new Store(
@@ -62,6 +74,8 @@ public class MyStore extends AppCompatActivity {
 
         fromSpinner.setAdapter(adapter);
         untilSpinner.setAdapter(adapter);
+
+        geocoder = new GeocoderNominatim("store");
 
         if (getIntent().hasExtra("store")) {
             toast = "Store Updated!";
@@ -91,9 +105,27 @@ public class MyStore extends AppCompatActivity {
     private void onSubmit() {
         store.setName(storeName.getText().toString());
         store.setDescription(description.getText().toString());
-        store.setPhysicalAddress(address.getText().toString());
         store.setOpeningTime(fromSpinner.getSelectedItem().toString());
         store.setClosingTime(untilSpinner.getSelectedItem().toString());
+
+
+        try {
+            List<Address> androidAddress = geocoder.getFromLocationName(address.getText().toString(), 1);
+            for ( Address address : androidAddress) {
+                store.setCoordinates(address.getLatitude(), address.getLongitude());
+                String street = address.getThoroughfare();
+                street = street == null ? "" : street;
+                String number = address.getSubThoroughfare();
+                number = number == null ? "" : number;
+                String city = address.getLocality();
+                city = city == null ? "" : city;
+
+                store.setPhysicalAddress(String.format("%s, %s %s", city, street, number));
+            }
+        } catch (IOException e) {
+            Log.d(TAG, "Something went horribly wrong! " + e.getMessage());
+        }
+
         model.updateStores(store);
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         finish();
@@ -117,4 +149,5 @@ public class MyStore extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }
