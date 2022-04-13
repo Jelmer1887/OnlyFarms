@@ -8,11 +8,8 @@ import java.io.Serializable;
 import java.util.List;
 
 @IgnoreExtraProperties
-public class Product implements Model, Serializable {
-    private String uid;
+public class Product extends AbstractStoreModel {
     private String storeUid;
-    private String name;
-    private String description;
     private double price;
     private int quantity;
     private String unit;
@@ -20,8 +17,6 @@ public class Product implements Model, Serializable {
     private List<String> tags;
     // TODO: add images
     private int quantityInCart = 0;
-
-    public Product() {}
 
     public Product(String uid, String storeUid, String name, String description, double price, int quantity, String unit, List<String> tags) {
         this.uid = uid;
@@ -32,30 +27,6 @@ public class Product implements Model, Serializable {
         this.tags = tags;
         this.quantity = quantity;
         this.unit = unit;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getStoreUid() {

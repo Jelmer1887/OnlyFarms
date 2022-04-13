@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class Store implements Serializable, Model {
-    private String uid;
+public class Store extends AbstractStoreModel {
     private String userUid;
-    private String name;
-    private String description;
     private String physicalAddress;
     private String emailAddress;
     private String phoneNumber;
@@ -29,30 +26,6 @@ public class Store implements Serializable, Model {
         this.uid = uid;
         this.userUid = userUid;
         this.name = name;
-        this.description = description;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
         this.description = description;
     }
 
