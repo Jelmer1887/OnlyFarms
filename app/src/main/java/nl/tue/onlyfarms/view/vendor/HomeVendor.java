@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.databinding.FragmentHomeVendorBinding;
+import nl.tue.onlyfarms.view.AbstractHome;
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.MyStore;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
@@ -30,129 +31,42 @@ import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.view.client.MapView;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 
-
-public class HomeVendor extends Fragment implements StoreCardAdapter.ItemClickListener {
-
-    private static final String TAG = "HomeVendor";
-
-    private FragmentHomeVendorBinding binding;
-    private SearchView searchView;
-    private FloatingActionButton actionButton;
-
-    private RecyclerView recyclerView;              // list element where cards appear
-    private StoreCardAdapter adapter;               // adapter that will be used in the list-card
-
-    private HomeViewModel model;
-
-    public static HomeVendor newInstance() { return new HomeVendor(); }
-
+/**
+ * Home fragment for a vendor,
+ * it uses the {@link AbstractHome} class as default, and overwrites some methods to go to the
+ * correct screens.
+ * Showing the correct data is handled by the viewModel {@link HomeViewModel}
+ */
+public class HomeVendor extends AbstractHome implements StoreCardAdapter.ItemClickListener {
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // Inflate the layout for this fragment
-        binding = FragmentHomeVendorBinding.inflate(getLayoutInflater());
+    /* overwrite what layout is used for the fragment */
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home_vendor, container, false);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+
     @Override
+    /* the super-class takes care of most functionality, only the actionButton needs to be added. */
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (getActivity() == null) {
-            throw new NullPointerException("Attempted to launch homeVendor-fragment without Activity!");
-        }
-
-        // Variable initialisation
-        recyclerView = getView().findViewById(R.id.near_recyclerView);
-        searchView = getView().findViewById(R.id.search);
+        assert getView() != null;
         actionButton = getView().findViewById(R.id.floatingActionButton);
-
+        // listener for action button press to go to the map-view.
+        actionButton.setOnClickListener(v -> {
+            assert getContext() != null;
+            Log.d("HELP", "click found!");
+            startActivity(new Intent(getContext(), MyStore.class));
+        });
         super.onViewCreated(view, savedInstanceState);
-
-        /* ViewModel retrieval */
-        Log.d(TAG, "retrieving viewModel");
-        model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);    // model != null <=>
-        Log.d(TAG, "performing health checks on model");                         // constructor called <=>
-        assert model.getAllDataReceived() != null;                                    // getAllDataReceived != null &&
-        assert model.getAllDataReceived().getValue() != null;                         // getAllDataReceived.getValue() != null &&
-        assert model.getUser() != null;                                               // getUser() != null <=>
-                                                                                      // eventually getStores() != null <=>
-        /* storeList creation */                                                      // eventually getFilteredStores() != null
-        Log.d(TAG, "attempting to create list with data...");
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        if (model.getAllDataReceived().getValue()) {
-            Log.d(TAG, "all data available upon fragment initialisation! creating list with data");
-            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores());
-            adapter.setClickListener(this);
-        } else {
-            Log.e(TAG, "data unavailable upon fragment initialisation! creating empty list");
-            adapter = new StoreCardAdapter();
-        }
-        recyclerView.setAdapter(adapter);
-
-        /* ------ Listeners ------ */
-
-        // data-state listener - changes and notifies adapter when availability/content of data changes.
-        model.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
-            if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
-            Log.d(TAG, "Update to data-state. Data-availability became " + isReceived);
-
-            adapter = isReceived ? new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores()) : new StoreCardAdapter();
-            adapter.setClickListener(this);
-            recyclerView.swapAdapter(adapter, true);
-            model.getFilteredStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
-        });
-
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getContext(), MyStore.class));
-            }
-        });
-
-        // search bar filter application - follows: https://stackoverflow.com/questions/19588311
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                Log.d(TAG, String.format("search text entered is: '%s'", newText));
-                if (newText.length() == 0) {
-                    model.removeFilter("searchStoreName");
-                    model.removeFilter("searchStoreProduct");
-                    model.applyFilters();
-                    return false;
-                }
-                model.addFilter("searchStoreName", store ->
-                        store.getName().toLowerCase(Locale.ROOT)
-                                .contains(newText.toLowerCase(Locale.ROOT))
-                );
-                model.addFilter("searchStoreProduct", HomeViewModel.OR , store ->
-                        model.storeHasProductInSet(store, model.getProductsMatchingName(newText))
-                );
-                return false;
-            }
-        });
-
-        searchView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchView.setIconified(false);
-            }
-        });
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
+        super.onItemClick(view, position);  // super checks the pre-condition
         Intent intent = new Intent(getContext(), StoreGeneral.class);
         intent.putExtra("store", adapter.getItem(position));
         intent.putExtra("isClient", true);
-        Log.d(TAG, "creating StoreGeneral activity with intent: " + intent);
+        Log.d("HomeVendor", "creating StoreGeneral activity with intent: " + intent);
         startActivity(intent);
     }
 }

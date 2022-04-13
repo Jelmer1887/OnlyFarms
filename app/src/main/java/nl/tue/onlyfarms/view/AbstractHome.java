@@ -25,16 +25,22 @@ import nl.tue.onlyfarms.viewmodel.HomeViewModel;
 import pub.devrel.easypermissions.EasyPermissions;
 
 /**
- * Abstract home view
+ * Abstract home view,
+ * This class handles all common logic for showing our home screens.
+ * Implementations should overwrite the onCreateView method to specify what
+ * layout is used, the onViewCreated to specify where the action button should lead,
+ * and the onItemClick method to specify where clicking a card should lead.
+ *
+ * What data is shown is handled by the {@link HomeViewModel}
  * */
 public abstract class AbstractHome extends Fragment implements StoreCardAdapter.ItemClickListener {
     private static final String TAG = "HomeAbstract";
 
     private SearchView searchView;
-    private FloatingActionButton actionButton;
+    protected FloatingActionButton actionButton;    // this is protected to allow use overwrites in sub-classes
 
     private RecyclerView recyclerView;  // UI element where the cards of stores appear
-    private StoreCardAdapter adapter;   // adapter that binds the data to the UI cards
+    protected StoreCardAdapter adapter;   // adapter that binds the data to the UI cards
 
     private HomeViewModel model;  // model class required to retrieve and process data
 
@@ -50,6 +56,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
     /* this should be overwritten to implement the actionButton functionality! */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "superclass method called!");
         if (getActivity() == null) {
             throw new NullPointerException("Attempted to launch home-fragment without Activity!");
         }
@@ -62,7 +69,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         /* -- Variable initialisation -- */
         recyclerView = getView().findViewById(R.id.near_recyclerView);
         searchView = getView().findViewById(R.id.search);
-        actionButton = getView().findViewById(R.id.floatingActionButton);
+        //actionButton = getView().findViewById(R.id.floatingActionButton);
 
         /* -- ViewModel retrieval -- */
         Log.d(TAG, "retrieving viewModel");
