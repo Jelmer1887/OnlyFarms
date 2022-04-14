@@ -1,35 +1,20 @@
 package nl.tue.onlyfarms.view.client;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.Locale;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.view.AbstractHome;
 import nl.tue.onlyfarms.view.StoreCardAdapter;
 import nl.tue.onlyfarms.view.StoreGeneral;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
-import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Home fragment for a client,

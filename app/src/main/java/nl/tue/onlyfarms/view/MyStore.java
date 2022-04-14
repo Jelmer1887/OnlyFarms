@@ -1,11 +1,9 @@
 package nl.tue.onlyfarms.view;
 
 import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -13,14 +11,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-
-import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.GeoPoint;
+
+import org.osmdroid.bonuspack.location.GeocoderNominatim;
 
 import java.io.IOException;
 import java.util.List;
@@ -104,18 +100,21 @@ public class MyStore extends AbstractBackActivity {
         store.setClosingTime(untilSpinner.getSelectedItem().toString());
 
 
-        try {
+       try {
             List<Address> androidAddress = geocoder.getFromLocationName(address.getText().toString(), 1);
             for ( Address address : androidAddress) {
-                store.setCoordinates(address.getLatitude(), address.getLongitude());
+                store.setLatitude(address.getLatitude());
+                store.setLongitude(address.getLongitude());
                 String street = address.getThoroughfare();
-                street = street == null ? "" : street;
+                street = street == null ? "" : street + " ";
                 String number = address.getSubThoroughfare();
                 number = number == null ? "" : number;
                 String city = address.getLocality();
-                city = city == null ? "" : city;
+                String subLoc = address.getSubLocality();
+                city = city == null ? subLoc == null ? "" : subLoc + ", " : city + ", ";
 
-                store.setPhysicalAddress(String.format("%s, %s %s", city, street, number));
+                store.setPhysicalAddress(String.format("%s%s%s", city, street, number));
+                Log.d(TAG, String.format("%s%s%s", city, street, number));
             }
         } catch (IOException e) {
             Log.d(TAG, "Something went horribly wrong! " + e.getMessage());

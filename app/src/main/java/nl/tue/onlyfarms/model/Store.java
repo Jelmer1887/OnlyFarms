@@ -1,6 +1,10 @@
 package nl.tue.onlyfarms.model;
 
 
+import android.location.Location;
+import android.location.LocationManager;
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,15 +49,19 @@ public class Store extends AbstractNamedModel {
         this.physicalAddress = physicalAddress;
     }
 
-    public List<Double> getCoordinates() {
-        List<Double> coords = new ArrayList<Double>();
-        coords.add(latitude);
-        coords.add(longitude);
-        return coords;
+    public double getLatitude() {
+        return this.latitude;
     }
 
-    public void setCoordinates(double latitude, double longitude) {
+    public double getLongitude() {
+        return this.longitude;
+    }
+
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
@@ -89,19 +97,11 @@ public class Store extends AbstractNamedModel {
         this.closingTime = closingTime;
     }
 
+    public double getDistance(Location user) {
+        Location store = new Location(LocationManager.GPS_PROVIDER);
+        store.setLatitude(latitude);
+        store.setLongitude(longitude);
 
-    public double getDistance(){
-        return getDistance(this.name);
-    }
-
-    public double getDistance(String name) {
-        if (this.name.toLowerCase(Locale.ROOT).equals("happy farm animals")) {
-            return 0.10133;
-        } else if (this.name.toLowerCase(Locale.ROOT).equals("unhappy farm animals")){
-            return 98.02031;
-        } else {
-            Random gen = new Random();
-            return 173.23526 + ((double) gen.nextInt(10000) / 10000.0)*1;
-        }
+        return store.distanceTo(user) / 1000.0;
     }
 }

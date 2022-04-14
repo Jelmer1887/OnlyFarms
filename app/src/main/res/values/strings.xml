@@ -113,5 +113,6 @@
     <string name="per_unit">Per Unit</string>
     <string name="price">Price</string>
     <string name="distance">Distance</string>
+    <string name="loading_stores">Loading Stores…</string>
 
 </resources>

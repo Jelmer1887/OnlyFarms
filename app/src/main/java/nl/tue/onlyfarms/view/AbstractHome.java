@@ -1,6 +1,9 @@
 package nl.tue.onlyfarms.view;
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,9 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Locale;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.FragmentHomeClientBinding;
 import nl.tue.onlyfarms.viewmodel.HomeViewModel;
-import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * Abstract home view,
@@ -63,6 +65,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         if (getView() == null) {
             throw new NullPointerException("View of home-fragment is null!");
         }
+
         // post: activity != null -> activity == Base
         // post: getView != null -> findViewById will be called on valid view
 
@@ -74,6 +77,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         /* -- ViewModel retrieval -- */
         Log.d(TAG, "retrieving viewModel");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);    // model != null <=>
+        model.activateDistanceFilter(getContext());
 
         // when the model is retrieve after going back, it has to be in a valid state
         Log.d(TAG, "performing health checks on model");                         // constructor called <=>
@@ -88,36 +92,37 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Attempt to bind the data to the list, data might not be available
-        if (model.getAllDataReceived().getValue()) {
-            // -> data is available
-            Log.d(TAG, "all data available upon fragment initialisation! creating list with data");
-            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores());
-            adapter.setClickListener(this); // provides clicking functionality
-        } else {
-            // -> data unavailable
-            Log.e(TAG, "data unavailable upon fragment initialisation! creating empty list");
-            adapter = new StoreCardAdapter();
-        }
-
-        recyclerView.setAdapter(adapter);
-
         /* ------ Listeners ------ */
 
         // data-state listener - changes and notifies adapter when availability/content of data changes.
         model.getAllDataReceived().observe(getViewLifecycleOwner(), isReceived -> {
             // null check to validate that no viewModel ever sets its data-state flag to null
-            if (isReceived == null) { throw new IllegalStateException("allDataReceived changed to null!"); }
+            if (isReceived == null) {
+                throw new IllegalStateException("allDataReceived changed to null!");
+            }
             Log.d(TAG, "Update to data-state. Data-availability became " + isReceived);
 
-            // adapter is empty if isReceived == false, else it received the filtered stores in random order.
-            adapter = isReceived ? new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores()) : new StoreCardAdapter();
-            adapter.setClickListener(this);
-            recyclerView.swapAdapter(adapter, true);
+            LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-            // listener to change the list when data is updated.
-            // note: getFilteredStores() is only guaranteed to be non-null inside this listener.
-            model.getFilteredStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 50, location -> {
+                if (getView() == null) return;
+
+                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                view.findViewById(R.id.loading).setVisibility(View.GONE);
+
+                // adapter is empty if isReceived == false, else it received the filtered stores in random order.
+                adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores(), location);
+                adapter.setClickListener(this);
+                recyclerView.swapAdapter(adapter, true);
+
+                // listener to change the list when data is updated.
+                // note: getFilteredStores() is only guaranteed to be non-null inside this listener.
+                model.getFilteredStores().observe(getViewLifecycleOwner(), b -> adapter.notifyDataSetChanged());
+            });
         });
 
         // The action button listener should be implemented here
@@ -172,14 +177,4 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
     public void onItemClick(View view, int position) {
         if (adapter == null) {throw new NullPointerException("adapter not set! (null)");}
     }
-
-    /* Methods responsible for retrieving permissions to use the gps */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        // Forward results to EasyPermissions
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }
-
 }

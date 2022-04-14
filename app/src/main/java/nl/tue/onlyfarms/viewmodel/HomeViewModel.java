@@ -1,8 +1,12 @@
 package nl.tue.onlyfarms.viewmodel;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.util.Log;
 
-import androidx.lifecycle.LifecycleOwner;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -15,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +40,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<User> user;
     private MutableLiveData<Set<Product>> products;
     private MutableLiveData<Set<Product>> productsMatching;
+    private LocationManager lm;
 
     private final FirebaseAuth firebaseAuth;
     private final FireBaseService<User> userFireBaseService;
@@ -69,10 +73,6 @@ public class HomeViewModel extends ViewModel {
         this.filteredStores = new MutableLiveData<>(null);
         // 'stores' is set only by the queries on the database.
 
-        assert maxDistance.getValue() != null;
-        addFilter("distance", store -> store.getDistance() <= maxDistance.getValue() );
-        maxDistance.observeForever(distance -> applyFilters());
-
         // debug observer reporting any changes in data availability
         this.allDataReceived.observeForever(bool -> {
             Log.d(TAG + ":availabilityListener", "data available = " + bool);
@@ -82,7 +82,9 @@ public class HomeViewModel extends ViewModel {
             Log.d(TAG, String.format("user in update is %s", user));
             this.allDataReceived.postValue(false);
 
-            if (user == null) { return; }
+            if (user == null) {
+                return;
+            }
             Log.d(TAG, "user in update is not null!");
             if (user.getStatus() == User.Status.CLIENT) {
                 Log.d(TAG, "user is a client -> retrieving all stores");
@@ -94,7 +96,9 @@ public class HomeViewModel extends ViewModel {
             Log.d(TAG, "requested storeData will be in " + this.stores);
 
             Observer<Set<Store>> storeListener = (storeSet -> {
-                if (storeSet == null) { return; }
+                if (storeSet == null) {
+                    return;
+                }
                 Log.d(TAG, "set of Stores received");
                 applyFilters();
                 if (this.user.getValue() != null) {
@@ -109,31 +113,47 @@ public class HomeViewModel extends ViewModel {
 
         this.products.observeForever(productSet -> {
             Log.d(TAG, "product set received: " + productSet);
-            if (productSet == null) { return; }
+            if (productSet == null) {
+                return;
+            }
             applyFilters();
         });
     }
 
-    public MutableLiveData<User> getUser() { return this.user; }
+    public MutableLiveData<User> getUser() {
+        return this.user;
+    }
 
-    public MutableLiveData<Boolean> getAllDataReceived() { return this.allDataReceived; }
+    public MutableLiveData<Boolean> getAllDataReceived() {
+        return this.allDataReceived;
+    }
 
-    public MutableLiveData<Set<Store>> getStores() { return this.stores; }
+    public MutableLiveData<Set<Store>> getStores() {
+        return this.stores;
+    }
 
     public void addFilter(String name, Function<Store, Boolean> filter) {
         this.filters.put(name, filter);
         this.filterMode.put(name, AND);
     }
+
     public void addFilter(String name, Boolean MODE, Function<Store, Boolean> filter) {
         this.filters.put(name, filter);
         this.filterMode.put(name, MODE ? AND : OR);
     }
 
-    public void removeFilter(String name) { this.filters.remove(name); this.filterMode.remove(name); }
+    public void removeFilter(String name) {
+        this.filters.remove(name);
+        this.filterMode.remove(name);
+    }
 
     public void applyFilters() {
-        if (stores == null) { return; }
-        if (stores.getValue() == null) { return; }
+        if (stores == null) {
+            return;
+        }
+        if (stores.getValue() == null) {
+            return;
+        }
 
         final Set<Store> removals = new HashSet<>();
         final Set<Store> whiteList = new HashSet<>();
@@ -161,20 +181,30 @@ public class HomeViewModel extends ViewModel {
         removals.removeAll(whiteList);
 
         StringBuilder s = new StringBuilder();
-        for (Store st : removals) { s.append(st.getName()).append(" "); }
+        for (Store st : removals) {
+            s.append(st.getName()).append(" ");
+        }
         Log.d(TAG, s.append("will be removed.").toString());
         filtered.removeAll(removals);
         this.filteredStores.postValue(filtered);
     }
 
-    public MutableLiveData<Set<Store>> getFilteredStores() { return this.filteredStores; }
+    public MutableLiveData<Set<Store>> getFilteredStores() {
+        return this.filteredStores;
+    }
 
-    public MutableLiveData<Set<Product>> getProducts() { return this.products; }
+    public MutableLiveData<Set<Product>> getProducts() {
+        return this.products;
+    }
 
     public Set<Product> getProductsMatchingName(String name) {
         // return empty set to prevent database slowness from crashing the app when values are null.
-        if (this.products == null) { return new HashSet<>(); }
-        if (this.products.getValue() == null) {return new HashSet<>(); }
+        if (this.products == null) {
+            return new HashSet<>();
+        }
+        if (this.products.getValue() == null) {
+            return new HashSet<>();
+        }
 
         final Set<Product> productSet = new HashSet<>();
         products.getValue().forEach(product -> {
@@ -224,7 +254,7 @@ public class HomeViewModel extends ViewModel {
                 Log.d(TAG, "user credentials deleted -> removing other stored data...");
             } else {
                 String msg = "Failed to remove user from authentication database";
-                msg = task.getException() == null ? msg :msg + ":\n" + task.getException().getMessage();
+                msg = task.getException() == null ? msg : msg + ":\n" + task.getException().getMessage();
                 throw new IllegalStateException(msg);
             }
         });
@@ -238,13 +268,17 @@ public class HomeViewModel extends ViewModel {
 
         Log.d(TASK_TAG, "awaiting store data.");
         storeFireBaseService.getAllMatchingField("userUid", userUid).observeForever(set -> {
-            if (set == null) { return; }
+            if (set == null) {
+                return;
+            }
             Log.d(TASK_TAG, String.format("attempting to remove %d stores...", set.size()));
 
             // create a task to remove each product
             int count = 0;
             for (Store store : set) {
-                if (removed.contains(store.getUid())) { continue; }
+                if (removed.contains(store.getUid())) {
+                    continue;
+                }
                 count++;
                 Log.d(TASK_TAG, "scheduling task to remove products of store...");
                 removeProductsOfStore(count, store.getUid());
@@ -265,12 +299,16 @@ public class HomeViewModel extends ViewModel {
 
         Log.d(TASK_TAG, "awaiting product data.");
         productFireBaseService.getAllMatchingField("storeUid", storeUid).observeForever(set -> {
-            if (set == null) { return; }
+            if (set == null) {
+                return;
+            }
             Log.d(TASK_TAG, String.format("attempting to remove %d products...", set.size()));
 
             // create a task to remove each product
             for (Product product : set) {
-                if (removed.contains(product.getUid())) { continue; }
+                if (removed.contains(product.getUid())) {
+                    continue;
+                }
                 Log.d(TASK_TAG, "scheduled task for removing product " + product.getUid());
                 productFireBaseService.deleteFromDatabase(product.getUid()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -284,7 +322,26 @@ public class HomeViewModel extends ViewModel {
 
     private Boolean allComplete(Collection<Boolean> booleans) {
         boolean r = true;
-        for (boolean b : booleans) { r = r && b; }
+        for (boolean b : booleans) {
+            r = r && b;
+        }
         return r;
+    }
+
+    public void activateDistanceFilter(Context context) {
+        lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 50, location -> {
+            assert maxDistance.getValue() != null;
+
+            addFilter("distance", store -> {
+                Log.d(TAG, String.format("Distance to store \"%s\" is %.2f km", store.getName(), store.getDistance(location)));
+                return store.getDistance(location) <= maxDistance.getValue();
+            });
+            maxDistance.observeForever(distance -> applyFilters());
+        });
     }
 }

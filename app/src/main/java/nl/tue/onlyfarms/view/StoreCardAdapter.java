@@ -1,5 +1,6 @@
 package nl.tue.onlyfarms.view;
 
+import android.location.Location;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,6 @@ import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -25,12 +25,15 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     private final static String TAG = "StoreCardAdapter";
     private final List<Store> storeData = new ArrayList<>();
     private ItemClickListener itemClickListener;
+    private Location location;
 
-    public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
+    public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList, Location location) {
         if (storeList == null) {
             String msg = "received null LifeData object as argument!";
             throw new NullPointerException(msg);
         }
+
+        this.location = location;
 
         // determine nr of stores and add stores to 'cards' map for creation / update.
         Observer<Set<Store>> dataCopierListener = stores -> {
@@ -87,9 +90,10 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
 
     private void setFields(Store store, HomeRecyclerViewHolder holder) {
         Log.d(TAG, "setFields: updating cards");
-        holder.getNameField().setText(String.format("%s (%.2fkm)", store.getName(), store.getDistance()));
+        holder.getNameField().setText(store.getName());
         holder.getAddressField().setText(store.getPhysicalAddress());
         holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
         holder.getOpeningsHoursField().setText(String.format(Locale.ROOT, "open %s - %s", store.getOpeningTime(), store.getClosingTime()));
+        holder.getNameField().setText(String.format(Locale.ROOT, "%s (%.2fkm)", store.getName(), store.getDistance(location)));
     }
 }
