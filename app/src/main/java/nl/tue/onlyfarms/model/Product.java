@@ -1,10 +1,7 @@
 package nl.tue.onlyfarms.model;
 
-import android.text.Editable;
-
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.io.Serializable;
 import java.util.List;
 
 @IgnoreExtraProperties
@@ -28,6 +25,8 @@ public class Product extends AbstractNamedModel {
         this.quantity = quantity;
         this.unit = unit;
     }
+
+    public Product() {}
 
     public String getStoreUid() {
         return storeUid;
