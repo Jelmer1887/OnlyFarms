@@ -3,15 +3,10 @@ package nl.tue.onlyfarms.viewmodel;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.CancellationSignal;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
@@ -24,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -340,11 +334,11 @@ public class HomeViewModel extends ViewModel {
             return;
         }
 
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 500, location -> {
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 50, location -> {
             assert maxDistance.getValue() != null;
 
             addFilter("distance", store -> {
-                Log.d("zwam", "" + store.getDistance(location) );
+                Log.d(TAG, String.format("Distance to store \"%s\" is %.2f km", store.getName(), store.getDistance(location)));
                 return store.getDistance(location) <= maxDistance.getValue();
             });
             maxDistance.observeForever(distance -> applyFilters());
