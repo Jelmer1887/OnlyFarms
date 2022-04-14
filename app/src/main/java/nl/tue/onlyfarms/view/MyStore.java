@@ -107,7 +107,8 @@ public class MyStore extends AbstractBackActivity {
         try {
             List<Address> androidAddress = geocoder.getFromLocationName(address.getText().toString(), 1);
             for ( Address address : androidAddress) {
-                store.setCoordinates(address.getLatitude(), address.getLongitude());
+                store.setLatitude(address.getLatitude());
+                store.setLongitude(address.getLongitude());
                 String street = address.getThoroughfare();
                 street = street == null ? "" : street;
                 String number = address.getSubThoroughfare();

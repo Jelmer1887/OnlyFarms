@@ -1,6 +1,12 @@
 package nl.tue.onlyfarms.view;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +16,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -63,6 +70,8 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         if (getView() == null) {
             throw new NullPointerException("View of home-fragment is null!");
         }
+
+
         // post: activity != null -> activity == Base
         // post: getView != null -> findViewById will be called on valid view
 
@@ -74,6 +83,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         /* -- ViewModel retrieval -- */
         Log.d(TAG, "retrieving viewModel");
         model = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);    // model != null <=>
+        model.activateDistanceFilter(getContext());
 
         // when the model is retrieve after going back, it has to be in a valid state
         Log.d(TAG, "performing health checks on model");                         // constructor called <=>
@@ -92,7 +102,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
         if (model.getAllDataReceived().getValue()) {
             // -> data is available
             Log.d(TAG, "all data available upon fragment initialisation! creating list with data");
-            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores());
+            adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores(), getContext());
             adapter.setClickListener(this); // provides clicking functionality
         } else {
             // -> data unavailable
@@ -111,7 +121,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
             Log.d(TAG, "Update to data-state. Data-availability became " + isReceived);
 
             // adapter is empty if isReceived == false, else it received the filtered stores in random order.
-            adapter = isReceived ? new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores()) : new StoreCardAdapter();
+            adapter = isReceived ? new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores(), getContext()) : new StoreCardAdapter();
             adapter.setClickListener(this);
             recyclerView.swapAdapter(adapter, true);
 

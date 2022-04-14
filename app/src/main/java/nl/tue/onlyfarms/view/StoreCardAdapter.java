@@ -1,11 +1,18 @@
 package nl.tue.onlyfarms.view;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -25,12 +32,18 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
     private final static String TAG = "StoreCardAdapter";
     private final List<Store> storeData = new ArrayList<>();
     private ItemClickListener itemClickListener;
+    private Context context;
+    private LocationManager lm;
 
-    public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList) {
+    public StoreCardAdapter(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Store>> storeList, Context context) {
         if (storeList == null) {
             String msg = "received null LifeData object as argument!";
             throw new NullPointerException(msg);
         }
+
+        this.context = context;
+
+        lm = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         // determine nr of stores and add stores to 'cards' map for creation / update.
         Observer<Set<Store>> dataCopierListener = stores -> {
@@ -87,9 +100,17 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
 
     private void setFields(Store store, HomeRecyclerViewHolder holder) {
         Log.d(TAG, "setFields: updating cards");
-        holder.getNameField().setText(String.format("%s (%.2fkm)", store.getName(), store.getDistance()));
+        holder.getNameField().setText(store.getName());
         holder.getAddressField().setText(store.getPhysicalAddress());
         holder.getImageField().setImageResource(R.drawable.ic_baseline_bug_report_24);
         holder.getOpeningsHoursField().setText(String.format(Locale.ROOT, "open %s - %s", store.getOpeningTime(), store.getClosingTime()));
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 50, location -> {
+            holder.getNameField().setText(String.format("%s (%.2fkm)", store.getName(), store.getDistance(location)));
+            Log.d("zwam", "here");
+            holder.
+        });
     }
 }
