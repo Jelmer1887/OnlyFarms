@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -19,7 +18,6 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.Navigation;
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.ActivityBaseBinding;
 import nl.tue.onlyfarms.model.User;
 import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.view.vendor.HomeVendor;
@@ -34,8 +32,8 @@ public class Base extends AppCompatActivity {
     private NavigationView navigationView;
     private Menu menu;
     private Navigation navLogic = Navigation.getInstance();
-    private ActivityBaseBinding binding;
     private HomeViewModel model;
+
     public boolean isClient;
 
     @Override
@@ -63,7 +61,6 @@ public class Base extends AppCompatActivity {
             });
         }
 
-        binding = ActivityBaseBinding.inflate(getLayoutInflater());
         setContentView(R.layout.activity_base);
 
         topBar = findViewById(R.id.topBar);
@@ -71,38 +68,38 @@ public class Base extends AppCompatActivity {
         navigationView = findViewById(R.id.navigationBar);
         menu = navigationView.getMenu();
 
-        topBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.open();
-                navLogic.getTargetsIterable().forEachRemaining(target -> {
-                    if (target == null) {
-                        throw new NullPointerException("navTarget received is null!");
-                    }
+        topBar.setNavigationOnClickListener(this::onNavigationClick);
+        navigationView.setNavigationItemSelectedListener(this::onNavItemSelected);
+    }
 
-                    target.setVisibility(menu, isClient);
-                });
+    /*
+     * Handles click event for different nav items.
+     */
+    private boolean onNavItemSelected(MenuItem menuItem) {
+        int id = menuItem.getItemId();
+        if (id == R.id.navto_logout) { logout(); return true;}
+        replaceFragment(navLogic.getTarget(id).apply(isClient));
+        drawerLayout.close();
+
+        return true;
+    }
+
+    /*
+     * Sets items in the menu to visible depending on their setting.
+     */
+    private void onNavigationClick(View view) {
+        drawerLayout.open();
+        navLogic.getTargetsIterable().forEachRemaining(target -> {
+            if (target == null) {
+                throw new NullPointerException("navTarget received is null!");
             }
-        });
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
-                if (id == R.id.navto_logout) { logout(); return true;}
-                replaceFragment(navLogic.getTarget(id).apply(isClient));
-                drawerLayout.close();
-
-                return true;
-            }
+            target.setVisibility(menu, isClient);
         });
     }
 
     //PRE: User cannot be null && allDataReceived should be true!
     private void userReceived(Bundle savedInstanceState) {
-        //if (model.getUser().getValue() == null) {
-            //throw new IllegalStateException("user was null while allDataReceived was true!");
-        //}
         this.isClient = (model.getUser().getValue().getStatus() == User.Status.CLIENT);
         if (navigationView != null) {
             navigationView.invalidate();
@@ -112,12 +109,18 @@ public class Base extends AppCompatActivity {
         }
     }
 
+    /*
+     * Helper method for replacing the main fragment.
+     */
     public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.replaceElement, fragment)
                 .commitNow();
     }
 
+    /*
+     * Helper method for logging out.
+     */
     public void logout() {
         FirebaseAuth.getInstance().signOut();
         startActivity(new Intent(getApplicationContext(), LoginView.class));

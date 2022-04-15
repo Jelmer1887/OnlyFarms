@@ -10,13 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Product;
-import nl.tue.onlyfarms.view.Reservation;
 
 public class RecycleViewAdapterConfirmReservation extends RecyclerView.Adapter<RecycleViewAdapterConfirmReservation.MyViewHolder> {
 

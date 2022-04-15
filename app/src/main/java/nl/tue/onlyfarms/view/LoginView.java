@@ -17,26 +17,21 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import nl.tue.onlyfarms.R;
-import nl.tue.onlyfarms.databinding.ActivityLoginBinding;
 import nl.tue.onlyfarms.viewmodel.LoginViewModel;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class LoginView extends AppCompatActivity {
 
-    LoginViewModel model;
-
-    FirebaseAuth firebaseAuth;
-    ActivityLoginBinding binding;
-    EditText emailElement, passwordElement;
-    TextView registerElement;
-    Button confirmElement;
-
+    private LoginViewModel model;
+    private FirebaseAuth firebaseAuth;
+    private EditText emailElement, passwordElement;
+    private TextView registerElement;
+    private Button confirmElement;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
         model = new ViewModelProvider(this).get(LoginViewModel.class);
 
         // get firebase authentication instance
@@ -56,6 +51,7 @@ public class LoginView extends AppCompatActivity {
 
         if (!model.checkFields(new EditText[]{emailElement, passwordElement})) { return; }
 
+        // get values from ui fields
         String email = emailElement.getText().toString().trim();
         String password = passwordElement.getText().toString().trim();
 
@@ -80,8 +76,9 @@ public class LoginView extends AppCompatActivity {
         finish();
     }
 
-    public void toBase(View view) { toBase(); }
-
+    /*
+     * Prompt the user for location perms.
+     */
     private void askPerms() {
         // Request Permissions
         String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
@@ -93,6 +90,9 @@ public class LoginView extends AppCompatActivity {
         }
     }
 
+    /*
+     * If the user is already logged in, go to Base.java.
+     */
     private void checkLogin() {
         if (firebaseAuth.getCurrentUser() != null){
             Toast.makeText(LoginView.this, "Already logged in", Toast.LENGTH_LONG).show();
@@ -100,11 +100,14 @@ public class LoginView extends AppCompatActivity {
         }
     }
 
-    /* Methods responsible for retrieving permissions to use the gps */
+    /*
+     * Methods responsible for retrieving permissions to use the gps.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        // redo if not granted
         for (int i: grantResults) {
             if (i != PackageManager.PERMISSION_GRANTED ) {
                 askPerms();

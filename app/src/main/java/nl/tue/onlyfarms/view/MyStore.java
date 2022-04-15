@@ -48,10 +48,15 @@ public class MyStore extends AbstractBackActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mystore);
 
+        // necessary for getting location from name
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
+        geocoder = new GeocoderNominatim("store");
+
         model = new ViewModelProvider(this).get(MystoreViewModel.class);
+
+        // empty store that will be filled with the correct data
         store = new Store(
                 UUID.randomUUID().toString(),
                 FirebaseAuth.getInstance().getCurrentUser().getUid(),
@@ -60,6 +65,7 @@ public class MyStore extends AbstractBackActivity {
                 ""
                 );
 
+        // store important fields
         storeName = findViewById(R.id.storeName);
         description = findViewById(R.id.description);
         address = findViewById(R.id.tvStoreAddress);
@@ -72,8 +78,7 @@ public class MyStore extends AbstractBackActivity {
         fromSpinner.setAdapter(adapter);
         untilSpinner.setAdapter(adapter);
 
-        geocoder = new GeocoderNominatim("store");
-
+        // only executed when editing an existing store
         if (getIntent().hasExtra("store")) {
             toast = "Store Updated!";
             ((TextView)findViewById(R.id.addStore)).setText(R.string.editStore);
@@ -82,29 +87,26 @@ public class MyStore extends AbstractBackActivity {
             prefillFields();
         }
 
-        findViewById(R.id.confirm_store).setOnClickListener(v -> onSubmit());
-
-        findViewById(R.id.confirm_store).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onSubmit();
-            }
-        });
-
+        findViewById(R.id.confirm_store).setOnClickListener(this::onSubmit);
     }
 
-    private void onSubmit() {
+    /*
+     * Gets values from the fields and uploads the store to firebase (create/replace).
+     */
+    private void onSubmit(View v) {
         store.setName(storeName.getText().toString());
         store.setDescription(description.getText().toString());
         store.setOpeningTime(fromSpinner.getSelectedItem().toString());
         store.setClosingTime(untilSpinner.getSelectedItem().toString());
 
 
-       try {
+        // IOException if request cannot be made.
+        try {
             List<Address> androidAddress = geocoder.getFromLocationName(address.getText().toString(), 1);
             for ( Address address : androidAddress) {
                 store.setLatitude(address.getLatitude());
                 store.setLongitude(address.getLongitude());
+
                 String street = address.getThoroughfare();
                 street = street == null ? "" : street + " ";
                 String number = address.getSubThoroughfare();
@@ -120,11 +122,15 @@ public class MyStore extends AbstractBackActivity {
             Log.d(TAG, "Something went horribly wrong! " + e.getMessage());
         }
 
+        // updates/creates store
         model.updateStores(store);
         Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
         finish();
     }
 
+    /*
+     * Sets the fields with the information that is already stored in this.store
+     */
     private void prefillFields() {
         storeName.setText(store.getName());
         description.setText(store.getDescription());

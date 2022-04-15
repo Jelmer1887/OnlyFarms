@@ -37,6 +37,7 @@ public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<
             throw new NullPointerException(msg);
         }
 
+        // set the list of reservations to the updated data.
         Observer<Set<Reservation>> reservationObserver = reservations -> {
             if (reservations == null) { return; }
             reservationData.clear();
@@ -44,6 +45,7 @@ public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<
         };
         reservationsSet.observe(lifecycleOwner, reservationObserver);
 
+        // set the list of stores to the updated data.
         Observer<Set<Store>> storeObserver = stores -> {
             if (stores == null) { return; }
             this.stores.clear();
@@ -74,6 +76,9 @@ public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<
         setValues(holder, reservationData.get(position));
     }
 
+    /*
+     * Set the holder with the correct values.
+     */
     private void setValues(ViewHolder holder, Reservation reservation) {
         Store store = stores.get(reservation.getStoreUid());
         holder.storeName.setText(store.getName());
@@ -112,20 +117,30 @@ public class RecyclerViewAdapterClientReservations extends RecyclerView.Adapter<
         }
     }
 
-    // convenience method for getting data at click position
-    Reservation getItem(int id) {
+    /*
+     * Convenience method for getting data at click position.
+     */
+    public Reservation getItem(int id) {
         return reservationData.get(id);
     }
-    Store getStore(int id) {
+
+    /*
+     * Gets the store at a position.
+     */
+    public Store getStore(int id) {
         return stores.get(reservationData.get(id).getStoreUid());
     }
 
-    // allows clicks events to be caught
+    /*
+     * Allows clicks events to be caught.
+     */
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
-    // parent activity will implement this method to respond to click events
+    /*
+     * Parent activity will implement this method to respond to click events.
+     */
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }

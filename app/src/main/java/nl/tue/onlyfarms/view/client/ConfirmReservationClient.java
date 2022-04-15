@@ -1,13 +1,6 @@
 package nl.tue.onlyfarms.view.client;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,16 +9,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import nl.tue.onlyfarms.R;
 import nl.tue.onlyfarms.model.Product;
 import nl.tue.onlyfarms.view.AbstractReservationView;
-import nl.tue.onlyfarms.view.Base;
-import nl.tue.onlyfarms.view.Reservation;
 import nl.tue.onlyfarms.viewmodel.ReservationClientViewModel;
 
 public class ConfirmReservationClient extends AbstractReservationView {

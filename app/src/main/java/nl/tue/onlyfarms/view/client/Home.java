@@ -38,14 +38,15 @@ public class Home extends AbstractHome implements StoreCardAdapter.ItemClickList
         assert getView() != null;
         actionButton = getView().findViewById(R.id.floatingActionButton);
 
-        // listener for action button press to go to the map-view.
-        actionButton.setOnClickListener(v -> {
-            assert getActivity() != null;
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.replaceElement, new MapView())
-                    .commitNow();
-        });
-        super.onViewCreated(view, savedInstanceState);
+//        // listener for action button press to go to the map-view.
+//        actionButton.setOnClickListener(v -> {
+//            assert getActivity() != null;
+//            getActivity().getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.replaceElement, new MapView())
+//                    .commitNow();
+//        });
+//        super.onViewCreated(view, savedInstanceState);
+        actionButton.setVisibility(View.GONE);
     }
 
     @Override

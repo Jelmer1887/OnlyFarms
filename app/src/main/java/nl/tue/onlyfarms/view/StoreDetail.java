@@ -1,11 +1,8 @@
 package nl.tue.onlyfarms.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -40,13 +37,15 @@ public class StoreDetail extends AbstractBackActivity {
 
         setContentView(R.layout.activity_store_detail); // set the layout
 
-        this.nameField = findViewById(R.id.storeDetail_store_name);
-        this.descriptionField = findViewById(R.id.storeDetail_description_placeholder);
-        this.addressField = findViewById(R.id.storeDetail_address);
-        this.openField = findViewById(R.id.storeDetail_open);
+        // store important fields
+        nameField = findViewById(R.id.storeDetail_store_name);
+        descriptionField = findViewById(R.id.storeDetail_description_placeholder);
+        addressField = findViewById(R.id.storeDetail_address);
+        openField = findViewById(R.id.storeDetail_open);
 
         StringBuilder description = new StringBuilder();
 
+        // set fields according to correct values
         ((MaterialToolbar)findViewById(R.id.storeDetail_topBar)).setTitle(store.getName());
         nameField.setText(store.getName());
         descriptionField.setText(description.append(store.getDescription()));

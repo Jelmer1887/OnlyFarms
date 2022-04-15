@@ -25,14 +25,11 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
     private RecyclerViewAdapterProductList.ItemClickListener itemClickListener;
     private boolean isVendor;
 
-    public RecyclerViewAdapterProductList(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
-        // when product data changes, (re)build the list of products
-        setData(lifecycleOwner, productData);
-        Log.d(TAG, "constructor called!");
-    }
-
     public RecyclerViewAdapterProductList() {}
 
+    /*
+     * Sets the data of this adapter to the provided data.
+     */
     public void setData(LifecycleOwner lifecycleOwner, MutableLiveData<Set<Product>> productData) {
         productData.observe(lifecycleOwner, productSet -> {
             Log.d(TAG, "change in data detected! clearing product list...");
@@ -67,9 +64,14 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         return products.size();
     }
 
-    // method to retrieve store of clicked card
+    /*
+     * Method to retrieve store of clicked card.
+     */
     public Product getItem(int id) { return products.get(id); }
 
+    /*
+     * Sets the fields in the holder to the correct data.
+     */
     private void setFields(@NonNull ViewHolder holder, Product product) {
 
         // build strings required as values in the UI fields
@@ -88,6 +90,9 @@ public class RecyclerViewAdapterProductList extends RecyclerView.Adapter<Recycle
         }
     }
 
+    /*
+     * Set whether the user is a client.
+     */
     public void setIsVendor(boolean isClient) {
         this.isVendor = isClient;
     }

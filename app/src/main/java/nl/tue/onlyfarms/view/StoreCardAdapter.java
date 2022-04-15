@@ -33,6 +33,7 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
             throw new NullPointerException(msg);
         }
 
+        // store the location of the user
         this.location = location;
 
         // determine nr of stores and add stores to 'cards' map for creation / update.
@@ -43,11 +44,6 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
             //Collections.sort(storeData, /*COMPARITOR GOES HERE*/);
         };
         storeList.observe(lifecycleOwner, dataCopierListener);
-    }
-
-    public StoreCardAdapter() {
-        // a change to empty data -> set size to 0!
-        storeData.clear();
     }
 
     @Override
@@ -77,7 +73,9 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         return storeData.size();
     }
 
-    // method to retrieve store of clicked card
+    /*
+     * Method to retrieve store of clicked card.
+     */
     public Store getItem(int id) { return storeData.get(id); }
 
     public void setClickListener(ItemClickListener itemClickListener) {
@@ -88,6 +86,9 @@ public class StoreCardAdapter extends RecyclerView.Adapter<HomeRecyclerViewHolde
         void onItemClick(View view, int position);
     }
 
+    /*
+     * Set a holder fields with the correct values.
+     */
     private void setFields(Store store, HomeRecyclerViewHolder holder) {
         Log.d(TAG, "setFields: updating cards");
         holder.getNameField().setText(store.getName());
