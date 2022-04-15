@@ -2,7 +2,6 @@ package nl.tue.onlyfarms;
 
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.fragment.app.Fragment;
 
@@ -13,7 +12,6 @@ import java.util.function.Function;
 
 import nl.tue.onlyfarms.view.Account;
 import nl.tue.onlyfarms.view.Settings;
-import nl.tue.onlyfarms.view.addStore;
 import nl.tue.onlyfarms.view.client.Home;
 import nl.tue.onlyfarms.view.client.ReservationsClient;
 import nl.tue.onlyfarms.view.vendor.HomeVendor;
