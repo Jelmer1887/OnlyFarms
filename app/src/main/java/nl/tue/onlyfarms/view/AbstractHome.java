@@ -113,6 +113,7 @@ public abstract class AbstractHome extends Fragment implements StoreCardAdapter.
 
                 view.findViewById(R.id.progressBar).setVisibility(View.GONE);
                 view.findViewById(R.id.loading).setVisibility(View.GONE);
+                view.findViewById(R.id.location).setVisibility(View.GONE);
 
                 // adapter is empty if isReceived == false, else it received the filtered stores in random order.
                 adapter = new StoreCardAdapter(getViewLifecycleOwner(), model.getFilteredStores(), location);
