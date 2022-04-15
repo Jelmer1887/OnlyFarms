@@ -45,8 +45,9 @@ public class Home extends AbstractHome implements StoreCardAdapter.ItemClickList
 //                    .replace(R.id.replaceElement, new MapView())
 //                    .commitNow();
 //        });
-//        super.onViewCreated(view, savedInstanceState);
         actionButton.setVisibility(View.GONE);
+
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
