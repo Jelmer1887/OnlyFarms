@@ -4,8 +4,22 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.List;
 
+/**
+ * Product class representing a product in our system
+ * This class describes what fields a product should have,
+ * as well as getters and setters for each field.
+ */
 @IgnoreExtraProperties
 public class Product extends AbstractNamedModel {
+    /**
+     * A product has:
+     *   - a unique id, used to uniquely identify the product
+     *   - a store uid, which is used to identify the store it belongs to
+     *   - a price field, which sets the price
+     *   - a quantity field, which sets the quantity of the product for the unit
+     *   - a unit field, used to say the unit for the given price
+     *   - a list of tags, which are used to categorize the product
+     */
     private String storeUid;
     private double price;
     private int quantity;

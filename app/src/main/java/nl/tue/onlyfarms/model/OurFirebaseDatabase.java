@@ -2,6 +2,10 @@ package nl.tue.onlyfarms.model;
 
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ * `OurFirebaseDatabase` is a singleton class that is used to access the Firebase database.
+ * It is used to get the reference to the database and to allow the use of the emulator.
+ */
 public class OurFirebaseDatabase {
 
     public static boolean USE_EMULATOR = false;
