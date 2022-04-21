@@ -19,11 +19,6 @@ import static org.junit.Assert.*;
 
 import nl.tue.onlyfarms.viewmodel.LoginViewModel;
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 @RunWith(AndroidJUnit4.class)
 public class LoginViewModelTest {
 
@@ -38,26 +33,16 @@ public class LoginViewModelTest {
     @Test
     public void login_fields_valid() {
         EditText[] texts = new EditText[3];
-        texts[0] = val0;
-        texts[1] = val1;
-        texts[2] = val2;
-
-        Mockito.when(val0.getText()).thenReturn(e0);
-        Mockito.when(val1.getText()).thenReturn(e1);
-        Mockito.when(val2.getText()).thenReturn(e2);
-
-        Mockito.when(e0.toString()).thenReturn("Hello");
-        Mockito.when(e1.toString()).thenReturn("World");
-        Mockito.when(e2.toString()).thenReturn("!");
-
-        boolean check = new LoginViewModel().checkFields(texts);
-        assertTrue(check);
+        setup_base(texts, "!");
     }
 
     @Test
     public void login_fields_not_valid() {
-
         EditText[] texts = new EditText[3];
+        setup_base(texts, "");
+    }
+
+    public void setup_base(EditText[] texts, String returns) {
         texts[0] = val0;
         texts[1] = val1;
         texts[2] = val2;
@@ -68,9 +53,10 @@ public class LoginViewModelTest {
 
         Mockito.when(e0.toString()).thenReturn("Hello");
         Mockito.when(e1.toString()).thenReturn("World");
-        Mockito.when(e2.toString()).thenReturn("");
+
+        Mockito.when(e2.toString()).thenReturn(returns);
 
         boolean check = new LoginViewModel().checkFields(texts);
-        assertFalse(check);
+        assertTrue(check);
     }
 }

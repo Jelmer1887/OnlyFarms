@@ -21,11 +21,6 @@ import org.junit.Test;
 import nl.tue.onlyfarms.model.FireBaseService;
 import nl.tue.onlyfarms.model.User;
 
-/**
- * Instrumented test, which will execute on an Android device.
- *
- * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
- */
 public class UserChecks {
 
     // makes it so the livedata can be observed
@@ -84,69 +79,6 @@ public class UserChecks {
 
         userService.deleteFromDatabase(user.getUid());
     }
-
-    /*
-    // Not a priority at the moment
-    // TODO: fix this
-    @Test(timeout = 2000)
-    public void update_user() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        FirebaseApp.initializeApp(appContext);
-        // OurFirebaseDatabase.USE_EMULATOR = true;
-
-        FireBaseService<User> userService = new FireBaseService<>(User.class, "users");
-
-        // creates a user and adds it to the database
-        User user = new User();
-        user.setUid("test_uid");
-        user.setUserName("T.Tester");
-        user.setFirstName("Testy");
-        user.setLastName("Tester");
-        user.setEmailAddress("tester@testing.com");
-        user.setStatus(User.Status.VENDOR);
-        userService.updateToDatabase(user, user.getUid());
-        MutableLiveData<User> result;
-        result = userService.getSingleMatchingField("uid", user.getUid());
-
-        user.setUserName("New Username");
-        userService.updateToDatabase(user, user.getUid());
-
-        result.observe(new TestLifecycleOwner(), new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                if (result.getValue() != null) {
-                    System.out.println("Observer ran");
-                    // this is always true
-                    assertNotNull(result.getValue());
-                    // check if a user is returned
-                    assertEquals(User.class, result.getValue().getClass());
-                    User userTest = result.getValue();
-                    assertEquals("test_uid", userTest.getUid());
-                    assertEquals("New Username", userTest.getUserName());
-                    assertEquals("tester@testing.com", userTest.getEmailAddress());
-                    assertEquals("Testy", userTest.getFirstName());
-                    assertEquals("Tester", userTest.getLastName());
-                    assertEquals(User.Status.VENDOR, userTest.getStatus());
-                    System.out.println("Observer done running");
-                }
-            }
-        });
-
-        // gives the result time to update
-        User value = result.getValue();
-
-        while(value == null) {
-            value = result.getValue();
-        }
-
-        // here so that we know the observer code ran
-        assertNotNull(result.getValue());
-
-        userService.deleteFromDatabase(user.getUid());
-    }
-
-     */
 
     @Test(timeout = 10000)
     public void delete_user() {
