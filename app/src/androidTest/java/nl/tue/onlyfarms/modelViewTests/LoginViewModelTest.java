@@ -33,16 +33,18 @@ public class LoginViewModelTest {
     @Test
     public void login_fields_valid() {
         EditText[] texts = new EditText[3];
-        setup_base(texts, "!");
+        boolean check = setup_base(texts, "!");
+        assertTrue(check);
     }
 
     @Test
     public void login_fields_not_valid() {
         EditText[] texts = new EditText[3];
-        setup_base(texts, "");
+        boolean check = setup_base(texts, "");
+        assertFalse(check);
     }
 
-    public void setup_base(EditText[] texts, String returns) {
+    public boolean setup_base(EditText[] texts, String returns) {
         texts[0] = val0;
         texts[1] = val1;
         texts[2] = val2;
@@ -56,7 +58,6 @@ public class LoginViewModelTest {
 
         Mockito.when(e2.toString()).thenReturn(returns);
 
-        boolean check = new LoginViewModel().checkFields(texts);
-        assertTrue(check);
+        return new LoginViewModel().checkFields(texts);
     }
 }

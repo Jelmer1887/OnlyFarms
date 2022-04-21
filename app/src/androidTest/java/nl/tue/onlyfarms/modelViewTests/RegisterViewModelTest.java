@@ -32,22 +32,25 @@ public class RegisterViewModelTest {
     @Test
     public void login_fields_valid() {
         EditText[] texts = new EditText[3];
-        register(texts, "!", "Password");
+        boolean check = register(texts, "!", "Password");
+        assertTrue(check);
     }
 
     @Test
     public void login_fields_not_valid_field() {
         EditText[] texts = new EditText[3];
-        register(texts, "", "Password");
+        boolean check = register(texts, "", "Password");
+        assertFalse(check);
     }
 
     @Test
     public void login_fields_not_valid_password() {
         EditText[] texts = new EditText[3];
-        register(texts, "!", "Pass");
+        boolean check = register(texts, "!", "Pass");
+        assertFalse(check);
     }
 
-    public void register(EditText[] texts, String returns, String pass) {
+    public boolean register(EditText[] texts, String returns, String pass) {
         texts[0] = value0;
         texts[1] = value1;
         texts[2] = value2;
@@ -62,7 +65,6 @@ public class RegisterViewModelTest {
         Mockito.when(e02.toString()).thenReturn(returns);
         Mockito.when(passwordEditable.toString()).thenReturn(pass);
 
-        boolean check = RegisterViewModel.checkFields(texts, password);
-        assertFalse(check);
+        return RegisterViewModel.checkFields(texts, password);
     }
 }
